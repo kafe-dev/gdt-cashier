@@ -6,12 +6,14 @@ namespace App\Repositories\User;
 
 use App\Contracts\BaseRepository;
 use App\Models\User;
+use Illuminate\Support\Collection;
 
 /**
  * UserRepository.
  */
 class UserRepository extends BaseRepository implements UserRepositoryInterface
 {
+
     /**
      * @var User $user Instance of User model.
      */
@@ -27,12 +29,12 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
         $this->model = $model;
     }
 
-    public function findOne(int $id): mixed
+    public function findOne(int $id): null|User
     {
         return $this->model->find($id);
     }
 
-    public function findAll(): mixed
+    public function findAll(): Collection
     {
         return $this->model->get();
     }
@@ -42,7 +44,7 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
         return $this->model->create($data);
     }
 
-    public function update(int $id, array $data = []): mixed
+    public function update(int $id, array $data = []): bool
     {
         $model = $this->model->findOrFail($id);
 
@@ -53,4 +55,5 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
     {
         return $this->model->destroy($id);
     }
+
 }
