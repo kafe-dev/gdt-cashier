@@ -26,6 +26,11 @@ RUN docker-php-ext-install \
     pdo_mysql \
     mysqli
 
+COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/bin/
+
+RUN install-php-extensions zip
+RUN install-php-extensions gd
+
 RUN docker-php-ext-enable mysqli
 
 COPY apache.conf /etc/apache2/sites-available/apache.conf
