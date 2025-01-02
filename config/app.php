@@ -120,7 +120,8 @@ return [
 
     'maintenance' => [
         'driver' => env('APP_MAINTENANCE_DRIVER', 'file'),
-        'store' => env('APP_MAINTENANCE_STORE', 'database'),
+        'store'  => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    'date_format' => env('APP_DATE_FORMAT', 'd/m/Y H:i:s'),
 ];

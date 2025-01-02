@@ -5,7 +5,7 @@
                 <div class="col">
                     <h4 class="page-title">@stack('page')</h4>
                     <div class="breadcrumb-wrapper pt-3">
-                        {{ Breadcrumbs::render('dashboard') }}
+                        @stack('breadcrumbs')
                     </div>
                 </div>
                 @stack('toolbar')

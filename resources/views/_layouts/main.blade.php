@@ -37,7 +37,6 @@
     <script src="{{ asset('theme/plugins/apex-charts/apexcharts.min.js') }}"></script>
     <script src="{{ asset('theme/plugins/jvectormap/jquery-jvectormap-2.0.2.min.js') }}"></script>
     <script src="{{ asset('theme/plugins/jvectormap/jquery-jvectormap-us-aea-en.js') }}"></script>
-    <script src="{{ asset('theme/assets/pages/jquery.sales_dashboard.init.js') }}"></script>
     <script src="{{ asset('theme/assets/js/app.js') }}"></script>
 
     @stack('custom-scripts')

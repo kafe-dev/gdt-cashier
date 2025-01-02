@@ -1,7 +1,7 @@
 <?php
 
-use App\Http\Controller\Home;
-use App\Http\Middleware\Auth;
+use App\Http\Controllers\Home;
+use App\Http\Middlewares\Auth;
 use Illuminate\Support\Facades\Route;
 
 Route::controller(Home::class)

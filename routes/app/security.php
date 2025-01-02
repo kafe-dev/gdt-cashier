@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controller\Security;
+use App\Http\Controllers\Security;
 use Illuminate\Support\Facades\Route;
 
 Route::controller(Security::class)

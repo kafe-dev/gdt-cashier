@@ -13,3 +13,24 @@
 .breadcrumb-item + .breadcrumb-item::before {
     content: "/";
 }
+
+/** DataTable */
+#filter-btn {
+    background-color: rgba(23, 97, 253, 0.75);
+    border-color: rgba(23, 97, 253, 0.5);
+}
+
+#filter-btn:hover {
+    background-color: rgba(23, 97, 253, 1);
+    border-color: rgba(23, 97, 253, 0.75);
+}
+
+/** DateRangePicker */
+.date-range-filter {
+    background-color: #fff;
+    cursor: pointer;
+    padding: 5px 10px;
+    border: 1px solid #ccc;
+    text-align: center;
+    width: 300px;
+}

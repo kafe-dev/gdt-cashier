@@ -4,6 +4,10 @@
     Dashboard
 @endpush
 
+@push('breadcrumbs')
+    {{ Breadcrumbs::render('dashboard') }}
+@endpush
+
 @push('toolbar')
     <div class="col-auto align-self-center">
         <div class="row">
@@ -275,6 +279,8 @@
 @endsection
 
 @push('custom-scripts')
+    <script src="{{ asset('theme/assets/pages/jquery.sales_dashboard.init.js') }}"></script>
+
     <script>
         $('input[name="db_filter"]').daterangepicker();
     </script>

@@ -1,5 +1,4 @@
 $(document).ready(() => {
-    // Active menu
     let activeItems = $('.active');
 
     if (activeItems.length > 0) {

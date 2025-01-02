@@ -18,7 +18,7 @@
             <hr class="hr-dashed hr-menu">
             <li class="menu-label my-2">Management</li>
             <li class="nav-item">
-                <a class="nav-link" href="#"><i data-feather="user" class="align-self-center menu-icon"></i><span>User Account</span></a>
+                <a class="nav-link" href="{{ route('app.user.index') }}"><i data-feather="user" class="align-self-center menu-icon"></i><span>User Account</span></a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="#"><i data-feather="credit-card" class="align-self-center menu-icon"></i><span>Paygate</span></a>
