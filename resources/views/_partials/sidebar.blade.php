@@ -1,5 +1,5 @@
 <div class="left-sidenav">
-    <div class="brand border" style="height: 47px;">
+    <div class="brand border">
         <a href="{{ route('app.home.index') }}" class="logo">
             <span>
                 <img src="{{ Vite::asset('resources/assets/images/logo.png') }}" alt="logo-small" class="logo-dark mb-3" height="30xp">
