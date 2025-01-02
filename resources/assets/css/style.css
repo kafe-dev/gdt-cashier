@@ -1,0 +1,15 @@
+/* Global */
+.text-blue-2 {
+    color: #458cc4;
+}
+
+/* Nav */
+.nav-item {
+    padding-left: 3px;
+    padding-right: 3px;
+}
+
+/* Breadcrumb */
+.breadcrumb-item + .breadcrumb-item::before {
+    content: "/";
+}
