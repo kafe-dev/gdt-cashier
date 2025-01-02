@@ -42,8 +42,8 @@
             <hr class="hr-dashed hr-menu">
             <li class="menu-label my-2">Help Center</li>
             <li>
-                <a href="#"><i data-feather="help-circle" class="align-self-center menu-icon"></i><span>Faq</span></a>
-                <a href="#"><i data-feather="alert-triangle" class="align-self-center menu-icon"></i><span>Bug Report</span></a>
+                <a href="#"><i data-feather="help-circle" class="align-self-center menu-icon"></i><span>FAQ</span></a>
+                <a href="mailto:m397.dev@gmail.com"><i data-feather="alert-triangle" class="align-self-center menu-icon"></i><span>Bug Report</span></a>
             </li>
         </ul>
     </div>
