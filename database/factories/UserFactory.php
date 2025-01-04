@@ -9,7 +9,6 @@ use Illuminate\Support\Str;
 
 class UserFactory extends Factory
 {
-
     /**
      * The current password being used by the factory.
      */
@@ -23,13 +22,13 @@ class UserFactory extends Factory
     public function definition(): array
     {
         return [
-            'username'          => fake()->name(),
-            'email'             => fake()->unique()->safeEmail(),
-            'password'          => static::$password ??= Hash::make('password'),
-            'role'              => User::ROLE_ADMIN,
-            'registration_ip'   => '127.0.0.1',
-            'status'            => User::STATUS_ACTIVE,
-            'remember_token'    => Str::random(10),
+            'username' => fake()->name(),
+            'email' => fake()->unique()->safeEmail(),
+            'password' => static::$password ??= Hash::make('password'),
+            'role' => User::ROLE_ADMIN,
+            'registration_ip' => '127.0.0.1',
+            'status' => User::STATUS_ACTIVE,
+            'remember_token' => Str::random(10),
             'email_verified_at' => now(),
         ];
     }
@@ -39,9 +38,8 @@ class UserFactory extends Factory
      */
     public function unverified(): static
     {
-        return $this->state(fn(array $attributes) => [
+        return $this->state(fn (array $attributes) => [
             'email_verified_at' => null,
         ]);
     }
-
 }

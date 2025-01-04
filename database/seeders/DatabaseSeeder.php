@@ -7,7 +7,6 @@ use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
 {
-
     /**
      * Seed the application's database.
      */
@@ -15,9 +14,8 @@ class DatabaseSeeder extends Seeder
     {
         User::factory()->create([
             'username' => 'admin',
-            'email'    => 'admin@gdt.com',
+            'email' => 'admin@gdt.com',
             'password' => '12345678',
         ]);
     }
-
 }

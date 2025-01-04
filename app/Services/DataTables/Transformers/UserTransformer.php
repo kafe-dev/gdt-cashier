@@ -14,13 +14,8 @@ use League\Fractal\TransformerAbstract;
  */
 class UserTransformer extends TransformerAbstract
 {
-
     /**
      * Data transformer.
-     *
-     * @param  User  $user
-     *
-     * @return array
      */
     public function transform(User $user): array
     {
@@ -36,26 +31,22 @@ class UserTransformer extends TransformerAbstract
         };
 
         return [
-            'id'              => $user->id,
-            'username'        => $user->username,
-            'email'           => '<a class="text-primary" href="mailto:'.$user->email.'">'.$user->email.'</a>',
-            'role'            => $role,
+            'id' => $user->id,
+            'username' => $user->username,
+            'email' => '<a class="text-primary" href="mailto:'.$user->email.'">'.$user->email.'</a>',
+            'role' => $role,
             'registration_ip' => $user->registration_ip,
-            'status'          => $status,
-            'last_login_at'   => ! empty($user->last_login_at) ? $user->last_login_at->format(config('app.date_format')) : '-',
-            'blocked_at'      => ! empty($user->blocked_at) ? $user->blocked_at->format(config('app.date_format')) : '-',
-            'created_at'      => $user->created_at->format(config('app.date_format')),
-            'updated_at'      => $user->updated_at->format(config('app.date_format')),
-            'action'          => $this->renderActions($user),
+            'status' => $status,
+            'last_login_at' => ! empty($user->last_login_at) ? $user->last_login_at->format(config('app.date_format')) : '-',
+            'blocked_at' => ! empty($user->blocked_at) ? $user->blocked_at->format(config('app.date_format')) : '-',
+            'created_at' => $user->created_at->format(config('app.date_format')),
+            'updated_at' => $user->updated_at->format(config('app.date_format')),
+            'action' => $this->renderActions($user),
         ];
     }
 
     /**
      * Render action columns.
-     *
-     * @param  User  $user
-     *
-     * @return string
      */
     private function renderActions(User $user): string
     {
@@ -71,5 +62,4 @@ class UserTransformer extends TransformerAbstract
             <a href="#" class="btn btn-sm btn-soft-danger" title="Delete"><i class="fa fa-trash"></i></a>
         ';
     }
-
 }

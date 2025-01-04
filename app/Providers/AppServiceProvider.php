@@ -9,7 +9,6 @@ use Mailjet\LaravelMailjet\Facades\Mailjet;
 
 class AppServiceProvider extends ServiceProvider
 {
-
     /**
      * Register any application services.
      */
@@ -28,5 +27,4 @@ class AppServiceProvider extends ServiceProvider
     {
         //
     }
-
 }

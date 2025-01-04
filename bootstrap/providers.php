@@ -16,5 +16,5 @@ return [
     ButtonsServiceProvider::class,
     HtmlServiceProvider::class,
     ExcelServiceProvider::class,
-    FractalServiceProvider::class
+    FractalServiceProvider::class,
 ];

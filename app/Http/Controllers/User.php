@@ -13,19 +13,13 @@ use App\Services\DataTables\UserDataTable;
  */
 class User extends BaseController
 {
-
     /**
      * Action `index`.
      *
      * This action renders the user index page.
-     *
-     * @param  UserDataTable  $dataTable
-     *
-     * @return mixed
      */
     public function index(UserDataTable $dataTable): mixed
     {
         return $dataTable->render('user.index');
     }
-
 }

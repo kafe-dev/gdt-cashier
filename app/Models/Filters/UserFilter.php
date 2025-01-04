@@ -16,72 +16,74 @@ use Yajra\DataTables\EloquentDataTable;
  */
 class UserFilter
 {
-
     /**
      * Perform the model filter.
-     *
-     * @param  EloquentDataTable  $dataTable
-     *
-     * @return EloquentDataTable
      */
     public static function perform(EloquentDataTable $dataTable): EloquentDataTable
     {
         return $dataTable
             ->searchPane(
                 'username',
-                fn() => self::filterUsername(),
+                fn () => self::filterUsername(),
             )
             ->searchPane(
                 'email',
-                fn() => self::filterEmail(),
+                fn () => self::filterEmail(),
             )
             ->searchPane(
                 'role',
-                fn() => self::filterRole(),
+                fn () => self::filterRole(),
             )
             ->searchPane(
                 'registration_ip',
-                fn() => self::filterRegistrationIp(),
+                fn () => self::filterRegistrationIp(),
             )
             ->searchPane(
                 'status',
-                fn() => self::filterStatus(),
+                fn () => self::filterStatus(),
             )
             ->searchPane(
                 'last_login_at',
-                fn() => self::filterByLastLoginAt(),
+                fn () => self::filterByLastLoginAt(),
+            )
+            ->searchPane(
+                'blocked_at',
+                fn () => self::filterByBlockedAt(),
+            )
+            ->searchPane(
+                'created_at',
+                fn () => self::filterByCreatedAt(),
+            )
+            ->searchPane(
+                'updated_at',
+                fn () => self::filterByUpdatedAt(),
             );
     }
 
     /**
      * Filter users by username.
-     *
      */
     private static function filterUsername(): Collection
     {
         return User::query()
-                   ->select(DB::raw('`username` as value, `username` as label, COUNT(*) as total'))
-                   ->groupBy('username')
-                   ->get();
+            ->select(DB::raw('`username` as value, `username` as label, COUNT(*) as total'))
+            ->groupBy('username')
+            ->get();
     }
 
     /**
      * Filter users by email.
-     *
-     * @return Collection
      */
     private static function filterEmail(): Collection
     {
         return User::query()
-                   ->select(DB::raw('`email` as value, `email` as label, COUNT(*) as total'))
-                   ->groupBy('email')
-                   ->get();
+            ->select(DB::raw('`email` as value, `email` as label, COUNT(*) as total'))
+            ->groupBy('email')
+            ->get();
     }
 
     /**
      * Filter users by role.
-     *
-     * @return array
      */
     private static function filterRole(): array
     {
@@ -100,21 +102,17 @@ class UserFilter
 
     /**
      * Filter users by registration IP.
-     *
-     * @return Collection
      */
     private static function filterRegistrationIp(): Collection
     {
         return User::query()
-                   ->select(DB::raw('`registration_ip` as value, `registration_ip` as label, COUNT(*) as total'))
-                   ->groupBy('registration_ip')
-                   ->get();
+            ->select(DB::raw('`registration_ip` as value, `registration_ip` as label, COUNT(*) as total'))
+            ->groupBy('registration_ip')
+            ->get();
     }
 
     /**
      * Filter users by status.
-     *
-     * @return array
      */
     private static function filterStatus(): array
     {
@@ -133,14 +131,41 @@ class UserFilter
 
     /**
      * Filter users by last login at.
-     *
-     * @return Collection
      */
     private static function filterByLastLoginAt(): Collection
     {
         return User::query()
-                   ->select(DB::raw('`last_login_at` as value, `last_login_at` as label'))
-                   ->get();
+            ->select(DB::raw('`last_login_at` as value, `last_login_at` as label'))
+            ->get();
     }
 
+    /**
+     * Filter users by blocked at.
+     */
+    private static function filterByBlockedAt(): Collection
+    {
+        return User::query()
+            ->select(DB::raw('`blocked_at` as value, `blocked_at` as label'))
+            ->get();
+    }
+
+    /**
+     * Filter users by created at.
+     */
+    private static function filterByCreatedAt(): Collection
+    {
+        return User::query()
+            ->select(DB::raw('`created_at` as value, `created_at` as label'))
+            ->get();
+    }
+
+    /**
+     * Filter users by updated at.
+     */
+    private static function filterByUpdatedAt(): Collection
+    {
+        return User::query()
+            ->select(DB::raw('`updated_at` as value, `updated_at` as label'))
+            ->get();
+    }
 }

@@ -11,29 +11,27 @@ use Illuminate\Notifications\Notifiable;
 /**
  * User model.
  *
- * @property  int $id
- * @property  string $username
- * @property  string $email
- * @property  string $password
- * @property  int $role
- * @property  string $registration_ip
- * @property  string|null $remember_token
- * @property  int $status
- * @property  mixed $email_verified_at
- * @property  mixed $last_login_at
- * @property  mixed $blocked_at
- * @property  mixed $created_at
- * @property  mixed $updated_at
- * @property  string|null $strip_id
- * @property  string|null $pm_type
- * @property  string|null $pm_last_four
- * @property  int|null $trial_ends_at
+ * @property int $id
+ * @property string $username
+ * @property string $email
+ * @property string $password
+ * @property int $role
+ * @property string $registration_ip
+ * @property string|null $remember_token
+ * @property int $status
+ * @property mixed $email_verified_at
+ * @property mixed $last_login_at
+ * @property mixed $blocked_at
+ * @property mixed $created_at
+ * @property mixed $updated_at
+ * @property string|null $strip_id
+ * @property string|null $pm_type
+ * @property string|null $pm_last_four
+ * @property int|null $trial_ends_at
  */
 class User extends Authenticatable
 {
-
     use HasFactory;
-
     use Notifiable;
 
     public final const int ROLE_USER = 0;
@@ -41,7 +39,7 @@ class User extends Authenticatable
     public final const int ROLE_ADMIN = 1;
 
     public final const array ROLES = [
-        self::ROLE_USER  => 'User',
+        self::ROLE_USER => 'User',
         self::ROLE_ADMIN => 'Admin',
     ];
 
@@ -53,8 +51,8 @@ class User extends Authenticatable
 
     public final const array STATUSES = [
         self::STATUS_INACTIVE => 'Inactive',
-        self::STATUS_ACTIVE   => 'Active',
-        self::STATUS_BLOCKED  => 'Blocked',
+        self::STATUS_ACTIVE => 'Active',
+        self::STATUS_BLOCKED => 'Blocked',
     ];
 
     /**
@@ -96,10 +94,9 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
-            'last_login_at'     => 'datetime',
-            'blocked_at'        => 'datetime',
-            'password'          => 'hashed',
+            'last_login_at' => 'datetime',
+            'blocked_at' => 'datetime',
+            'password' => 'hashed',
         ];
     }
-
 }

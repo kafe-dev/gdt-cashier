@@ -6,10 +6,10 @@ namespace App\Services\DataTables;
 
 use App\Models\Filters\UserFilter;
 use App\Models\User;
+use App\Services\DataTables\Transformers\UserTransformer;
 use Illuminate\Database\Eloquent\Builder as QueryBuilder;
 use Yajra\DataTables\EloquentDataTable;
 use Yajra\DataTables\Html\Column;
-use App\Services\DataTables\Transformers\UserTransformer;
 
 /**
  * Class UserDataTable.
@@ -18,17 +18,14 @@ use App\Services\DataTables\Transformers\UserTransformer;
  */
 class UserDataTable extends BaseDataTable
 {
-
     protected string $tableId = 'users-table';
+
     protected string $exportFileName = 'Users_';
+
     protected bool $enableDateRange = true;
 
     /**
      * Return the query builder instance to be processed by DataTables.
-     *
-     * @param  User  $model
-     *
-     * @return QueryBuilder
      */
     public function query(User $model): QueryBuilder
     {
@@ -40,7 +37,7 @@ class UserDataTable extends BaseDataTable
      */
     public function dataTable(): EloquentDataTable
     {
-        $dataTable = (new EloquentDataTable(new User()))
+        $dataTable = (new EloquentDataTable(new User))
             ->setTransformer(UserTransformer::class)
             ->setRowId('id')
             ->escapeColumns(['username', 'email'])
@@ -56,16 +53,15 @@ class UserDataTable extends BaseDataTable
     {
         return [
             Column::make('id'),
-            Column::make('username')->searchPanes()->addClass('x-searchable'),
-            Column::make('email')->searchPanes()->addClass('x-searchable'),
-            Column::make('role')->searchPanes()->addClass('x-searchable'),
-            Column::make('registration_ip')->searchPanes()->addClass('x-searchable'),
+            Column::make('username')->searchPanes(),
+            Column::make('email')->searchPanes(),
+            Column::make('role')->searchPanes(),
+            Column::make('registration_ip'),
             Column::make('status')->searchPanes(),
-            Column::make('last_login_at'),
-            Column::make('blocked_at'),
-            Column::make('created_at'),
-            Column::make('updated_at'),
+            Column::make('last_login_at')->searchPanes(),
+            Column::make('blocked_at')->searchPanes(),
+            Column::make('created_at')->searchPanes(),
+            Column::make('updated_at')->searchPanes(),
         ];
     }
-
 }

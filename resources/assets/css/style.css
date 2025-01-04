@@ -34,3 +34,7 @@
     text-align: center;
     width: 300px;
 }
+
+.dt-type-date {
+    text-align: left !important;
+}
