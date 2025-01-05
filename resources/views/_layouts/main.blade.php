@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="{{ asset('theme/plugins/jvectormap/jquery-jvectormap-2.0.2.css') }}">
     <link rel="stylesheet" href="{{ asset('theme/assets/css/metisMenu.min.css') }}">
     <link rel="stylesheet" href="{{ asset('theme/plugins/daterangepicker/daterangepicker.css') }}">
+    <link rel="stylesheet" href="{{ asset('theme/assets/css/main-style.css') }}">
 
     @stack('custom-styles')
 @endpush
@@ -38,6 +39,7 @@
     <script src="{{ asset('theme/plugins/jvectormap/jquery-jvectormap-2.0.2.min.js') }}"></script>
     <script src="{{ asset('theme/plugins/jvectormap/jquery-jvectormap-us-aea-en.js') }}"></script>
     <script src="{{ asset('theme/assets/js/app.js') }}"></script>
+    <script src="{{ asset('theme/assets/js/main-script.js') }}" defer></script>
 
     @stack('custom-scripts')
 @endpush

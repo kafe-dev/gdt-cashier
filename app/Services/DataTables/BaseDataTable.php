@@ -16,20 +16,21 @@ use Yajra\DataTables\Services\DataTable;
  */
 abstract class BaseDataTable extends DataTable
 {
+
     /**
      * @var string Table ID
      */
     protected string $tableId;
 
     /**
+     * @var string Url to the create page
+     */
+    protected string $createUrl;
+
+    /**
      * @var string Export file name
      */
     protected string $exportFileName;
-
-    /**
-     * @var bool Trigger to enable date range filter
-     */
-    protected bool $enableDateRange = false;
 
     /**
      * DataTable handler.
@@ -47,57 +48,68 @@ abstract class BaseDataTable extends DataTable
     public function html(): HtmlBuilder
     {
         return $this->builder()
-            ->setTableId($this->tableId)
-            ->setTableHeadClass('x-searchable-wrapper')
-            ->columns($this->getColumns())
-            ->scrollX()
-            ->scrollY()
-            ->responsive()
-            ->fixedHeader()
-            ->fixedColumns(['start' => 1, 'end' => 1])
-            ->scrollCollapse(true)
-            ->minifiedAjax()
-            ->orderBy(0)
-            ->selectStyleSingle()
-            ->addAction()
-            ->parameters([
-                'layout' => [
-                    'topStart' => [
-                        'buttons' => [
-                            'add', 'excel', 'csv', 'pdf', 'reset',
-                            [
-                                'extend' => 'searchPanes',
-                                'cascadePanes' => true,
-                                'attr' => [
-                                    'id' => 'filter-btn',
-                                ],
-                                'config' => [
-                                    'responsive' => true,
-                                    'layouts' => [
-                                        'columns-sm-1', 'columns-md-2', 'columns-3',
+                    ->setTableId($this->tableId)
+                    ->setTableHeadClass('x-searchable-wrapper')
+                    ->columns($this->getColumns())
+                    ->scrollX()
+                    ->scrollY()
+                    ->responsive()
+                    ->fixedHeader()
+                    ->fixedColumns(['start' => 1, 'end' => 1])
+                    ->scrollCollapse(true)
+                    ->minifiedAjax()
+                    ->orderBy(0)
+                    ->selectStyleSingle()
+                    ->addAction()
+                    ->parameters([
+                        'layout'       => [
+                            'topStart'    => [
+                                'buttons' => [
+                                    [
+                                        'text'      => '<i class="fa fa-plus"></i> New ',
+                                        'className' => 'btn btn-success',
+                                        'init'      => "function (dt, node, config) {
+                                    $(node).click(() => {
+                                        window.location.href = '".route($this->createUrl)."';
+                                    });
+                                }",
                                     ],
-                                    'initCollapsed' => true,
-                                    'select' => [
-                                        'style' => 'multi',
+                                    'excel', 'csv', 'pdf', 'reset',
+                                    [
+                                        'extend'       => 'searchPanes',
+                                        'cascadePanes' => true,
+                                        'attr'         => [
+                                            'id' => 'filter-btn',
+                                        ],
+                                        'config'       => [
+                                            'responsive'    => true,
+                                            'layouts'       => [
+                                                'columns-sm-1', 'columns-md-2', 'columns-3',
+                                            ],
+                                            'initCollapsed' => true,
+                                            'select'        => [
+                                                'style' => 'multi',
+                                            ],
+                                        ],
                                     ],
                                 ],
                             ],
+                            'topEnd'      => 'search',
+                            'bottomStart' => 'pageLength',
+                            'bottomEnd'   => ['info', 'paging'],
                         ],
-                    ],
-                    'topEnd' => 'search',
-                    'bottomStart' => 'pageLength',
-                    'bottomEnd' => ['info', 'paging'],
-                ],
-                'language' => [
-                    'searchPanes' => [
-                        'collapse' => [
-                            0 => '<i class="fas fa-filter"></i> Filters',
-                            '_' => '<i class="fas fa-filter"></i> Filters (%d)',
+                        'language'     => [
+                            'searchPanes' => [
+                                'collapse' => [
+                                    0   => '<i class="fas fa-filter"></i> Filters',
+                                    '_' => '<i class="fas fa-filter"></i> Filters (%d)',
+                                ],
+                            ],
+                            'search'      => 'Search All:',
                         ],
-                    ],
-                    'search' => 'Search All:',
-                ],
-                'initComplete' => "function () {
+                        'initComplete' => "function () {
+                            timeConverter();
+
                             this.api().columns().every(function () {
                                 let column = this;
                                 let header = column.header();
@@ -169,9 +181,8 @@ abstract class BaseDataTable extends DataTable
                                     }
                                 });
                             });
-
-                }",
-            ]);
+                        }",
+                    ]);
     }
 
     /**
@@ -181,4 +192,5 @@ abstract class BaseDataTable extends DataTable
     {
         return $this->exportFileName.date('YmdHis');
     }
+
 }

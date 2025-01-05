@@ -8,8 +8,4 @@ Breadcrumbs::for('dashboard', function (BreadcrumbTrail $trail) {
     $trail->push('Dashboard', route('app.home.index'));
 });
 
-// Dashboard > Manage Users
-Breadcrumbs::for('manage-user', function (BreadcrumbTrail $trail) {
-    $trail->parent('dashboard');
-    $trail->push('Manage User', route('app.user.index'));
-});
+require_once __DIR__.'/app/breadcrumbs/user.breadcrumbs.php';

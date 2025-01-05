@@ -18,11 +18,21 @@ use Yajra\DataTables\Html\Column;
  */
 class UserDataTable extends BaseDataTable
 {
+
+    /**
+     * {@inheritdoc}
+     */
     protected string $tableId = 'users-table';
 
-    protected string $exportFileName = 'Users_';
+    /**
+     * {@inheritdoc}
+     */
+    protected string $createUrl = 'app.user.create';
 
-    protected bool $enableDateRange = true;
+    /**
+     * {@inheritdoc}
+     */
+    protected string $exportFileName = 'Users_';
 
     /**
      * Return the query builder instance to be processed by DataTables.
@@ -37,7 +47,7 @@ class UserDataTable extends BaseDataTable
      */
     public function dataTable(): EloquentDataTable
     {
-        $dataTable = (new EloquentDataTable(new User))
+        $dataTable = (new EloquentDataTable(new User()))
             ->setTransformer(UserTransformer::class)
             ->setRowId('id')
             ->escapeColumns(['username', 'email'])
@@ -64,4 +74,5 @@ class UserDataTable extends BaseDataTable
             Column::make('updated_at')->searchPanes()->addClass('x-has-date-filter')->orderable(false),
         ];
     }
+
 }

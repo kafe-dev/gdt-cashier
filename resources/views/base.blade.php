@@ -15,11 +15,11 @@
     <link rel="stylesheet" href="{{ asset('theme/assets/css/icons.min.css') }}">
     <link rel="stylesheet" href="{{ asset('theme/assets/css/app.min.css') }}">
 
-    @stack('stylesheets')
-
     @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
         @vite('resources/mappers/app.js')
     @endif
+
+    @stack('stylesheets')
 </head>
 <body class="@stack('body-class')">
 
