@@ -92,7 +92,7 @@ class UserFilter
         foreach (User::ROLES as $key => $value) {
             $data['value'] = $key;
             $data['label'] = $value;
-            $data['total'] = User::where('role', $key)->count();
+            $data['total'] = User::query()->where('role', $key)->count();
 
             $collection[] = $data;
         }
@@ -121,7 +121,7 @@ class UserFilter
         foreach (User::STATUSES as $key => $value) {
             $data['value'] = $key;
             $data['label'] = $value;
-            $data['total'] = User::where('status', $key)->count();
+            $data['total'] = User::query()->where('status', $key)->count();
 
             $collection[] = $data;
         }

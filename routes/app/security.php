@@ -8,4 +8,7 @@ Route::controller(Security::class)
     ->name('app.security.')
     ->group(function () {
         Route::get('/login', 'login')->name('login');
+
+        Route::post('/login', 'login')->name('login');
+        Route::post('/logout', 'logout')->name('logout');
     });

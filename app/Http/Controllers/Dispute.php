@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 /**
@@ -14,17 +15,18 @@ use Illuminate\View\View;
  */
 class Dispute extends BaseController
 {
-
     /**
      * Action `index`.
      */
-    public function index(): View
+    public function index()
     {
         return view('store.index');
     }
 
     /**
      * Action `show`.
+     *
+     * @param  int|string  $id  Dispute ID to show
      */
     public function show(int|string $id): View
     {
@@ -32,11 +34,13 @@ class Dispute extends BaseController
     }
 
     /**
-     * Action `update`.
+     * Action `delete`.
+     *
+     * @param  int|string  $id  Dispute ID to delete
+     * @param  Request  $request  Illuminate request object
      */
-    public function delete(int|string $id): RedirectResponse
+    public function delete(int|string $id, Request $request): RedirectResponse
     {
         //
     }
-
 }

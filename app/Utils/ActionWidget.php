@@ -15,6 +15,10 @@ class ActionWidget
 {
     /**
      * Render the show button view.
+     *
+     * @param  string  $route  Route to the resource show action
+     * @param  string  $html  HTML content for the button
+     * @param  string  $classes  CSS classes for the button
      */
     public static function renderShowBtn(
         string $route,
@@ -30,6 +34,10 @@ class ActionWidget
 
     /**
      * Render the edit button view.
+     *
+     * @param  string  $route  Route to the resource update action
+     * @param  string  $html  HTML content for the button
+     * @param  string  $classes  CSS classes for the button
      */
     public static function renderUpdateBtn(
         string $route,
@@ -45,6 +53,11 @@ class ActionWidget
 
     /**
      * Render the delete button view.
+     *
+     * @param  int|string  $id  ID of the resource to delete
+     * @param  string  $route  Route to the resource delete action
+     * @param  string  $html  HTML content for the button
+     * @param  string  $classes  CSS classes for the button
      */
     public static function renderDeleteBtn(
         int|string $id,
@@ -62,6 +75,9 @@ class ActionWidget
 
     /**
      * Render the go back button view.
+     *
+     * @param  string  $html  HTML content for the button
+     * @param  string  $classes  CSS classes for the button
      */
     public static function renderGoBackBtn(
         string $html = '<i class="fa fa-arrow-left"></i>',

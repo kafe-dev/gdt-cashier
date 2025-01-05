@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Utils;
 
 use Illuminate\View\View;
+use ReflectionClass;
+use ReflectionException;
 
 /**
  * Class NotificationWidget.
@@ -13,13 +15,27 @@ use Illuminate\View\View;
  */
 class NotificationWidget
 {
-
     /**
      * Renders the notification widget.
+     *
+     * @param  string  $class  Fully qualified class name of the model
+     * @param  string  $attribute  Name of the attribute to filter on
+     * @param  string  $value  Value to filter on
+     *
+     * @throws ReflectionException
      */
-    public static function render(): View
+    public static function render(string $class, string $attribute, string $value): View
     {
-        return view('_widgets.notification', ['total' => 4]);
-    }
+        $model = (new ReflectionClass($class))->newInstance();
 
+        $total = $model->where($attribute, $value)->count();
+
+        if ($total > 0) {
+            $style = 'display: block;';
+        } else {
+            $style = 'display: none;';
+        }
+
+        return view('_widgets.notification', ['total' => $total, 'style' => $style]);
+    }
 }

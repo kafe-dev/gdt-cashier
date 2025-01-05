@@ -33,21 +33,18 @@
                 <a class="nav-link" href="{{ route('app.dispute.index') }}">
                     <i data-feather="trending-down" class="align-self-center menu-icon"></i>
                     <span>Dispute</span>
-                    {{ \App\Utils\NotificationWidget::render() }}
                 </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="{{ route('app.tracking.index') }}">
                     <i data-feather="truck" class="align-self-center menu-icon"></i>
                     <span>Delivery Tracking</span>
-                    {{ \App\Utils\NotificationWidget::render() }}
                 </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="{{ route('app.mail-box.index') }}">
                     <i data-feather="mail" class="align-self-center menu-icon"></i>
                     <span>Mail Box</span>
-                    {{ \App\Utils\NotificationWidget::render() }}
                 </a>
             </li>
 

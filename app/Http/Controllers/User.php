@@ -34,16 +34,16 @@ class User extends BaseController
 
     /**
      * Action `index`.
-     *
-     * This action renders the user index page.
      */
-    public function index(UserDataTable $dataTable): mixed
+    public function index(UserDataTable $dataTable)
     {
         return $dataTable->render('user.index');
     }
 
     /**
      * Action `show`.
+     *
+     * @param  int|string  $id  User ID
      */
     public function show(int|string $id): View
     {
@@ -54,16 +54,21 @@ class User extends BaseController
 
     /**
      * Action `create`.
+     *
+     * @param  Request  $request  Illuminate request object
      */
-    public function create(): View
+    public function create(Request $request): View|RedirectResponse
     {
         return view('user.create');
     }
 
     /**
      * Action `update`.
+     *
+     * @param  int|string  $id  User ID
+     * @param  Request  $request  Illuminate request object
      */
-    public function update(int|string $id): View
+    public function update(int|string $id, Request $request): View|RedirectResponse
     {
         return view('user.update', [
             'user' => $this->getUser($id),
@@ -72,6 +77,9 @@ class User extends BaseController
 
     /**
      * Action `delete`.
+     *
+     * @param  int|string  $id  User ID
+     * @param  Request  $request  Illuminate request object
      */
     public function delete(int|string $id, Request $request): RedirectResponse
     {
@@ -88,6 +96,8 @@ class User extends BaseController
 
     /**
      * Returns the specific user based on the given ID.
+     *
+     * @param  int|string  $id  User ID
      */
     private function getUser(int|string $id): UserModel
     {

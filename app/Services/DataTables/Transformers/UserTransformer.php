@@ -21,14 +21,14 @@ class UserTransformer extends TransformerAbstract
     public function transform(User $user): array
     {
         $role = match ($user->role) {
-            $user::ROLE_USER => '<span class="badge badge-soft-secondary">'.$user::ROLES[$user->role].'</span>',
-            default => '<span class="badge badge-soft-primary">'.$user::ROLES[$user->role].'</span>',
+            User::ROLE_USER => '<span class="badge badge-soft-secondary">'.User::ROLES[$user->role].'</span>',
+            default => '<span class="badge badge-soft-primary">'.User::ROLES[$user->role].'</span>',
         };
 
         $status = match ($user->status) {
-            $user::STATUS_INACTIVE => '<span class="badge badge-soft-secondary">'.$user::STATUSES[$user->status].'</span>',
-            $user::STATUS_BLOCKED => '<span class="badge badge-soft-danger">'.$user::STATUSES[$user->status].'</span>',
-            default => '<span class="badge badge-soft-success">'.$user::STATUSES[$user->status].'</span>',
+            User::STATUS_INACTIVE => '<span class="badge badge-soft-secondary">'.User::STATUSES[$user->status].'</span>',
+            User::STATUS_BLOCKED => '<span class="badge badge-soft-danger">'.User::STATUSES[$user->status].'</span>',
+            default => '<span class="badge badge-soft-success">'.User::STATUSES[$user->status].'</span>',
         };
 
         return [
@@ -52,8 +52,8 @@ class UserTransformer extends TransformerAbstract
     private function renderActions(User $user): string
     {
         $modify = match ($user->status) {
-            $user::STATUS_ACTIVE => '<a href="#" class="btn btn-sm btn-secondary" title="Ban"><i class="fa fa-ban"></i></a>',
-            $user::STATUS_INACTIVE, $user::STATUS_BLOCKED => '<a href="#" class="btn btn-sm btn-success" title="Active"><i class="fa fa-check"></i></a>',
+            User::STATUS_ACTIVE => '<a href="#" class="btn btn-sm btn-secondary" title="Ban"><i class="fa fa-ban"></i></a>',
+            User::STATUS_INACTIVE, User::STATUS_BLOCKED => '<a href="#" class="btn btn-sm btn-success" title="Active"><i class="fa fa-check"></i></a>',
         };
 
         return '

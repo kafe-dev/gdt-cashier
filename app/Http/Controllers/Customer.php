@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 /**
@@ -14,17 +15,18 @@ use Illuminate\View\View;
  */
 class Customer extends BaseController
 {
-
     /**
      * Action `index`.
      */
-    public function index(): View
+    public function index()
     {
         return view('customer.index');
     }
 
     /**
      * Action `show`.
+     *
+     * @param  int|string  $id  Customer ID to show the detail
      */
     public function show(int|string $id): View
     {
@@ -33,26 +35,33 @@ class Customer extends BaseController
 
     /**
      * Action `create`.
+     *
+     * @param  Request  $request  Illuminate Request object
      */
-    public function create(): View
+    public function create(Request $request): View|RedirectResponse
     {
         return view('customer.create');
     }
 
     /**
      * Action `update`.
+     *
+     * @param  int|string  $id  Customer ID to update
+     * @param  Request  $request  Illuminate Request object
      */
-    public function update(int|string $id): View
+    public function update(int|string $id, Request $request): View|RedirectResponse
     {
         return view('customer.update');
     }
 
     /**
-     * Action `update`.
+     * Action `delete`.
+     *
+     * @param  int|string  $id  Customer ID to delete
+     * @param  Request  $request  Illuminate Request object
      */
-    public function delete(int|string $id): RedirectResponse
+    public function delete(int|string $id, Request $request): RedirectResponse
     {
         //
     }
-
 }
