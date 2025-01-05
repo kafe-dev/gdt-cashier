@@ -4,7 +4,7 @@
             <span>
                 <img src="{{ Vite::asset('resources/assets/images/logo.png') }}" alt="logo-small" class="logo-dark mb-3" height="30xp">
             </span>
-            <span class="text-uppercase font-22 fw-bold text-blue-2">{{ config('app.name') }}</span>
+            <span class="text-uppercase font-22 fw-bold text-info">{{ config('app.name') }}</span>
         </a>
     </div>
 
@@ -17,17 +17,33 @@
 
             <hr class="hr-dashed hr-menu">
             <li class="menu-label my-2">Management</li>
-            <li class="nav-item">
-                <a class="nav-link" href="{{ route('app.user.index') }}"><i data-feather="user" class="align-self-center menu-icon"></i><span>User Account</span></a>
+            <li>
+                <a class="nav-link" href="javascript: void(0);"><i data-feather="user" class="align-self-center menu-icon"></i><span>User Account</span></a>
+                <ul class="nav-second-level mm-collapse" aria-expanded="false">
+                    <li class="nav-item"><a class="nav-link" href="{{ route('app.user.index') }}"><i class="ti-control-record"></i>Manage User</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ route('app.user.create') }}"><i class="ti-control-record"></i>Add New User</a></li>
+                </ul>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{{ route('app.paygate.index') }}"><i data-feather="credit-card" class="align-self-center menu-icon"></i><span>Paygate</span></a>
+            <li>
+                <a class="nav-link" href="javascript: void(0);"><i data-feather="user" class="align-self-center menu-icon"></i><span>Paygate</span></a>
+                <ul class="nav-second-level mm-collapse" aria-expanded="false">
+                    <li class="nav-item"><a class="nav-link" href="{{ route('app.paygate.index') }}"><i class="ti-control-record"></i>Manage Paygate</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ route('app.paygate.create') }}"><i class="ti-control-record"></i>Add New Paygate</a></li>
+                </ul>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{{ route('app.store.index') }}"><i data-feather="layout" class="align-self-center menu-icon"></i><span>Store</span></a>
+            <li>
+                <a class="nav-link" href="javascript: void(0);"><i data-feather="user" class="align-self-center menu-icon"></i><span>Online Store</span></a>
+                <ul class="nav-second-level mm-collapse" aria-expanded="false">
+                    <li class="nav-item"><a class="nav-link" href="{{ route('app.store.index') }}"><i class="ti-control-record"></i>Manage Store</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ route('app.store.create') }}"><i class="ti-control-record"></i>Add New Store</a></li>
+                </ul>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{{ route('app.customer.index') }}"><i data-feather="users" class="align-self-center menu-icon"></i><span>Customer</span></a>
+            <li>
+                <a class="nav-link" href="javascript: void(0);"><i data-feather="user" class="align-self-center menu-icon"></i><span>Seller</span></a>
+                <ul class="nav-second-level mm-collapse" aria-expanded="false">
+                    <li class="nav-item"><a class="nav-link" href="{{ route('app.customer.index') }}"><i class="ti-control-record"></i>Manage Seller</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ route('app.customer.create') }}"><i class="ti-control-record"></i>Add New Seller</a></li>
+                </ul>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="{{ route('app.dispute.index') }}">
@@ -54,6 +70,17 @@
                 <a href="{{ route('app.help-center.faq') }}"><i data-feather="help-circle" class="align-self-center menu-icon"></i><span>FAQ</span></a>
                 <a href="mailto:m397.dev@gmail.com"><i data-feather="alert-triangle" class="align-self-center menu-icon"></i><span>Bug Report</span></a>
             </li>
+
+            <hr class="hr-dashed hr-menu">
+            <li class="menu-label my-2">Tuan Minh (Admin)</li>
+            <li>
+                <a href="#"><i data-feather="user" class="align-self-center menu-icon"></i><span>Profile</span></a>
+                <a href="#"><i data-feather="key" class="align-self-center menu-icon"></i><span>Change Password</span></a>
+                <a href="#"><i data-feather="power" class="align-self-center menu-icon"></i><span>Logout</span></a>
+            </li>
+
+            <hr class="hr-dashed hr-menu">
+            <li class="menu-label my-2">Version {{ config('app.version') }}</li>
         </ul>
     </div>
 </div>
