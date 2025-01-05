@@ -52,16 +52,16 @@ class UserDataTable extends BaseDataTable
     public function getColumns(): array
     {
         return [
-            Column::make('id'),
-            Column::make('username')->searchPanes(),
-            Column::make('email')->searchPanes(),
-            Column::make('role')->searchPanes(),
-            Column::make('registration_ip'),
+            Column::make(['data' => 'id', 'title' => 'ID'])->addClass('x-id'),
+            Column::make('username')->searchPanes()->addClass('x-searchable'),
+            Column::make('email')->searchPanes()->addClass('x-searchable'),
+            Column::make('role')->searchPanes()->addClass('x-searchable'),
+            Column::make('registration_ip')->addClass('x-searchable'),
             Column::make('status')->searchPanes(),
-            Column::make('last_login_at')->searchPanes(),
-            Column::make('blocked_at')->searchPanes(),
-            Column::make('created_at')->searchPanes(),
-            Column::make('updated_at')->searchPanes(),
+            Column::make('last_login_at')->searchPanes()->addClass('x-has-date-filter')->orderable(false),
+            Column::make('blocked_at')->searchPanes()->addClass('x-has-date-filter')->orderable(false),
+            Column::make('created_at')->searchPanes()->addClass('x-has-date-filter')->orderable(false),
+            Column::make('updated_at')->searchPanes()->addClass('x-has-date-filter')->orderable(false),
         ];
     }
 }

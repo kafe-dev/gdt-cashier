@@ -31,7 +31,7 @@ class UserTransformer extends TransformerAbstract
         };
 
         return [
-            'id' => $user->id,
+            'id' => '<span class="fw-bold float-start">'.$user->id.'</span>',
             'username' => $user->username,
             'email' => '<a class="text-primary" href="mailto:'.$user->email.'">'.$user->email.'</a>',
             'role' => $role,

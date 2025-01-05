@@ -12,8 +12,7 @@
     <div class="col-auto align-self-center">
         <div class="row">
             <div class="input-group">
-                <input type="button" class="form-control btn btn-outline-primary rounded" style="margin-right: 1rem !important;" name="db_filter" value="1/1/2025 - {{ date('d/m/Y') }}"
-                       title="Filter by date-range">
+                <span type="button" class="btn btn-outline-primary rounded" style="margin-right: 1rem !important;" id="db_date_filter"></span>
 
                 <a href="#" class="btn btn-sm btn-outline-primary rounded" title="Download report">
                     <i data-feather="download" class="align-self-center icon-xs"></i>
@@ -282,6 +281,22 @@
     <script src="{{ asset('theme/assets/pages/jquery.sales_dashboard.init.js') }}"></script>
 
     <script>
-        $('input[name="db_filter"]').daterangepicker();
+        $(document).ready(() => {
+            let dateFilter = $('#db_date_filter');
+            let startDate = moment().subtract(1, 'M');
+            let endDate = moment();
+
+            dateFilter.html(moment(startDate).format('YYYY-MM-DD') + ' - ' + moment(endDate).format('YYYY-MM-DD'));
+
+            dateFilter.daterangepicker({
+                startDate: startDate,
+                endDate: endDate,
+                locale: {
+                    format: 'YYYY-MM-DD',
+                },
+            }, (startDate, endDate) => {
+                dateFilter.html(moment(startDate).format('YYYY-MM-DD') + ' - ' + moment(endDate).format('YYYY-MM-DD'));
+            });
+        });
     </script>
 @endpush

@@ -25,9 +25,13 @@
     border-color: rgba(23, 97, 253, 0.75);
 }
 
+.x-id {
+    text-align: left !important;
+}
+
 /** DateRangePicker */
 .date-range-filter {
-    background-color: #fff;
+    background-color: #458cc4;
     cursor: pointer;
     padding: 5px 10px;
     border: 1px solid #ccc;
