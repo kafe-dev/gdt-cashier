@@ -18,7 +18,6 @@ use Yajra\DataTables\Html\Column;
  */
 class UserDataTable extends BaseDataTable
 {
-
     /**
      * {@inheritdoc}
      */
@@ -47,7 +46,7 @@ class UserDataTable extends BaseDataTable
      */
     public function dataTable(): EloquentDataTable
     {
-        $dataTable = (new EloquentDataTable(new User()))
+        $dataTable = (new EloquentDataTable(new User))
             ->setTransformer(UserTransformer::class)
             ->setRowId('id')
             ->escapeColumns(['username', 'email'])
@@ -74,5 +73,4 @@ class UserDataTable extends BaseDataTable
             Column::make('updated_at')->searchPanes()->addClass('x-has-date-filter')->orderable(false),
         ];
     }
-
 }

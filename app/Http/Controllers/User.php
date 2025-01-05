@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Models\User as UserModel;
 use App\Services\DataTables\UserDataTable;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
-use App\Models\User as UserModel;
 
 /**
  * Class User.
@@ -17,16 +17,13 @@ use App\Models\User as UserModel;
  */
 class User extends BaseController
 {
-
     /**
-     * @var UserModel $userModel Instance of the User model
+     * @var UserModel Instance of the User model
      */
     private UserModel $userModel;
 
     /**
      * Construct a new User controller instance.
-     *
-     * @param  UserModel  $userModel
      */
     public function __construct(UserModel $userModel)
     {
@@ -47,10 +44,6 @@ class User extends BaseController
 
     /**
      * Action `show`.
-     *
-     * @param  int|string  $id
-     *
-     * @return View
      */
     public function show(int|string $id): View
     {
@@ -61,8 +54,6 @@ class User extends BaseController
 
     /**
      * Action `create`.
-     *
-     * @return View
      */
     public function create(): View
     {
@@ -71,10 +62,6 @@ class User extends BaseController
 
     /**
      * Action `update`.
-     *
-     * @param  int|string  $id
-     *
-     * @return View
      */
     public function update(int|string $id): View
     {
@@ -85,11 +72,6 @@ class User extends BaseController
 
     /**
      * Action `delete`.
-     *
-     * @param  int|string  $id
-     * @param  \Illuminate\Http\Request  $request
-     *
-     * @return RedirectResponse
      */
     public function delete(int|string $id, Request $request): RedirectResponse
     {
@@ -106,14 +88,9 @@ class User extends BaseController
 
     /**
      * Returns the specific user based on the given ID.
-     *
-     * @param  int|string  $id
-     *
-     * @return UserModel
      */
     private function getUser(int|string $id): UserModel
     {
         return $this->userModel->query()->findOrFail($id);
     }
-
 }

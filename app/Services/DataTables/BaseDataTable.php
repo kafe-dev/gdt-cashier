@@ -16,7 +16,6 @@ use Yajra\DataTables\Services\DataTable;
  */
 abstract class BaseDataTable extends DataTable
 {
-
     /**
      * @var string Table ID
      */
@@ -48,66 +47,66 @@ abstract class BaseDataTable extends DataTable
     public function html(): HtmlBuilder
     {
         return $this->builder()
-                    ->setTableId($this->tableId)
-                    ->setTableHeadClass('x-searchable-wrapper')
-                    ->columns($this->getColumns())
-                    ->scrollX()
-                    ->scrollY()
-                    ->responsive()
-                    ->fixedHeader()
-                    ->fixedColumns(['start' => 1, 'end' => 1])
-                    ->scrollCollapse(true)
-                    ->minifiedAjax()
-                    ->orderBy(0)
-                    ->selectStyleSingle()
-                    ->addAction()
-                    ->parameters([
-                        'layout'       => [
-                            'topStart'    => [
-                                'buttons' => [
-                                    [
-                                        'text'      => '<i class="fa fa-plus"></i> New ',
-                                        'className' => 'btn btn-success',
-                                        'init'      => "function (dt, node, config) {
+            ->setTableId($this->tableId)
+            ->setTableHeadClass('x-searchable-wrapper')
+            ->columns($this->getColumns())
+            ->scrollX()
+            ->scrollY()
+            ->responsive()
+            ->fixedHeader()
+            ->fixedColumns(['start' => 1, 'end' => 1])
+            ->scrollCollapse(true)
+            ->minifiedAjax()
+            ->orderBy(0)
+            ->selectStyleSingle()
+            ->addAction()
+            ->parameters([
+                'layout' => [
+                    'topStart' => [
+                        'buttons' => [
+                            [
+                                'text' => '<i class="fa fa-plus"></i> New ',
+                                'className' => 'btn btn-success',
+                                'init' => "function (dt, node, config) {
                                     $(node).click(() => {
                                         window.location.href = '".route($this->createUrl)."';
                                     });
                                 }",
+                            ],
+                            'excel', 'csv', 'pdf', 'reset',
+                            [
+                                'extend' => 'searchPanes',
+                                'cascadePanes' => true,
+                                'attr' => [
+                                    'id' => 'filter-btn',
+                                ],
+                                'config' => [
+                                    'responsive' => true,
+                                    'layouts' => [
+                                        'columns-sm-1', 'columns-md-2', 'columns-3',
                                     ],
-                                    'excel', 'csv', 'pdf', 'reset',
-                                    [
-                                        'extend'       => 'searchPanes',
-                                        'cascadePanes' => true,
-                                        'attr'         => [
-                                            'id' => 'filter-btn',
-                                        ],
-                                        'config'       => [
-                                            'responsive'    => true,
-                                            'layouts'       => [
-                                                'columns-sm-1', 'columns-md-2', 'columns-3',
-                                            ],
-                                            'initCollapsed' => true,
-                                            'select'        => [
-                                                'style' => 'multi',
-                                            ],
-                                        ],
+                                    'initCollapsed' => true,
+                                    'select' => [
+                                        'style' => 'multi',
                                     ],
                                 ],
                             ],
-                            'topEnd'      => 'search',
-                            'bottomStart' => 'pageLength',
-                            'bottomEnd'   => ['info', 'paging'],
                         ],
-                        'language'     => [
-                            'searchPanes' => [
-                                'collapse' => [
-                                    0   => '<i class="fas fa-filter"></i> Filters',
-                                    '_' => '<i class="fas fa-filter"></i> Filters (%d)',
-                                ],
-                            ],
-                            'search'      => 'Search All:',
+                    ],
+                    'topEnd' => 'search',
+                    'bottomStart' => 'pageLength',
+                    'bottomEnd' => ['info', 'paging'],
+                ],
+                'language' => [
+                    'searchPanes' => [
+                        'collapse' => [
+                            0 => '<i class="fas fa-filter"></i> Filters',
+                            '_' => '<i class="fas fa-filter"></i> Filters (%d)',
                         ],
-                        'initComplete' => "function () {
+                    ],
+                    'search' => 'Search All:',
+                ],
+                'initComplete' => "function () {
                             timeConverter();
 
                             this.api().columns().every(function () {
@@ -182,7 +181,7 @@ abstract class BaseDataTable extends DataTable
                                 });
                             });
                         }",
-                    ]);
+            ]);
     }
 
     /**
@@ -192,5 +191,4 @@ abstract class BaseDataTable extends DataTable
     {
         return $this->exportFileName.date('YmdHis');
     }
-
 }

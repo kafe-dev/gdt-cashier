@@ -31,7 +31,6 @@ use Illuminate\Notifications\Notifiable;
  */
 class User extends Authenticatable
 {
-
     use HasFactory;
     use Notifiable;
 
@@ -40,7 +39,7 @@ class User extends Authenticatable
     public final const int ROLE_ADMIN = 1;
 
     public final const array ROLES = [
-        self::ROLE_USER  => 'User',
+        self::ROLE_USER => 'User',
         self::ROLE_ADMIN => 'Admin',
     ];
 
@@ -52,8 +51,8 @@ class User extends Authenticatable
 
     public final const array STATUSES = [
         self::STATUS_INACTIVE => 'Inactive',
-        self::STATUS_ACTIVE   => 'Active',
-        self::STATUS_BLOCKED  => 'Blocked',
+        self::STATUS_ACTIVE => 'Active',
+        self::STATUS_BLOCKED => 'Blocked',
     ];
 
     /**
@@ -95,12 +94,11 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
-            'last_login_at'     => 'datetime',
-            'blocked_at'        => 'datetime',
-            'created_at'        => 'datetime',
-            'updated_at'        => 'datetime',
-            'password'          => 'hashed',
+            'last_login_at' => 'datetime',
+            'blocked_at' => 'datetime',
+            'created_at' => 'datetime',
+            'updated_at' => 'datetime',
+            'password' => 'hashed',
         ];
     }
-
 }

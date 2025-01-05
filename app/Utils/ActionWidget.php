@@ -13,15 +13,8 @@ use Illuminate\View\View;
  */
 class ActionWidget
 {
-
     /**
      * Render the show button view.
-     *
-     * @param  string  $route
-     * @param  string  $html
-     * @param  string  $classes
-     *
-     * @return View
      */
     public static function renderShowBtn(
         string $route,
@@ -29,20 +22,14 @@ class ActionWidget
         string $classes = 'btn btn-sm btn-info'
     ): View {
         return view('_widgets.actions.showBtn', [
-            'route'   => $route,
-            'html'    => $html,
+            'route' => $route,
+            'html' => $html,
             'classes' => $classes,
         ]);
     }
 
     /**
      * Render the edit button view.
-     *
-     * @param  string  $route
-     * @param  string  $html
-     * @param  string  $classes
-     *
-     * @return View
      */
     public static function renderUpdateBtn(
         string $route,
@@ -50,21 +37,14 @@ class ActionWidget
         string $classes = 'btn btn-sm btn-warning text-white'
     ): View {
         return view('_widgets.actions.updateBtn', [
-            'route'   => $route,
-            'html'    => $html,
+            'route' => $route,
+            'html' => $html,
             'classes' => $classes,
         ]);
     }
 
     /**
      * Render the delete button view.
-     *
-     * @param  int|string  $id
-     * @param  string  $route
-     * @param  string  $html
-     * @param  string  $classes
-     *
-     * @return View
      */
     public static function renderDeleteBtn(
         int|string $id,
@@ -73,29 +53,23 @@ class ActionWidget
         string $classes = 'btn btn-sm btn-danger'
     ): View {
         return view('_widgets.actions.deleteBtn', [
-            'id'      => $id,
-            'route'   => $route,
-            'html'    => $html,
+            'id' => $id,
+            'route' => $route,
+            'html' => $html,
             'classes' => $classes,
         ]);
     }
 
     /**
      * Render the go back button view.
-     *
-     * @param  string  $html
-     * @param  string  $classes
-     *
-     * @return View
      */
     public static function renderGoBackBtn(
         string $html = '<i class="fa fa-arrow-left"></i>',
         string $classes = 'btn btn-sm btn-primary'
     ): View {
         return view('_widgets.actions.goBackBtn', [
-            'html'    => $html,
+            'html' => $html,
             'classes' => $classes,
         ]);
     }
-
 }
