@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Services\DataTables\UserDataTable;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\View\View;
 use App\Models\User as UserModel;
 
@@ -85,14 +87,21 @@ class User extends BaseController
      * Action `delete`.
      *
      * @param  int|string  $id
+     * @param  \Illuminate\Http\Request  $request
      *
-     * @return false|string
+     * @return RedirectResponse
      */
-    public function delete(int|string $id)
+    public function delete(int|string $id, Request $request): RedirectResponse
     {
-        $user = $this->getUser($id);
-        dd($user);
-        return json_encode($user);
+        if ($request->isMethod('POST')) {
+            $user = $this->getUser($id);
+
+            if ($user->delete()) {
+                flash()->success('Deleted successfully.');
+            }
+        }
+
+        return redirect()->route('app.user.index');
     }
 
     /**

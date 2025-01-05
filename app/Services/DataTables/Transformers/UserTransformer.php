@@ -52,15 +52,17 @@ class UserTransformer extends TransformerAbstract
     private function renderActions(User $user): string
     {
         $modify = match ($user->status) {
-            $user::STATUS_ACTIVE => '<a href="#" class="btn btn-sm btn-soft-secondary" title="Ban"><i class="fa fa-ban"></i></a>',
-            $user::STATUS_INACTIVE, $user::STATUS_BLOCKED => '<a href="#" class="btn btn-sm btn-soft-success" title="Active"><i class="fa fa-check"></i></a>',
+            $user::STATUS_ACTIVE => '<a href="#" class="btn btn-sm btn-secondary" title="Ban"><i class="fa fa-ban"></i></a>',
+            $user::STATUS_INACTIVE, $user::STATUS_BLOCKED => '<a href="#" class="btn btn-sm btn-success" title="Active"><i class="fa fa-check"></i></a>',
         };
 
         return '
-            <a href="'.route('app.user.show', ['id' => $user->id]).'" class="btn btn-sm btn-soft-primary" title="View"><i class="fa fa-eye"></i></a>
-            <a href="'.route('app.user.update', ['id' => $user->id]).'" class="btn btn-sm btn-soft-warning" title="Edit"><i class="fa fa-pen"></i></a>
+            <a href="'.route('app.user.show', ['id' => $user->id]).'" class="btn btn-sm btn-primary" title="View"><i class="fa fa-eye"></i></a>
+            <a href="'.route('app.user.update', ['id' => $user->id]).'" class="btn btn-sm btn-warning text-white" title="Edit"><i class="fa fa-pen"></i></a>
             '.$modify.'
-            <a href="#" class="btn btn-sm btn-soft-danger" title="Delete"><i class="fa fa-trash"></i></a>
+            <button type="button" class="btn btn-sm btn-danger" onclick="confirmRemove('.$user->id.')" title="Delete"><i class="fa fa-trash"></i></button>
+            <form id="_delete-form-'.$user->id.'" method="post" action="'.route('app.user.delete',
+                ['id' => $user->id]).'" style="display: none;"><input type="hidden" name="_token" value="'.csrf_token().'" /></form>
         ';
     }
 
