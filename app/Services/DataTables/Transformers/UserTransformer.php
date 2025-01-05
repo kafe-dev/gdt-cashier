@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Services\DataTables\Transformers;
 
 use App\Models\User;
+use App\Utils\ActionWidget;
 use League\Fractal\TransformerAbstract;
 
 /**
@@ -57,12 +58,10 @@ class UserTransformer extends TransformerAbstract
         };
 
         return '
-            <a href="'.route('app.user.show', ['id' => $user->id]).'" class="btn btn-sm btn-primary" title="View"><i class="fa fa-eye"></i></a>
-            <a href="'.route('app.user.update', ['id' => $user->id]).'" class="btn btn-sm btn-warning text-white" title="Edit"><i class="fa fa-pen"></i></a>
             '.$modify.'
-            <button type="button" class="btn btn-sm btn-danger" onclick="confirmRemove('.$user->id.')" title="Delete"><i class="fa fa-trash"></i></button>
-            <form id="_delete-form-'.$user->id.'" method="post" action="'.route('app.user.delete',
-                ['id' => $user->id]).'" style="display: none;"><input type="hidden" name="_token" value="'.csrf_token().'" /></form>
+            '.ActionWidget::renderShowBtn(route('app.user.show', ['id' => $user->id])).'
+            '.ActionWidget::renderUpdateBtn(route('app.user.update', ['id' => $user->id])).'
+            '.ActionWidget::renderDeleteBtn($user->id, route('app.user.delete', ['id' => $user->id])).'
         ';
     }
 

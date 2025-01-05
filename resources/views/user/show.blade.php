@@ -104,10 +104,9 @@
                     </ul>
                 </div>
                 <div class="card-footer">
-                    <button type="button" class="btn btn-warning text-white" onclick="window.location.href = '{{ route('app.user.update', ['id' => $user->id]) }}';" title="Update">Update</button>
-                    <button type="button" class="btn btn-danger" onclick="confirmRemove({{ $user->id }})" title="Delete">Delete</button>
-                    <form id="_delete-form-{{ $user->id }}" method="post" action="{{ route('app.user.delete', ['id' => $user->id]) }}" style="display: none;">@csrf</form>
-                    <button type="button" class="btn btn-primary" onclick="window.history.go(-1); return false;">Go Back</button>
+                    {{ \App\Utils\ActionWidget::renderUpdateBtn(route('app.user.update', ['id' => $user->id]), 'Update', 'btn btn-warning text-white') }}
+                    {{ \App\Utils\ActionWidget::renderDeleteBtn($user->id, route('app.user.delete', ['id' => $user->id]), 'Delete', 'btn btn-danger') }}
+                    {{ \App\Utils\ActionWidget::renderGoBackBtn('Go Back', 'btn btn-primary') }}
                 </div>
             </div>
         </div>

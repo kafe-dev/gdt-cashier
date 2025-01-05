@@ -25,6 +25,6 @@
     </div>
     <div class="card-footer">
         <button type="submit" class="btn btn-primary">Submit</button>
-        <button type="button" class="btn btn-danger" onclick="window.history.go(-1); return false;">Cancel</button>
+        {{ \App\Utils\ActionWidget::renderGoBackBtn('Cancel', 'btn btn-danger') }}
     </div>
 </form>
