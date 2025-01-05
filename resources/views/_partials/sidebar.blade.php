@@ -21,16 +21,16 @@
                 <a class="nav-link" href="{{ route('app.user.index') }}"><i data-feather="user" class="align-self-center menu-icon"></i><span>User Account</span></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#"><i data-feather="credit-card" class="align-self-center menu-icon"></i><span>Paygate</span></a>
+                <a class="nav-link" href="{{ route('app.paygate.index') }}"><i data-feather="credit-card" class="align-self-center menu-icon"></i><span>Paygate</span></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#"><i data-feather="layout" class="align-self-center menu-icon"></i><span>Store</span></a>
+                <a class="nav-link" href="{{ route('app.store.index') }}"><i data-feather="layout" class="align-self-center menu-icon"></i><span>Store</span></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#"><i data-feather="users" class="align-self-center menu-icon"></i><span>Customer</span></a>
+                <a class="nav-link" href="{{ route('app.customer.index') }}"><i data-feather="users" class="align-self-center menu-icon"></i><span>Customer</span></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#"><i data-feather="trending-down" class="align-self-center menu-icon"></i><span>Dispute</span></a>
+                <a class="nav-link" href="{{ route('app.dispute.index') }}"><i data-feather="trending-down" class="align-self-center menu-icon"></i><span>Dispute</span></a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="#"><i data-feather="truck" class="align-self-center menu-icon"></i><span>Order Tracking</span></a>

@@ -1,11 +1,8 @@
 <?php
 
-use Diglactic\Breadcrumbs\Breadcrumbs;
-use Diglactic\Breadcrumbs\Generator as BreadcrumbTrail;
-
-// Default
-Breadcrumbs::for('dashboard', function (BreadcrumbTrail $trail) {
-    $trail->push('Dashboard', route('app.home.index'));
-});
-
-require_once __DIR__.'/app/breadcrumbs/user.breadcrumbs.php';
+require_once __DIR__.'/app/breadcrumbs/home.php';
+require_once __DIR__.'/app/breadcrumbs/user.php';
+require_once __DIR__.'/app/breadcrumbs/paygate.php';
+require_once __DIR__.'/app/breadcrumbs/store.php';
+require_once __DIR__.'/app/breadcrumbs/customer.php';
+require_once __DIR__.'/app/breadcrumbs/dispute.php';
