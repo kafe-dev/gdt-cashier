@@ -9,6 +9,17 @@
     padding-right: 3px;
 }
 
+/** Dropdown */
+#user-dropdown {
+    left: -4rem;
+}
+
+@media (max-width: 768px) {
+    #user-dropdown {
+        left: -10rem;
+    }
+}
+
 /* Breadcrumb */
 .breadcrumb-item + .breadcrumb-item::before {
     content: "/";
@@ -46,4 +57,9 @@
 table.dataTable tbody tr.selected > * {
     box-shadow: inset 0 0 0 9999px rgba(69, 140, 196, 0.15) !important;
     color: inherit !important;
+}
+
+/** Flasher */
+.fl-wrapper {
+    z-index: 99999 !important;
 }

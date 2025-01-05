@@ -6,3 +6,6 @@ require_once __DIR__.'/app/breadcrumbs/paygate.php';
 require_once __DIR__.'/app/breadcrumbs/store.php';
 require_once __DIR__.'/app/breadcrumbs/customer.php';
 require_once __DIR__.'/app/breadcrumbs/dispute.php';
+require_once __DIR__.'/app/breadcrumbs/tracking.php';
+require_once __DIR__.'/app/breadcrumbs/mail-box.php';
+require_once __DIR__.'/app/breadcrumbs/help-center.php';

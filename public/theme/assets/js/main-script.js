@@ -1,40 +1,32 @@
 function timeConverter() {
     let timeSpans = $('.x-has-time-converter');
 
-    timeSpans.each(function () {
-        if (Date.parse($(this).html())) {
-            const time = (new Date($(this).html())).toUTCString();
+    if (timeSpans.length > 0) {
+        timeSpans.each(function () {
+            if (Date.parse($(this).html())) {
+                const time = (new Date($(this).html())).toUTCString();
 
-            let convertBtn = document.createElement('i');
-            let localTimeSpan = document.createElement('span');
+                let convertBtn = document.createElement('i');
+                let localTimeSpan = document.createElement('span');
 
-            $(convertBtn).attr('type', 'button');
-            $(convertBtn).attr('class', 'fa fa-clock text-info x-convert-time-btn');
-            $(convertBtn).attr('title', 'Convert to UTC');
-            $(convertBtn).css('margin-left', '2px');
+                $(convertBtn).attr('type', 'button');
+                $(convertBtn).attr('class', 'fa fa-clock text-info x-convert-time-btn');
+                $(convertBtn).attr('title', 'Convert to UTC');
+                $(convertBtn).css('margin-left', '2px');
 
-            $(localTimeSpan).attr('class', 'x-local-time text-danger fw-bold');
-            $(localTimeSpan).text(' | ' + time);
-            $(localTimeSpan).css('display', 'none');
+                $(localTimeSpan).attr('class', 'x-local-time text-danger fw-bold');
+                $(localTimeSpan).text(' | ' + time);
+                $(localTimeSpan).css('display', 'none');
 
-            $(this).append(localTimeSpan);
-            $(this).append(convertBtn);
+                $(this).append(localTimeSpan);
+                $(this).append(convertBtn);
 
-            $(convertBtn).click(() => {
-                $(localTimeSpan).toggle();
-            });
-        }
-    });
-}
-
-function confirmRemove(id) {
-    let msg = 'This action cannot be undone. Are you sure you want to remove this?';
-
-    if (confirm(msg) === true) {
-        $('#_delete-form-' + id).submit();
+                $(convertBtn).click(() => {
+                    $(localTimeSpan).toggle();
+                });
+            }
+        });
     }
-
-    return false;
 }
 
 function activeMenu() {
@@ -50,8 +42,22 @@ function activeMenu() {
     }
 }
 
+function dropdownToggle() {
+    let dropdownBtn = $('.dropdown-toggle-btn');
+
+    if (dropdownBtn.length > 0) {
+        dropdownBtn.each((inx, elm) => {
+            $(elm).click(() => {
+                let dataXToggle = $(elm).attr('data-x-toggle')
+
+                $(dataXToggle).toggle();
+            });
+        });
+    }
+}
+
 $(document).ready(() => {
     activeMenu();
     timeConverter();
-    confirmRemove(id);
+    dropdownToggle();
 });

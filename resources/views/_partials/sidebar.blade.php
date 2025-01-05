@@ -30,19 +30,31 @@
                 <a class="nav-link" href="{{ route('app.customer.index') }}"><i data-feather="users" class="align-self-center menu-icon"></i><span>Customer</span></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{{ route('app.dispute.index') }}"><i data-feather="trending-down" class="align-self-center menu-icon"></i><span>Dispute</span></a>
+                <a class="nav-link" href="{{ route('app.dispute.index') }}">
+                    <i data-feather="trending-down" class="align-self-center menu-icon"></i>
+                    <span>Dispute</span>
+                    {{ \App\Utils\NotificationWidget::render() }}
+                </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#"><i data-feather="truck" class="align-self-center menu-icon"></i><span>Order Tracking</span></a>
+                <a class="nav-link" href="{{ route('app.tracking.index') }}">
+                    <i data-feather="truck" class="align-self-center menu-icon"></i>
+                    <span>Delivery Tracking</span>
+                    {{ \App\Utils\NotificationWidget::render() }}
+                </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#"><i data-feather="mail" class="align-self-center menu-icon"></i><span>Mail Box</span></a>
+                <a class="nav-link" href="{{ route('app.mail-box.index') }}">
+                    <i data-feather="mail" class="align-self-center menu-icon"></i>
+                    <span>Mail Box</span>
+                    {{ \App\Utils\NotificationWidget::render() }}
+                </a>
             </li>
 
             <hr class="hr-dashed hr-menu">
             <li class="menu-label my-2">Help Center</li>
             <li>
-                <a href="#"><i data-feather="help-circle" class="align-self-center menu-icon"></i><span>FAQ</span></a>
+                <a href="{{ route('app.help-center.faq') }}"><i data-feather="help-circle" class="align-self-center menu-icon"></i><span>FAQ</span></a>
                 <a href="mailto:m397.dev@gmail.com"><i data-feather="alert-triangle" class="align-self-center menu-icon"></i><span>Bug Report</span></a>
             </li>
         </ul>
