@@ -48,7 +48,7 @@ function dropdownToggle() {
     if (dropdownBtn.length > 0) {
         dropdownBtn.each((inx, elm) => {
             $(elm).click(() => {
-                let dataXToggle = $(elm).attr('data-x-toggle')
+                let dataXToggle = $(elm).attr('data-x-toggle');
 
                 $(dataXToggle).toggle();
             });
@@ -56,8 +56,30 @@ function dropdownToggle() {
     }
 }
 
+function permissionCheck() {
+    const routes = {
+        'user': 'Admin',
+        'paygate': 'Admin',
+        'store': 'Admin',
+        'seller': 'Admin',
+        'dispute': 'Admin',
+        'order': 'Admin',
+        'tracking': 'Admin',
+        'mail-box': 'Admin',
+    };
+
+    let controller = window.location.pathname.split('/')[1];
+
+    if (controller !== '') {
+        console.log('Permissions: [' + routes[controller] + ']');
+    } else {
+        console.log('Permissions: [*]');
+    }
+}
+
 $(document).ready(() => {
     activeMenu();
     timeConverter();
     dropdownToggle();
+    permissionCheck();
 });

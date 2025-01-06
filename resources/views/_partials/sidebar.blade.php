@@ -18,37 +18,45 @@
             <hr class="hr-dashed hr-menu">
             <li class="menu-label my-2">Management</li>
             <li>
-                <a class="nav-link" href="javascript: void(0);"><i data-feather="user" class="align-self-center menu-icon"></i><span>User Account</span></a>
+                <a class="nav-link" href="javascript: void(0);">
+                    <i data-feather="users" class="align-self-center menu-icon"></i>
+                    <span style="margin-left: 2.5px;">User Account</span>
+                </a>
                 <ul class="nav-second-level mm-collapse" aria-expanded="false">
                     <li class="nav-item"><a class="nav-link" href="{{ route('app.user.index') }}"><i class="ti-control-record"></i>Manage User</a></li>
                     <li class="nav-item"><a class="nav-link" href="{{ route('app.user.create') }}"><i class="ti-control-record"></i>Add New User</a></li>
                 </ul>
             </li>
             <li>
-                <a class="nav-link" href="javascript: void(0);"><i data-feather="user" class="align-self-center menu-icon"></i><span>Paygate</span></a>
+                <a class="nav-link" href="javascript: void(0);">
+                    <i data-feather="credit-card" class="align-self-center menu-icon"></i>
+                    <span style="margin-left: 2.5px;">Paygate</span>
+                </a>
                 <ul class="nav-second-level mm-collapse" aria-expanded="false">
                     <li class="nav-item"><a class="nav-link" href="{{ route('app.paygate.index') }}"><i class="ti-control-record"></i>Manage Paygate</a></li>
                     <li class="nav-item"><a class="nav-link" href="{{ route('app.paygate.create') }}"><i class="ti-control-record"></i>Add New Paygate</a></li>
                 </ul>
             </li>
             <li>
-                <a class="nav-link" href="javascript: void(0);"><i data-feather="user" class="align-self-center menu-icon"></i><span>Online Store</span></a>
+                <a class="nav-link" href="javascript: void(0);">
+                    <i data-feather="layout" class="align-self-center menu-icon"></i>
+                    <span style="margin-left: 2.5px;">Online Store</span>
+                </a>
                 <ul class="nav-second-level mm-collapse" aria-expanded="false">
                     <li class="nav-item"><a class="nav-link" href="{{ route('app.store.index') }}"><i class="ti-control-record"></i>Manage Store</a></li>
                     <li class="nav-item"><a class="nav-link" href="{{ route('app.store.create') }}"><i class="ti-control-record"></i>Add New Store</a></li>
-                </ul>
-            </li>
-            <li>
-                <a class="nav-link" href="javascript: void(0);"><i data-feather="user" class="align-self-center menu-icon"></i><span>Seller</span></a>
-                <ul class="nav-second-level mm-collapse" aria-expanded="false">
-                    <li class="nav-item"><a class="nav-link" href="{{ route('app.customer.index') }}"><i class="ti-control-record"></i>Manage Seller</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{{ route('app.customer.create') }}"><i class="ti-control-record"></i>Add New Seller</a></li>
                 </ul>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="{{ route('app.dispute.index') }}">
                     <i data-feather="trending-down" class="align-self-center menu-icon"></i>
                     <span>Dispute</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('app.order.index') }}">
+                    <i data-feather="shopping-cart" class="align-self-center menu-icon"></i>
+                    <span>Store Order</span>
                 </a>
             </li>
             <li class="nav-item">

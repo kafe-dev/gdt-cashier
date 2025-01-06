@@ -9,34 +9,34 @@ use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 /**
- * Class Dispute.
+ * Class Order.
  *
- * This controller is responsible for managing dispute-related operations.
+ * This controller is responsible for managing order-related operations.
  */
-class Dispute extends BaseController
+class Order extends BaseController
 {
     /**
      * Action `index`.
      */
     public function index()
     {
-        return view('dispute.index');
+        return view('order.index');
     }
 
     /**
      * Action `show`.
      *
-     * @param  int|string  $id  Dispute ID to show
+     * @param  int|string  $id  Order ID to show
      */
     public function show(int|string $id): View
     {
-        return view('dispute.show');
+        return view('order.show');
     }
 
     /**
      * Action `delete`.
      *
-     * @param  int|string  $id  Dispute ID to delete
+     * @param  int|string  $id  Order ID to delete
      * @param  Request  $request  Illuminate request object
      */
     public function delete(int|string $id, Request $request): RedirectResponse
