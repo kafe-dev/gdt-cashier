@@ -9,7 +9,7 @@
                         <span class="fw-bold">Tuan Minh</span>
                         <span>(Admin)</span>
                     </span>
-                    <img src="{{ Vite::asset('resources/assets/images/users/user-5.jpg') }}" alt="profile-user" class="rounded-circle thumb-xs"/>
+{{--                    <img src="{{ Vite::asset('resources/assets/images/users/user-5.jpg') }}" alt="profile-user" class="rounded-circle thumb-xs"/>--}}
                 </a>
                 <div class="dropdown-menu" id="user-dropdown">
                     <a class="dropdown-item" href="#"><i data-feather="user" class="align-self-center icon-xs icon-dual me-1"></i> Profile</a>

@@ -1,36 +1,4 @@
 services:
-    mysql:
-        container_name: gdt-cashier-mysql
-        build:
-            context: .
-            dockerfile: ./Dockerfile
-        image: mysql:8.3.0
-        environment:
-            - MYSQL_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
-            - MYSQL_DATABASE=${DB_DATABASE}
-            - MYSQL_USER=${DB_USERNAME}
-            - MYSQL_PASSWORD=${DB_PASSWORD}
-        restart: always
-        ports:
-            - ${DB_PORT}:3306
-
-    pma:
-        container_name: gdt-cashier-pma
-        build:
-            context: .
-            dockerfile: ./Dockerfile
-        image: phpmyadmin
-        environment:
-            - PMA_ARBITRARY=1
-            - PMA_HOST=sql
-        restart: always
-        ports:
-            - ${DOCKER_PMA_PORT}:80
-        depends_on:
-            - mysql
-        links:
-            - mysql
-
     web:
         container_name: gdt-cashier-web
         build:
@@ -39,14 +7,10 @@ services:
         restart: always
         volumes:
             - ./:/var/www/html/gdt-cashier
-            - /var/www/html/gdt-cashier/vendor
+            #- /var/www/html/gdt-cashier/vendor
             - ~/.composer-docker/cache:/root/.composer/cache:delegated
         ports:
             - ${DOCKER_WEB_PORT}:80
         extra_hosts:
             - ${DOCKER_WEB_HOST}:127.0.0.1
         hostname: ${DOCKER_WEB_HOST}
-        depends_on:
-            - mysql
-        links:
-            - mysql
