@@ -7,7 +7,7 @@ services:
         restart: always
         volumes:
             - ./:/var/www/html/gdt-cashier
-            #- /var/www/html/gdt-cashier/vendor
+            - /var/www/html/gdt-cashier/vendor
             - ~/.composer-docker/cache:/root/.composer/cache:delegated
         ports:
             - ${DOCKER_WEB_PORT}:80

@@ -48,8 +48,3 @@ $ php artisan key:generate
 ```shell
 $ docker-compose up -d
 ```
-
-
-## Contribution
-
-Before commit, please rung `./vendor/bin/pint` to reformat the code.
