@@ -20,7 +20,8 @@ class Paygate extends BaseController
      */
     public function index()
     {
-        return view('paygate.index');
+        $paygates = \App\Models\Paygate::all();
+        return view('paygate.index', compact('paygates'));
     }
 
     /**
@@ -42,6 +43,7 @@ class Paygate extends BaseController
     {
         return view('paygate.create');
     }
+
 
     /**
      * Action `update`.

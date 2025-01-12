@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Paygate;
+use App\Http\Middlewares\Auth;
 use Illuminate\Support\Facades\Route;
 
 Route::controller(Paygate::class)
@@ -11,7 +12,6 @@ Route::controller(Paygate::class)
         Route::get('/show/{id}', 'show')->name('show');
         Route::get('/create', 'create')->name('create');
         Route::get('/update/{id}', 'update')->name('update');
-
         Route::post('/delete/{id}', 'delete')->name('delete');
     })
     ->middleware([Auth::class]);

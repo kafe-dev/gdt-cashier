@@ -25,6 +25,17 @@ class Test extends Command
      */
     public function handle()
     {
+
+        die('end');
+    }
+
+    function fakeData(){
+
+
+    }
+
+    function test()
+    {
         $api_key = '246QXe6L2I2MmToEvX8KGHZ10mEaFhBDrr4CUhP3NLyfXpISc6sTw9Ii4ZP52AVr';
         $secret_key = 'WmmHqOrbZzOtPdvJWNlAKrbVPNvdWfyVyFNxthgP8Y6TG20yRsooagcDDVEgrZ5O';
         $order_id = '22704448150191538176';  // Thay bằng số lệnh giao dịch P2P
@@ -39,7 +50,7 @@ class Test extends Command
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_HTTPHEADER, [
-            'X-MBX-APIKEY: ' . $api_key
+            'X-MBX-APIKEY: ' . $api_key,
         ]);
         $response = curl_exec($ch);
         curl_close($ch);
@@ -53,6 +64,5 @@ class Test extends Command
             print_r($data);
             die;
         }
-        die('end');
     }
 }
