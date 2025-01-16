@@ -9,6 +9,9 @@ class Paygate extends Model
 {
     use HasFactory;
 
+    const STAUTS_ACTIVE = 1;
+    const STATUS_INACTIVE = 0;
+
     protected $fillable = [
         'name',
         'url',
