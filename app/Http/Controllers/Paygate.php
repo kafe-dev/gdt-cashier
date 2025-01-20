@@ -38,27 +38,26 @@ class Paygate extends BaseController {
      * @param Request $request Illuminate request object
      */
     public function create(): View {
-        return view('paygate.create');
+        $paygate = new PaygateModel();
+        return view('paygate.create',compact('paygate'));
     }
 
     public function store(Request $request): RedirectResponse {
         try {
             $request->validate([
-                'name' => 'required|string|max:255',
-                'url' => 'required|url',
-                'api_data' => 'required|string',
-                'vps_data' => 'required|string',
-                'type' => 'required|string',
+                'name'       => 'required|string|max:255',
+                'url'        => 'required|url',
+                'api_data'   => 'required|string',
+                'vps_data'   => 'required|string',
+                'type'       => 'required|string',
                 'limitation' => 'nullable|integer',
-                'mode' => 'required|in:0,1',
+                'mode'       => 'required|in:0,1',
             ]);
-
-            $attributes = $request->all();
+            $attributes               = $request->all();
             $attributes['created_at'] = time();
             $attributes['updated_at'] = time();
-            $attributes['status'] = PaygateModel::STAUTS_ACTIVE; // Set status = active trước khi tạo bản ghi
+            $attributes['status']     = PaygateModel::STAUTS_ACTIVE; // Set status = active trước khi tạo bản ghi
             PaygateModel::create($attributes);
-
             return redirect()->route('app.paygate.index'); // Sau khi thêm thành công, quay lại trang danh sách
         } catch (\Exception $e) {
             dd($e);
@@ -72,8 +71,38 @@ class Paygate extends BaseController {
      * @param Request    $request Illuminate request object
      */
     public function update(int|string $id, Request $request): View|RedirectResponse {
-        return view('paygate.update');
+
+        $paygate = PaygateModel::findOrFail($id);
+        return view('paygate.update',compact('paygate'));
     }
+
+    /**
+     * @param int|string $id
+     * @param Request    $request
+     *
+     * @return RedirectResponse|void
+     */
+    public function updated(int|string $id, Request $request) {
+        try {
+            $paygate = PaygateModel::findOrFail($id);
+            $request->validate([
+                'name'       => 'required|string|max:255',
+                'url'        => 'required|url',
+                'api_data'   => 'required|string',
+                'vps_data'   => 'required|string',
+                'type'       => 'required|string',
+                'limitation' => 'nullable|integer',
+                'mode'       => 'required|in:0,1',
+            ]);
+            $attributes = $request->all();
+            $paygate->update($attributes);
+            return redirect()->route('app.paygate.index'); // Sau khi cập nhật thành công, quay lại trang danh sách
+        } catch (\Exception $e) {
+            dd($e);
+        }
+    }
+
+
 
     /**
      * Action `delete`.
@@ -82,6 +111,12 @@ class Paygate extends BaseController {
      * @param Request    $request Illuminate request object
      */
     public function delete(int|string $id, Request $request): RedirectResponse {
-        //
+        try {
+            $paygate = PaygateModel::findOrFail($id);
+            $paygate->delete();
+            return redirect()->route('app.paygate.index')->with('success', 'Paygate deleted successfully.');
+        } catch (\Exception $e) {
+            return redirect()->route('app.paygate.index')->with('error', 'Error deleting Paygate: ' . $e->getMessage());
+        }
     }
 }

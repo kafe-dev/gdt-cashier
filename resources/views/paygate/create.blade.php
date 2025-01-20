@@ -17,7 +17,7 @@
                     <p class="text-muted mb-0">Fill out the form below to create a new paygate.</p>
                     <p class="text-muted mb-0">Field with the (<span class="text-danger">*</span>) is required.</p>
                 </div>
-                @include('paygate._form')
+                @include('paygate._form_create',compact('paygate'))
             </div>
         </div>
         <div class="col-6"></div>

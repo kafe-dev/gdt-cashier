@@ -25,7 +25,7 @@
                     <a href="{{ route('app.paygate.update', $paygate->id) }}">Sửa</a>
                     <form action="{{ route('app.paygate.delete', $paygate->id) }}" method="POST" style="display:inline;">
                         @csrf
-                        @method('DELETE')
+                        @method('POST')
                         <button type="submit">Xóa</button>
                     </form>
                 </td>
