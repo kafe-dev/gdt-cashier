@@ -25,8 +25,8 @@ class PaygateFactory extends Factory
             'status' => $this->faker->randomElement([0, 1]),  // Trạng thái
             'limitation' => $this->faker->randomFloat(2, 0, 999999999999999999999999999999999999999999999999999999999999999),  // Giới hạn (ví dụ: "Chỉ áp dụng cho các giao dịch dưới 100$")
             'mode' => $this->faker->randomElement([0, 1]),  // Chế độ (sandbox hoặc production)
-            'created_at'=>time(), //
-            'updated_at'=>time(), //
+            'created_at' => time(), //
+            'updated_at' => time(), //
         ];
     }
 }

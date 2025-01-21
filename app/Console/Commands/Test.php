@@ -26,15 +26,12 @@ class Test extends Command
     public function handle()
     {
 
-        die('end');
+        exit('end');
     }
 
-    function fakeData(){
+    public function fakeData() {}
 
-
-    }
-
-    function test()
+    public function test()
     {
         $api_key = '246QXe6L2I2MmToEvX8KGHZ10mEaFhBDrr4CUhP3NLyfXpISc6sTw9Ii4ZP52AVr';
         $secret_key = 'WmmHqOrbZzOtPdvJWNlAKrbVPNvdWfyVyFNxthgP8Y6TG20yRsooagcDDVEgrZ5O';
@@ -45,12 +42,12 @@ class Test extends Command
 
         $url = "https://api.binance.com/v2/private/order?order_id=$order_id&timestamp=$timestamp&signature=$signature";
 
-// Gửi yêu cầu cURL
+        // Gửi yêu cầu cURL
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_HTTPHEADER, [
-            'X-MBX-APIKEY: ' . $api_key,
+            'X-MBX-APIKEY: '.$api_key,
         ]);
         $response = curl_exec($ch);
         curl_close($ch);
@@ -58,11 +55,11 @@ class Test extends Command
         $data = json_decode($response, true);
 
         if (isset($data['code'])) {
-            echo "Lỗi: " . $data['msg'];
+            echo 'Lỗi: '.$data['msg'];
         } else {
             echo '<pre>';
             print_r($data);
-            die;
+            exit;
         }
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Http\Controllers;
@@ -13,35 +14,40 @@ use Illuminate\View\View;
  *
  * This controller is responsible for managing paygate-related operations.
  */
-class Paygate extends BaseController {
-
+class Paygate extends BaseController
+{
     /**
      * Action `index`.
      */
-    public function index() {
+    public function index()
+    {
         $paygates = PaygateModel::all();
+
         return view('paygate.index', compact('paygates'));
     }
 
     /**
      * Action `show`.
      *
-     * @param int|string $id Paygate ID to be shown
+     * @param  int|string  $id  Paygate ID to be shown
      */
-    public function show(int|string $id): View {
+    public function show(int|string $id): View
+    {
         return view('paygate.show');
     }
 
     /**
      * Action `create`.
      *
-     * @param Request $request Illuminate request object
+     * @param  Request  $request  Illuminate request object
      */
-    public function create(): View {
+    public function create(): View
+    {
         return view('paygate.create');
     }
 
-    public function store(Request $request): RedirectResponse {
+    public function store(Request $request): RedirectResponse
+    {
         try {
             $request->validate([
                 'name' => 'required|string|max:255',
@@ -68,20 +74,22 @@ class Paygate extends BaseController {
     /**
      * Action `update`.
      *
-     * @param int|string $id      Paygate ID to be updated
-     * @param Request    $request Illuminate request object
+     * @param  int|string  $id  Paygate ID to be updated
+     * @param  Request  $request  Illuminate request object
      */
-    public function update(int|string $id, Request $request): View|RedirectResponse {
+    public function update(int|string $id, Request $request): View|RedirectResponse
+    {
         return view('paygate.update');
     }
 
     /**
      * Action `delete`.
      *
-     * @param int|string $id      Paygate ID to be deleted
-     * @param Request    $request Illuminate request object
+     * @param  int|string  $id  Paygate ID to be deleted
+     * @param  Request  $request  Illuminate request object
      */
-    public function delete(int|string $id, Request $request): RedirectResponse {
+    public function delete(int|string $id, Request $request): RedirectResponse
+    {
         //
     }
 }
