@@ -8,11 +8,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Store model.
+ * Order model.
  *
  * @property int $id
- * @property int $user_id
- * @property string $name
+ * @property string $code
+ * @property string $status
  * @property string $url
  * @property string|null $description
  * @property string|null $api_data
@@ -20,7 +20,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property mixed $created_at
  * @property mixed $updated_at
  */
-class Store extends Model
+class Order extends Model
 {
     use HasFactory;
 

@@ -18,11 +18,17 @@
             "type": "vcs",
             "url": "https://github.com/m397dev/laravel-paypal",
             "no-api": true
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/m397dev/laravel-woocommerce",
+            "no-api": true
         }
     ],
     "require": {
         "php": ">=8.3",
         "barryvdh/laravel-snappy": "*",
+        "codexshaper/laravel-woocommerce": "dev-master",
         "diglactic/laravel-breadcrumbs": "^9.0",
         "laravel/cashier": "^15.6",
         "laravel/framework": "^11.31",
