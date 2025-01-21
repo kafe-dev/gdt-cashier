@@ -64,6 +64,40 @@ class Paygate extends BaseController {
         }
     }
 
+
+    /**
+     * Block Paygate.
+     *
+     * @param int|string $id
+     * @return RedirectResponse
+     */
+    public function block(int|string $id): RedirectResponse {
+        try {
+            $paygate = PaygateModel::findOrFail($id);
+            $paygate->update(['status' => PaygateModel::STATUS_INACTIVE]);
+            return redirect()->route('app.paygate.index');
+        } catch (\Exception $e) {
+            dd($e);
+        }
+    }
+
+
+    /**
+     * Unblock Paygate.
+     *
+     * @param int|string $id
+     * @return RedirectResponse
+     */
+    public function unblock(int|string $id): RedirectResponse {
+        try {
+            $paygate = PaygateModel::findOrFail($id);
+            $paygate->update(['status' => PaygateModel::STAUTS_ACTIVE]);
+            return redirect()->route('app.paygate.index');
+        } catch (\Exception $e) {
+            dd($e);
+        }
+    }
+
     /**
      * Action `update`.
      *
