@@ -4,10 +4,6 @@
     Update Paygate: {{ $paygate->name }}
 @endpush
 
-{{--@push('breadcrumbs')--}}
-{{--    {{ Breadcrumbs::render('update-paygate') }}--}}
-{{--@endpush--}}
-
 @section('content')
     <div class="row">
         <div class="col-6">
