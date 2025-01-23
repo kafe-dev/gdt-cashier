@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -12,45 +13,44 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $id
  * @property string $code
  * @property string $status
- * @property string $invoicer_email_address
- * @property string|null $billing_info
- * @property float $amount
- * @property string $currency_code
- * @property float|null paid_amount
- * @property string|null $paid_currency_code
- * @property string|null $link
+ * @property string $url
+ * @property string|null $description
+ * @property string|null $api_data
+ * @property int $status
  * @property mixed $created_at
  * @property mixed $updated_at
  */
 class Order extends Model
 {
-    public final const string STATUS_NEW = 'NEW';
+    use HasFactory;
 
-    public final const string STATUS_PAID = 'PAID';
+    public final const int STATUS_INACTIVE = 0;
+
+    public final const int STATUS_ACTIVE = 1;
+
+    public final const int STATUS_DRAFT = 2;
 
     public final const array STATUSES = [
-        self::STATUS_NEW => 'NEW',
-        self::STATUS_PAID => 'PAID',
+        self::STATUS_INACTIVE => 'Inactive',
+        self::STATUS_ACTIVE => 'Active',
+        self::STATUS_DRAFT => 'Draft',
     ];
 
     /**
      * @var string The database table used by the model.
      */
-    public $table = 'orders';
+    public $table = 'stores';
 
     /**
      * The attributes that are mass assignable.
      */
     protected $fillable = [
-        'code',
+        'user_id',
+        'name',
+        'url',
+        'description',
+        'api_data',
         'status',
-        'invoicer_email_address',
-        'billing_info',
-        'amount',
-        'currency_code',
-        'paid_amount',
-        'paid_currency_code',
-        'link',
     ];
 
     /**
@@ -59,7 +59,6 @@ class Order extends Model
     protected function casts(): array
     {
         return [
-            'billing_info' => 'array',
             'created_at' => 'datetime',
             'updated_at' => 'datetime',
         ];

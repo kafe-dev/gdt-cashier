@@ -1,6 +1,5 @@
 <?php
 
-
 // Dashboard > Manage Paygates
 use App\Models\Paygate;
 use Diglactic\Breadcrumbs\Breadcrumbs;

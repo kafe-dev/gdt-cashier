@@ -2,16 +2,16 @@
 
 namespace Database\Seeders;
 
+use App\Models\Store;
 use Illuminate\Database\Seeder;
 
-class PaygateSeeder extends Seeder
+class StoreSeeder extends Seeder
 {
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
-        // Tạo 50 bản ghi giả cho bảng paygates
-        \App\Models\Paygate::factory(100)->create();
+        Store::factory(5)->create();
     }
 }

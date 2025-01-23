@@ -3,10 +3,9 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use Srmklive\PayPal\Services\PayPal as PayPalClient;
 
-class Test extends Command {
-
+class Test extends Command
+{
     /**
      * The name and signature of the console command.
      *
@@ -24,44 +23,43 @@ class Test extends Command {
     /**
      * Execute the console command.
      */
-    public function handle() {
-        $this->test();
+    public function handle()
+    {
+
+        exit('end');
     }
 
-    function fakeData() {
+    public function fakeData() {}
 
+    public function test()
+    {
+        $api_key = '246QXe6L2I2MmToEvX8KGHZ10mEaFhBDrr4CUhP3NLyfXpISc6sTw9Ii4ZP52AVr';
+        $secret_key = 'WmmHqOrbZzOtPdvJWNlAKrbVPNvdWfyVyFNxthgP8Y6TG20yRsooagcDDVEgrZ5O';
+        $order_id = '22704448150191538176';  // Thay bằng số lệnh giao dịch P2P
 
-    }
+        $timestamp = time() * 1000; // Timestamp hiện tại
+        $signature = hash_hmac('sha256', "order_id=$order_id&timestamp=$timestamp", $secret_key);
 
-    function test() {
-        $client_id     = 'AYGeGYzfpK9LvuFz_oouH7OPzusBxDBME8ziVmqHlp3HWjf8PtNL94OsqYqV-JUjNy4UCfPiwcsoHnk3';
-        $client_secret = 'EDbWwm7Gw2eMGTfntQCcsbs3hncjEgyN5hzboDA3KOvQLYgFc3REfMkZ2Buiwr6PzsFPZVJIEh_EzwMM';
+        $url = "https://api.binance.com/v2/private/order?order_id=$order_id&timestamp=$timestamp&signature=$signature";
 
-
-        $config = [
-            'mode'    => 'sandbox',
-            'sandbox' => [
-                'client_id'         => $client_id,
-                'client_secret'     => $client_secret,
-                'app_id'            => 'PAYPAL_LIVE_APP_ID',
-            ],
-
-            'payment_action' => 'Sale',
-            'currency'       => 'USD',
-            'notify_url'     => 'https://your-site.com/paypal/notify',
-            'locale'         => 'en_US',
-            'validate_ssl'   => true,
-        ];
-        $provider      = new PayPalClient($config);
-        //$provider->setApiCredentials($config);
-
-        $accessToken = $provider->getAccessToken();
-        $response = $provider->listDisputes([
-            'start_date' => '2024-01-01T00:00:00Z',
-            'end_date'   => '2024-12-31T23:59:5 9Z',
+        // Gửi yêu cầu cURL
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            'X-MBX-APIKEY: '.$api_key,
         ]);
-        echo '<pre>';
-        print_r($response);
-        die;
+        $response = curl_exec($ch);
+        curl_close($ch);
+
+        $data = json_decode($response, true);
+
+        if (isset($data['code'])) {
+            echo 'Lỗi: '.$data['msg'];
+        } else {
+            echo '<pre>';
+            print_r($data);
+            exit;
+        }
     }
 }
