@@ -34,8 +34,8 @@ class Test extends Command {
     }
 
     function test() {
-        $client_id     = 'AZQx_MV1p-0hGUGYc9rw1oV-8fywNCd-0lwH9egkdWarYchpi7h0MaKpi6o7jsXSAduM08rJwWhBGYcN';
-        $client_secret = 'EB8d-gT1R_XhMlbFJQiqmelYcCCLcv75u83TXP9k1Gzv3Kqs5R3_VqTn32IjaJ_wgPE_CgO4Ss3gY0WL';
+        $client_id     = 'AYGeGYzfpK9LvuFz_oouH7OPzusBxDBME8ziVmqHlp3HWjf8PtNL94OsqYqV-JUjNy4UCfPiwcsoHnk3';
+        $client_secret = 'EDbWwm7Gw2eMGTfntQCcsbs3hncjEgyN5hzboDA3KOvQLYgFc3REfMkZ2Buiwr6PzsFPZVJIEh_EzwMM';
 
 
         $config = [
@@ -56,9 +56,9 @@ class Test extends Command {
         //$provider->setApiCredentials($config);
 
         $accessToken = $provider->getAccessToken();
-        $response = $provider->listInvoices([
+        $response = $provider->listDisputes([
             'start_date' => '2024-01-01T00:00:00Z',
-            'end_date'   => '2024-01-31T23:59:5 9Z',
+            'end_date'   => '2024-12-31T23:59:5 9Z',
         ]);
         echo '<pre>';
         print_r($response);

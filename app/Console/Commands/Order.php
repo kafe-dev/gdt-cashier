@@ -31,8 +31,8 @@ class Order extends Command {
     }
 
     public function fetch() {
-        $client_id     = 'AZQx_MV1p-0hGUGYc9rw1oV-8fywNCd-0lwH9egkdWarYchpi7h0MaKpi6o7jsXSAduM08rJwWhBGYcN';
-        $client_secret = 'EB8d-gT1R_XhMlbFJQiqmelYcCCLcv75u83TXP9k1Gzv3Kqs5R3_VqTn32IjaJ_wgPE_CgO4Ss3gY0WL';
+        $client_id     = 'AfGFZ63l-30heXk1Xf2iNiO0SnhhIKeaEq9uIsqQt4kPenxBk_ZNwFhLTDDRDsX1bdV8_uVTMPnBgLnK';
+        $client_secret = 'EECgn7P9B5dgKFFvQWFQ6AH0AGqmm1ibbl7G_7njz59SKX-EKvZWCeY9beP-a8TU64WoC6FwPqdreAak';
         $config        = [
             'mode'           => 'sandbox',
             'sandbox'        => [
@@ -55,10 +55,16 @@ class Order extends Command {
         //            'start_date' => $start_date,
         //            'end_date'   => $end_date,
         //        ]);
-        $response = $provider->listInvoices([
+        $response = $provider->listDisputes([
             'start_date' => '2024-01-01T00:00:00Z',
             'end_date'   => '2024-01-31T23:59:5 9Z',
         ]);
+
+        echo '<pre>start-debug'.PHP_EOL;
+        print_r($response).PHP_EOL;
+        die('--end--');
+
+
         if (!empty($response['items'])) {
             foreach ($response['items'] as $item) {
                 /** @var \App\Models\Order $order */
