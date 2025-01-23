@@ -6,7 +6,7 @@
 
 @section('content')
     <form class="form-horizontal auth-form" method="post">
-
+        @csrf
         <div class="form-group mb-2">
             <label class="form-label" for="username">Username <span class="text-danger">*</span></label>
             <div class="input-group">
