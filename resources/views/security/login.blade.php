@@ -6,7 +6,7 @@
 
 @section('content')
     <form class="form-horizontal auth-form" method="post">
-
+        @csrf
         <div class="form-group mb-2">
             <label class="form-label" for="username">Username <span class="text-danger">*</span></label>
             <div class="input-group">
@@ -24,7 +24,7 @@
         <div class="form-group row my-3">
             <div class="col-sm-6">
                 <div class="custom-control custom-switch switch-success">
-                    <input type="checkbox" class="custom-control-input" id="customSwitchSuccess">
+                    <input type="checkbox" class="custom-control-input" name="remember" id="customSwitchSuccess">
                     <label class="form-label text-muted" for="customSwitchSuccess">Remember me</label>
                 </div>
             </div>

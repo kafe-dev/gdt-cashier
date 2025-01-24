@@ -22,6 +22,9 @@ class UserTransformer extends TransformerAbstract
     {
         $role = match ($user->role) {
             User::ROLE_USER => '<span class="badge badge-soft-secondary">'.User::ROLES[$user->role].'</span>',
+            User::ROLE_ACCOUNTANT => '<span class="badge badge-soft-success">'.User::ROLES[$user->role].'</span>',
+            User::ROLE_SUPPORT => '<span class="badge badge-soft-danger" style="background-color: #e0cffc !important; color: #6610f2 !important;">'.User::ROLES[$user->role].'</span>',
+            User::ROLE_SELLER => '<span class="badge badge-soft-info" style="background-color: #ffe5d0 !important; color: #fd7e14 !important;">'.User::ROLES[$user->role].'</span>',
             default => '<span class="badge badge-soft-primary">'.User::ROLES[$user->role].'</span>',
         };
 
@@ -52,14 +55,14 @@ class UserTransformer extends TransformerAbstract
     private function renderActions(User $user): string
     {
         $modify = match ($user->status) {
-            User::STATUS_ACTIVE => '<a href="#" class="btn btn-sm btn-secondary" title="Ban"><i class="fa fa-ban"></i></a>',
-            User::STATUS_INACTIVE, User::STATUS_BLOCKED => '<a href="#" class="btn btn-sm btn-success" title="Active"><i class="fa fa-check"></i></a>',
+            User::STATUS_ACTIVE => '<a href="' . route("app.user.changeStatus", ['id' => $user->id]) .'" class="btn btn-sm btn-secondary" title="Ban"><i class="fa fa-ban"></i></a>',
+            User::STATUS_INACTIVE, User::STATUS_BLOCKED => '<a href="' . route("app.user.changeStatus", ['id' => $user->id]) .'" class="btn btn-sm btn-success" title="Active"><i class="fa fa-check"></i></a>',
         };
 
         return '
             '.$modify.'
             '.ActionWidget::renderShowBtn(route('app.user.show', ['id' => $user->id])).'
-            '.ActionWidget::renderUpdateBtn(route('app.user.update', ['id' => $user->id])).'
+            '.ActionWidget::renderUpdateBtn(route('app.user.edit', ['id' => $user->id])).'
             '.ActionWidget::renderDeleteBtn($user->id, route('app.user.delete', ['id' => $user->id])).'
         ';
     }
