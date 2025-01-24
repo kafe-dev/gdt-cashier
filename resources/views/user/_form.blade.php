@@ -21,8 +21,8 @@
 
         <div class="mb-3">
             <label class="form-label" for="password">Password <span class="text-danger">*</span></label>
-            <input type="password" class="form-control" id="password" name="password" placeholder="Enter password"
-                   value="{{ old('password'), $user->password ?? '' }}" @if(!isset($user)) required @endif>
+            <input type="password" minlength="8" class="form-control" id="password" name="password" placeholder="Enter password"
+                   value="" @if(!isset($user)) required @endif>
 
             @if(isset($user))
                 <small id="passwordHelp" class="form-text text-muted">If not entered, the password will not change.</small>

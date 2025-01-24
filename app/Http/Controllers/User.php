@@ -109,7 +109,7 @@ class User extends BaseController
             $request->validate([
                 'username' => 'required|string|max:255',
                 'email' => 'required|email|unique:users,email,' . $id,
-                'password' => 'nullable|string|min:8|confirmed',
+                'password' => 'nullable|string|min:8',
             ]);
 
             $user = $this->getUser($id);
@@ -125,7 +125,7 @@ class User extends BaseController
             return redirect()->route('app.user.index');
         } catch (\Exception $e) {
             flash()->error('Email or Username already exists.');
-            return redirect()->route('app.user.edit', $id)->with('flash_error', 'Email or Username already exists');
+            return redirect()->route('app.user.edit', $id);
         }
     }
 
@@ -159,7 +159,7 @@ class User extends BaseController
             flash()->success('User created successfully.');
         } catch (\Exception $e) {
             flash()->error('Email or Username already exists.');
-            return redirect()->route('app.user.create')->with('flash_error', 'Email or Username already exists');
+            return redirect()->route('app.user.create');
         }
 
         return redirect()->route('app.user.index');
