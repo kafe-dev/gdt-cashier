@@ -124,6 +124,7 @@ class User extends BaseController
             flash()->success('User updated successfully.');
             return redirect()->route('app.user.index');
         } catch (\Exception $e) {
+            flash()->error('Email or Username already exists.');
             return redirect()->route('app.user.edit', $id)->with('flash_error', 'Email or Username already exists');
         }
     }
@@ -157,7 +158,7 @@ class User extends BaseController
 
             flash()->success('User created successfully.');
         } catch (\Exception $e) {
-
+            flash()->error('Email or Username already exists.');
             return redirect()->route('app.user.create')->with('flash_error', 'Email or Username already exists');
         }
 
@@ -198,8 +199,10 @@ class User extends BaseController
                     'blocked_at' => null,
                 ]);
             }
+            flash()->success('Change successfully.');
         } catch (\Exception $e) {
-            return redirect()->route('app.user.index')->with('flash_error', 'Had an error while updating the status of the user');
+            flash()->error('Had an error while updating the status of the user.');
+            return redirect()->route('app.user.index');
         }
         return redirect()->route('app.user.index');
     }
