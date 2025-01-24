@@ -6,8 +6,8 @@ namespace App\Http\Middlewares;
 
 use Closure;
 use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Auth as Authen;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class Auth.
@@ -24,7 +24,7 @@ class Auth
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (!Authen::check()) {
+        if (! Authen::check()) {
             return redirect()->route('app.security.login');
         }
 

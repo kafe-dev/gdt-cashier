@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Models\User as UserModel;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
-use App\Models\User as UserModel;
 
 /**
  * Class Security.
@@ -20,12 +20,11 @@ class Security extends BaseController
     /**
      * Action `login`.
      *
-     * @param Request $request Illuminate request object
-     * @return View|RedirectResponse
+     * @param  Request  $request  Illuminate request object
      */
     public function login(Request $request): View|RedirectResponse
     {
-        if ($request->getMethod() === "POST") {
+        if ($request->getMethod() === 'POST') {
             $credentials = $request->validate([
                 'username' => ['required'],
                 'password' => ['required'],
@@ -39,7 +38,8 @@ class Security extends BaseController
 
                     $request->session()->regenerateToken();
 
-                    flash()->error("Your account has been blocked.");
+                    flash()->error('Your account has been blocked.');
+
                     return back();
                 }
                 if (Auth::user()->status === UserModel::STATUS_INACTIVE) {
@@ -49,7 +49,8 @@ class Security extends BaseController
 
                     $request->session()->regenerateToken();
 
-                    flash()->error("Your account is inactive.");
+                    flash()->error('Your account is inactive.');
+
                     return back();
                 }
 
@@ -58,11 +59,13 @@ class Security extends BaseController
                 Auth::user()->last_login_at = now();
                 Auth::user()->save();
 
-                flash()->success("Welcome back!");
+                flash()->success('Welcome back!');
+
                 return redirect()->intended(route('app.home.index', absolute: false));
             }
 
-            flash()->error("The provided credentials do not match our records.");
+            flash()->error('The provided credentials do not match our records.');
+
             return back();
         }
 
