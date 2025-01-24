@@ -39,4 +39,8 @@ return [
         'key' => env('MAILJET_APIKEY'),
         'secret' => env('MAILJET_APISECRET'),
     ],
+
+    'trackingmore' => [
+        'key' => env('TM_API_KEY'),
+    ],
 ];
