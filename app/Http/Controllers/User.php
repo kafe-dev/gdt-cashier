@@ -105,22 +105,26 @@ class User extends BaseController
      */
     public function update(Request $request, int|string $id): RedirectResponse
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,' . $id, // Exclude the current email
-            'password' => 'nullable|string|min:8|confirmed', // Optional password field
-        ]);
+        try {
+            $request->validate([
+                'username' => 'required|string|max:255',
+                'email' => 'required|email|unique:users,email,' . $id, // Exclude the current email
+                'password' => 'nullable|string|min:8|confirmed', // Optional password field
+            ]);
 
-        $user = $this->getUser($id);
+            $user = $this->getUser($id);
 
-        $user->update([
-            'name' => $request->input('name'),
-            'email' => $request->input('email'),
-            'password' => $request->input('password') ? bcrypt($request->input('password')) : $user->password,
-        ]);
+            $user->update([
+                'username' => $request->input('username'),
+                'email' => $request->input('email'),
+                'password' => $request->input('password') ? bcrypt($request->input('password')) : $user->password,
+            ]);
 
-        flash()->success('User updated successfully.');
-        return redirect()->route('app.user.index');
+            flash()->success('User updated successfully.');
+            return redirect()->route('app.user.index');
+        } catch (\Exception $e) {
+            return redirect()->route('app.user.edit', $id)->with('flash_error', 'Email or Username already exists');
+        }
     }
 
     /**
