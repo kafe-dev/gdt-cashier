@@ -25,6 +25,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string|null                     $link
  * @property int|null                        $created_at
  * @property int|null                        $updated_at
+ * @method errors()
  */
 class Dispute extends Model {
 
