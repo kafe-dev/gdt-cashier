@@ -107,7 +107,7 @@ class User extends BaseController
     {
         try {
             $request->validate([
-                'username' => 'required|string|max:255|regex:/^[a-zA-Z0-9_]*$/',
+                'username' => 'required|string|max:50|regex:/^[a-zA-Z0-9_]*$/',
                 'email' => 'required|email|unique:users,email,' . $id,
                 'password' => 'nullable|string|min:8|max:100|regex:/^[a-zA-Z0-9!@#$%^&*()_+]*$/',
             ]);
@@ -141,7 +141,7 @@ class User extends BaseController
     {
         try {
             $request->validate([
-                'username' => 'required|string|max:255|regex:/^[a-zA-Z0-9_]*$/',
+                'username' => 'required|string|max:50|regex:/^[a-zA-Z0-9_]*$/',
                 'email' => 'required|email|unique:users,email',
                 'password' => 'required|string|min:8|max:100|regex:/^[a-zA-Z0-9!@#$%^&*()_+]*$/',
             ]);
