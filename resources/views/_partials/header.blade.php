@@ -6,8 +6,8 @@
                    aria-haspopup="false" aria-expanded="false">
                     <span class="ms-1 nav-user-name hidden-sm">
                         <span class="text-muted">Welcome,</span>
-                        <span class="fw-bold">Tuan Minh</span>
-                        <span>(Admin)</span>
+                        <span class="fw-bold">{{ Auth::user()->username ?? "" }}</span>
+                        <span>({{ \App\Models\User::ROLES[Auth::user()->role] ?? "" }})</span>
                     </span>
 {{--                    <img src="{{ Vite::asset('resources/assets/images/users/user-5.jpg') }}" alt="profile-user" class="rounded-circle thumb-xs"/>--}}
                 </a>
