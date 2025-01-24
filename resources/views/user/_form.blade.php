@@ -1,9 +1,5 @@
 <form action="{{ isset($user) ? route('app.user.update', $user->id) : route('app.user.store') }}" method="POST" >
     @csrf
-    @isset($user)
-        @method('PUT')
-    @endisset
-
     @if (session('flash_error'))
         <div class="alert alert-danger">
             {{ session('flash_error') }}
@@ -23,7 +19,7 @@
 
         <div class="mb-3">
             <label class="form-label" for="password">Password <span class="text-danger">*</span></label>
-            <input type="password" class="form-control" id="password" name="password" placeholder="Enter password" value="{{ old('password') }}" @if(!isset($user)) required @endif>
+            <input type="password" class="form-control" id="password" name="password" placeholder="Enter password" value="{{ old('password'), $user->password ?? '' }}" @if(!isset($user)) required @endif>
             <small id="passwordHelp" class="form-text text-muted">Never share your password with anyone else.</small>
         </div>
 
