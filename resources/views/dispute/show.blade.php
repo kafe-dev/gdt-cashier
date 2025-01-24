@@ -1,3 +1,4 @@
+@php use Carbon\Carbon; @endphp
 @php
     /* @var \App\Models\Dispute $dispute */
 @endphp
@@ -31,11 +32,13 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label" for="create_time">Create Time</label>
-                        <input type="datetime-local" class="form-control" id="create_time" name="create_time" value="{{ $dispute->create_time }}">
+                        <input type="datetime-local" class="form-control" id="create_time" name="create_time"
+                               value="{{ Carbon::parse($dispute->create_time)->format('Y-m-d\TH:i') }}">
                     </div>
+
                     <div class="mb-3">
                         <label class="form-label" for="update_time">Update Time</label>
-                        <input type="datetime-local" class="form-control" id="update_time" name="update_time" value="{{ $dispute->update_time }}">
+                        <input type="datetime-local" class="form-control" id="update_time" name="update_time" value="{{ Carbon::parse($dispute->update_time)->format('Y-m-d\TH:i') }}">
                     </div>
                     <div class="mb-3">
                         <label class="form-label" for="buyer_transaction_id">Buyer Transaction ID</label>
