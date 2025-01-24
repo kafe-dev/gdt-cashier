@@ -52,8 +52,8 @@ class UserTransformer extends TransformerAbstract
     private function renderActions(User $user): string
     {
         $modify = match ($user->status) {
-            User::STATUS_ACTIVE => '<a href="#" class="btn btn-sm btn-secondary" title="Ban"><i class="fa fa-ban"></i></a>',
-            User::STATUS_INACTIVE, User::STATUS_BLOCKED => '<a href="#" class="btn btn-sm btn-success" title="Active"><i class="fa fa-check"></i></a>',
+            User::STATUS_ACTIVE => '<a href="' . route("app.user.changeStatus", ['id' => $user->id]) .'" class="btn btn-sm btn-secondary" title="Ban"><i class="fa fa-ban"></i></a>',
+            User::STATUS_INACTIVE, User::STATUS_BLOCKED => '<a href="' . route("app.user.changeStatus", ['id' => $user->id]) .'" class="btn btn-sm btn-success" title="Active"><i class="fa fa-check"></i></a>',
         };
 
         return '

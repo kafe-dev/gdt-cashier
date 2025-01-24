@@ -108,8 +108,8 @@ class User extends BaseController
         try {
             $request->validate([
                 'username' => 'required|string|max:255',
-                'email' => 'required|email|unique:users,email,' . $id, // Exclude the current email
-                'password' => 'nullable|string|min:8|confirmed', // Optional password field
+                'email' => 'required|email|unique:users,email,' . $id,
+                'password' => 'nullable|string|min:8|confirmed',
             ]);
 
             $user = $this->getUser($id);
@@ -145,7 +145,7 @@ class User extends BaseController
             ]);
             $role = $request->input('role');
 
-            if ($role == '')  $role = UserModel::ROLE_USER;
+            if ($role == '') $role = UserModel::ROLE_USER;
             $this->userModel->create([
                 'username' => $request->input('username'),
                 'email' => $request->input('email'),
@@ -171,5 +171,35 @@ class User extends BaseController
     private function getUser(int|string $id): UserModel
     {
         return $this->userModel->query()->findOrFail($id);
+    }
+
+    /**
+     * Action `changeStatus`.
+     *
+     * Change the status of the user to active or inactive.
+     *
+     * @param int|string $id User ID
+     * @param Request $request Illuminate request object
+     */
+    public function changeStatus(Request $request, int|string $id): RedirectResponse
+    {
+        try {
+            $user = $this->getUser($id);
+
+            if ($user->status == UserModel::STATUS_ACTIVE) {
+                $user->update([
+                    'blocked_at' => now(),
+                    'status' => UserModel::STATUS_INACTIVE,
+                ]);
+            } else {
+                $user->update([
+                    'status' => UserModel::STATUS_ACTIVE,
+                    'blocked_at' => null,
+                ]);
+            }
+        } catch (\Exception $e) {
+            return redirect()->route('app.user.index')->with('flash_error', 'Had an error while updating the status of the user');
+        }
+        return redirect()->route('app.user.index');
     }
 }
