@@ -8,6 +8,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
+use App\Models\User as UserModel;
 
 /**
  * Class Security.
@@ -30,8 +31,32 @@ class Security extends BaseController
                 'password' => ['required'],
             ]);
 
-            if (Auth::attempt($credentials)) {
+            if (Auth::attempt($credentials, $request->has('remember'))) {
+                if (Auth::user()->status === UserModel::STATUS_BLOCKED) {
+                    Auth::logout();
+
+                    $request->session()->invalidate();
+
+                    $request->session()->regenerateToken();
+
+                    flash()->error("Your account has been blocked.");
+                    return back();
+                }
+                if (Auth::user()->status === UserModel::STATUS_INACTIVE) {
+                    Auth::logout();
+
+                    $request->session()->invalidate();
+
+                    $request->session()->regenerateToken();
+
+                    flash()->error("Your account is inactive.");
+                    return back();
+                }
+
                 $request->session()->regenerate();
+
+                Auth::user()->last_login_at = now();
+                Auth::user()->save();
 
                 flash()->success("Welcome back!");
                 return redirect()->intended(route('app.home.index', absolute: false));

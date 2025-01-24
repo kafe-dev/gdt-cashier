@@ -80,7 +80,7 @@
             </li>
 
             <hr class="hr-dashed hr-menu">
-            <li class="menu-label my-2">{{ Auth::user()->username ?? "" }} ({{ Auth::user()->role ?? "" }})</li>
+            <li class="menu-label my-2">{{ Auth::user()->username ?? "" }} ({{ \App\Models\User::ROLES[Auth::user()->role] ?? "" }})</li>
             <li>
                 <a href="#"><i data-feather="user" class="align-self-center menu-icon"></i><span>Profile</span></a>
                 <a href="#"><i data-feather="key" class="align-self-center menu-icon"></i><span>Change Password</span></a>
