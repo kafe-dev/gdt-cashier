@@ -118,6 +118,7 @@ class User extends BaseController
                 'username' => $request->input('username'),
                 'email' => $request->input('email'),
                 'password' => $request->input('password') ? bcrypt($request->input('password')) : $user->password,
+                'role' => $request->input('role'),
             ]);
 
             flash()->success('User updated successfully.');

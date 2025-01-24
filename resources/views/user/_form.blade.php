@@ -1,4 +1,4 @@
-<form action="{{ isset($user) ? route('app.user.update', $user->id) : route('app.user.store') }}" method="POST" >
+<form action="{{ isset($user) ? route('app.user.update', $user->id) : route('app.user.store') }}" method="POST">
     @csrf
     @if (session('flash_error'))
         <div class="alert alert-danger">
@@ -9,17 +9,25 @@
 
         <div class="mb-3">
             <label class="form-label" for="username">Username <span class="text-danger">*</span></label>
-            <input type="text" class="form-control" id="username" name="username" placeholder="Enter username" value="{{ old('username', $user->username ?? '') }}" required>
+            <input type="text" class="form-control" id="username" name="username" placeholder="Enter username"
+                   value="{{ old('username', $user->username ?? '') }}" required>
         </div>
 
         <div class="mb-3">
             <label class="form-label" for="email">Email <span class="text-danger">*</span></label>
-            <input type="email" class="form-control" id="email" name="email" placeholder="Enter email address" value="{{ old('email', $user->email ?? '') }}" required>
+            <input type="email" class="form-control" id="email" name="email" placeholder="Enter email address"
+                   value="{{ old('email', $user->email ?? '') }}" required>
         </div>
 
         <div class="mb-3">
             <label class="form-label" for="password">Password <span class="text-danger">*</span></label>
-            <input type="password" class="form-control" id="password" name="password" placeholder="Enter password" value="{{ old('password'), $user->password ?? '' }}" @if(!isset($user)) required @endif>
+            <input type="password" class="form-control" id="password" name="password" placeholder="Enter password"
+                   value="{{ old('password'), $user->password ?? '' }}" @if(!isset($user)) required @endif>
+
+            @if(isset($user))
+                <small id="passwordHelp" class="form-text text-muted">If not entered, the password will not change.</small>
+            @endif
+
             <small id="passwordHelp" class="form-text text-muted">Never share your password with anyone else.</small>
         </div>
 
@@ -29,6 +37,9 @@
                 <option value="" disabled {{ old('role', $user->role ?? '') == null ? 'selected' : '' }}>Select permission</option>
                 <option value="0" {{ old('role', $user->role ?? '') == 0 ? 'selected' : '' }}>User</option>
                 <option value="1" {{ old('role', $user->role ?? '') == 1 ? 'selected' : '' }}>Admin</option>
+                <option value="2" {{ old('role', $user->role ?? '') == 2 ? 'selected' : '' }}>Accountant</option>
+                <option value="3" {{ old('role', $user->role ?? '') == 3 ? 'selected' : '' }}>Support</option>
+                <option value="4" {{ old('role', $user->role ?? '') == 4 ? 'selected' : '' }}>Seller</option>
             </select>
         </div>
 
