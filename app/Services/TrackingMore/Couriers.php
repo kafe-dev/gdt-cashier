@@ -1,9 +1,14 @@
 <?php
+
 /**
  * @project gdt-cashier
+ *
  * @author hoepjhsha
+ *
  * @email hiepnguyen3624@gmail.com
+ *
  * @date 24/01/2025
+ *
  * @time 21:38
  */
 
@@ -13,23 +18,25 @@ use App\Contracts\TrackingMore\CouriersInterface;
 
 class Couriers implements CouriersInterface
 {
-
     use Request;
 
     private string $apiModule = 'couriers';
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
+     *
      * @throws TrackingMoreException
      */
     public function getAllCouriers(): mixed
     {
         $this->apiPath = 'all';
+
         return $this->sendApiRequest();
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
+     *
      * @throws TrackingMoreException
      */
     public function detect(array $params = []): mixed
@@ -38,6 +45,7 @@ class Couriers implements CouriersInterface
             throw new TrackingMoreException(ErrorMessages::ErrMissingTrackingNumber);
         }
         $this->apiPath = 'detect';
-        return $this->sendApiRequest($params,'POST');
+
+        return $this->sendApiRequest($params, 'POST');
     }
 }

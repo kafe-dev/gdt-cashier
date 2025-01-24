@@ -1,9 +1,14 @@
 <?php
+
 /**
  * @project gdt-cashier
+ *
  * @author hoepjhsha
+ *
  * @email hiepnguyen3624@gmail.com
+ *
  * @date 24/01/2025
+ *
  * @time 21:41
  */
 
@@ -18,7 +23,8 @@ class Trackings implements TrackingsInterface
     private $apiModule = 'trackings';
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
+     *
      * @throws TrackingMoreException
      */
     public function createTracking(array $params = []): mixed
@@ -30,43 +36,49 @@ class Trackings implements TrackingsInterface
             throw new TrackingMoreException(ErrorMessages::ErrMissingCourierCode);
         }
         $this->apiPath = 'create';
-        return $this->sendApiRequest($params,'POST');
+
+        return $this->sendApiRequest($params, 'POST');
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
+     *
      * @throws TrackingMoreException
      */
     public function getTrackingResults(array $params = []): mixed
     {
         $paramsValue = http_build_query($params);
         $this->apiPath = "get?$paramsValue";
+
         return $this->sendApiRequest();
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
+     *
      * @throws TrackingMoreException
      */
     public function batchCreateTrackings(array $params = []): mixed
     {
-        if (count($params)>40) {
+        if (count($params) > 40) {
             throw new TrackingMoreException(ErrorMessages::ErrMaxTrackingNumbersExceeded);
         }
-        for($i=0;$i<count($params);$i++){
-            if(empty($params[$i]['tracking_number'])){
+        for ($i = 0; $i < count($params); $i++) {
+            if (empty($params[$i]['tracking_number'])) {
                 throw new TrackingMoreException(ErrorMessages::ErrMissingTrackingNumber);
             }
-            if(empty($params[$i]['courier_code'])){
+            if (empty($params[$i]['courier_code'])) {
                 throw new TrackingMoreException(ErrorMessages::ErrMissingCourierCode);
             }
         }
         $this->apiPath = 'batch';
-        return $this->sendApiRequest($params,'POST');
+
+        return $this->sendApiRequest($params, 'POST');
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
+     *
      * @throws TrackingMoreException
      */
     public function updateTrackingByID(string $idString = '', array $params = []): mixed
@@ -75,11 +87,13 @@ class Trackings implements TrackingsInterface
             throw new TrackingMoreException(ErrorMessages::ErrEmptyId);
         }
         $this->apiPath = "update/$idString";
-        return $this->sendApiRequest($params,'PUT');
+
+        return $this->sendApiRequest($params, 'PUT');
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
+     *
      * @throws TrackingMoreException
      */
     public function deleteTrackingByID(string $idString = ''): mixed
@@ -88,11 +102,13 @@ class Trackings implements TrackingsInterface
             throw new TrackingMoreException(ErrorMessages::ErrEmptyId);
         }
         $this->apiPath = "delete/$idString";
-        return $this->sendApiRequest(null,'DELETE');
+
+        return $this->sendApiRequest(null, 'DELETE');
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
+     *
      * @throws TrackingMoreException
      */
     public function retrackTrackingByID(string $idString = ''): mixed
@@ -101,6 +117,7 @@ class Trackings implements TrackingsInterface
             throw new TrackingMoreException(ErrorMessages::ErrEmptyId);
         }
         $this->apiPath = "retrack/$idString";
-        return $this->sendApiRequest(null,'POST');
+
+        return $this->sendApiRequest(null, 'POST');
     }
 }

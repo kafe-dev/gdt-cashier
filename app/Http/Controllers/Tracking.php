@@ -23,25 +23,24 @@ class Tracking extends BaseController
     {
         parent::__construct();
 
-        $this->trackings = new Trackings();
+        $this->trackings = new Trackings;
     }
 
     /**
      * Action `index`.
+     *
      * @throws TrackingMoreException
      */
     public function index()
     {
         $response = $this->trackings->createTracking([
-            'tracking_number' => 'YT2500721403049042',
+            'tracking_number' => 'YT2420421236076085',
             'courier_code' => 'yunexpress',
         ]);
 
         $response2 = $this->trackings->getTrackingResults([
-            'tracking_number'=>'YT2500721403049042',
-            'courier_code'=>'yunexpress',
-            'created_date_min'=>'2023-08-23T06:00:00+00:00',
-            'created_date_max'=>'2023-09-05T07:20:42+00:00'
+            'tracking_numbers' => 'YT2500721403049042',
+            'courier_code' => 'yunexpress',
         ]);
 
         dd($response2);
