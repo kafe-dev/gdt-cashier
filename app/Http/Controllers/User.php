@@ -43,7 +43,7 @@ class User extends BaseController
     /**
      * Action `show`.
      *
-     * @param  int|string  $id  User ID
+     * @param int|string $id User ID
      */
     public function show(int|string $id): View
     {
@@ -55,7 +55,7 @@ class User extends BaseController
     /**
      * Action `create`.
      *
-     * @param  Request  $request  Illuminate request object
+     * @param Request $request Illuminate request object
      */
     public function create(Request $request): View|RedirectResponse
     {
@@ -63,12 +63,13 @@ class User extends BaseController
     }
 
     /**
-     * Action `update`.
+     * Action `edit`.
      *
-     * @param  int|string  $id  User ID
-     * @param  Request  $request  Illuminate request object
+     * Show the form to update an existing user.
+     *
+     * @param int|string $id User ID
      */
-    public function update(int|string $id, Request $request): View|RedirectResponse
+    public function edit(int|string $id): View|RedirectResponse
     {
         return view('user.update', [
             'user' => $this->getUser($id),
@@ -78,8 +79,8 @@ class User extends BaseController
     /**
      * Action `delete`.
      *
-     * @param  int|string  $id  User ID
-     * @param  Request  $request  Illuminate request object
+     * @param int|string $id User ID
+     * @param Request $request Illuminate request object
      */
     public function delete(int|string $id, Request $request): RedirectResponse
     {
@@ -95,9 +96,73 @@ class User extends BaseController
     }
 
     /**
+     * Action 'update'.
+     *
+     * Store the updated user information in the database.
+     *
+     * @param Request $request Illuminate request object
+     * @param int|string $id User ID
+     */
+    public function update(Request $request, int|string $id): RedirectResponse
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email,' . $id, // Exclude the current email
+            'password' => 'nullable|string|min:8|confirmed', // Optional password field
+        ]);
+
+        $user = $this->getUser($id);
+
+        $user->update([
+            'name' => $request->input('name'),
+            'email' => $request->input('email'),
+            'password' => $request->input('password') ? bcrypt($request->input('password')) : $user->password,
+        ]);
+
+        flash()->success('User updated successfully.');
+        return redirect()->route('app.user.index');
+    }
+
+    /**
+     * Action `store`.
+     *
+     * Handles the storage of a new user.
+     *
+     * @param Request $request Illuminate request object
+     *
+     */
+    public function store(Request $request): RedirectResponse
+    {
+        try {
+            $request->validate([
+                'username' => 'required|string|max:255',
+                'email' => 'required|email|unique:users,email',
+                'password' => 'required|string|min:8',
+            ]);
+            $role = $request->input('role');
+
+            if ($role == '')  $role = UserModel::ROLE_USER;
+            $this->userModel->create([
+                'username' => $request->input('username'),
+                'email' => $request->input('email'),
+                'password' => bcrypt($request->input('password')),
+                'role' => $role,
+                'registration_ip' => $request->ip(),
+            ]);
+
+            flash()->success('User created successfully.');
+        } catch (\Exception $e) {
+
+            return redirect()->route('app.user.create')->with('flash_error', 'Email or Username already exists');
+        }
+
+        return redirect()->route('app.user.index');
+    }
+
+    /**
      * Returns the specific user based on the given ID.
      *
-     * @param  int|string  $id  User ID
+     * @param int|string $id User ID
      */
     private function getUser(int|string $id): UserModel
     {

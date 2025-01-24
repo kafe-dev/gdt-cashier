@@ -59,7 +59,7 @@ class UserTransformer extends TransformerAbstract
         return '
             '.$modify.'
             '.ActionWidget::renderShowBtn(route('app.user.show', ['id' => $user->id])).'
-            '.ActionWidget::renderUpdateBtn(route('app.user.update', ['id' => $user->id])).'
+            '.ActionWidget::renderUpdateBtn(route('app.user.edit', ['id' => $user->id])).'
             '.ActionWidget::renderDeleteBtn($user->id, route('app.user.delete', ['id' => $user->id])).'
         ';
     }
