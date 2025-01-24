@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Models\Store as StoreModel;
-use App\Services\DataTables\UserDataTable;
+use App\Services\DataTables\StoreDataTable;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -35,7 +35,7 @@ class Store extends BaseController
     /**
      * Action `index`.
      */
-    public function index(UserDataTable $dataTable)
+    public function index(StoreDataTable $dataTable)
     {
         return $dataTable->render('store.index');
     }
@@ -107,6 +107,35 @@ class Store extends BaseController
     public function store(Request $request): RedirectResponse
     {
         //
+    }
+
+    /**
+     * Action `changeStatus`.
+     *
+     * Change the status of the user to active or inactive.
+     *
+     * @param int|string $id User ID
+     * @param Request $request Illuminate request object
+     */
+    public function changeStatus(Request $request, int|string $id): RedirectResponse
+    {
+        try {
+            $user = $this->getStore($id);
+
+            if ($user->status == StoreModel::STATUS_ACTIVE) {
+                $user->update([
+                    'status' => StoreModel::STATUS_INACTIVE,
+                ]);
+            } else {
+                $user->update([
+                    'status' => StoreModel::STATUS_ACTIVE,
+                ]);
+            }
+        } catch (\Exception $e) {
+            flash()->error('Had an error while updating the status of the store');
+            return redirect()->route('app.user.index');
+        }
+        return redirect()->route('app.store.index');
     }
 
     /**
