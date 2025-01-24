@@ -64,7 +64,7 @@ class StoreDataTable extends BaseDataTable
             Column::make(['data' => 'id', 'title' => 'ID'])->Width('8px')->addClass('x-id'),
             Column::make(['data' => 'user_id', 'title' => 'UID'])->Width('35px')->addClass('x-searchable'),
             Column::make('name')->searchPanes()->addClass('x-searchable'),
-            Column::make('url')->Width('200px')->searchPanes()->addClass('x-searchable'),
+            Column::make('url')->Width('180px')->searchPanes()->addClass('x-searchable'),
             Column::make('description')->Width('200px')->addClass('x-searchable'),
             Column::make('status')->searchPanes(),
             Column::make('api_data')->Width('200px')->orderable(false),
