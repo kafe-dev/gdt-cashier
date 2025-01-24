@@ -34,10 +34,9 @@
         <div class="mb-3">
             <label class="form-label" for="role">Permission</label>
             <select class="form-select" id="role" name="role">
-                <option value="" disabled {{ old('role', $user->role ?? '') == null ? 'selected' : '' }}>Select permission</option>
-                <option value="0" {{ old('role', $user->role ?? '') == 0 ? 'selected' : '' }}>User</option>
+                <option value="0" {{ isset($user) ? (old('role', $user->role ?? '') == 0 ? 'selected' : '' ) : 'selected'}}>User</option>
                 @if(\App\Models\User::ROLES[Auth::user()->role] == 'Admin')
-                    <option value="1" {{ old('role', $user->role ?? '') == 1 ? 'selected' : '' }}>Admin</option>
+                    <option value="5" {{ old('role', $user->role ?? '') == 5 ? 'selected' : '' }}>Sub Admin</option>
                 @endif
                 <option value="2" {{ old('role', $user->role ?? '') == 2 ? 'selected' : '' }}>Accountant</option>
                 <option value="3" {{ old('role', $user->role ?? '') == 3 ? 'selected' : '' }}>Support</option>
