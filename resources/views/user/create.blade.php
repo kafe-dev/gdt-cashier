@@ -5,7 +5,7 @@
 @endpush
 
 @push('breadcrumbs')
-    {{ Breadcrumbs::render('create-paygate') }}
+    {{ Breadcrumbs::render('create-user') }}
 @endpush
 
 @section('content')

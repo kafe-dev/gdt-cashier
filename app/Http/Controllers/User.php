@@ -107,9 +107,9 @@ class User extends BaseController
     {
         try {
             $request->validate([
-                'username' => 'required|string|max:255',
+                'username' => 'required|string|max:50|regex:/^[a-zA-Z0-9_]*$/',
                 'email' => 'required|email|unique:users,email,' . $id,
-                'password' => 'nullable|string|min:8|confirmed',
+                'password' => 'nullable|string|min:8|max:100|regex:/^[a-zA-Z0-9!@#$%^&*()_+]*$/',
             ]);
 
             $user = $this->getUser($id);
@@ -124,7 +124,8 @@ class User extends BaseController
             flash()->success('User updated successfully.');
             return redirect()->route('app.user.index');
         } catch (\Exception $e) {
-            return redirect()->route('app.user.edit', $id)->with('flash_error', 'Email or Username already exists');
+            flash()->error('The entered information is invalid, or the email/password is already in use.');
+            return redirect()->route('app.user.edit', $id);
         }
     }
 
@@ -140,9 +141,9 @@ class User extends BaseController
     {
         try {
             $request->validate([
-                'username' => 'required|string|max:255',
+                'username' => 'required|string|max:50|regex:/^[a-zA-Z0-9_]*$/',
                 'email' => 'required|email|unique:users,email',
-                'password' => 'required|string|min:8',
+                'password' => 'required|string|min:8|max:100|regex:/^[a-zA-Z0-9!@#$%^&*()_+]*$/',
             ]);
             $role = $request->input('role');
 
@@ -157,8 +158,8 @@ class User extends BaseController
 
             flash()->success('User created successfully.');
         } catch (\Exception $e) {
-
-            return redirect()->route('app.user.create')->with('flash_error', 'Email or Username already exists');
+            flash()->error('The entered information is invalid, or the email/password is already in use.');
+            return redirect()->route('app.user.create');
         }
 
         return redirect()->route('app.user.index');
@@ -198,8 +199,10 @@ class User extends BaseController
                     'blocked_at' => null,
                 ]);
             }
+            flash()->success('Change successfully.');
         } catch (\Exception $e) {
-            return redirect()->route('app.user.index')->with('flash_error', 'Had an error while updating the status of the user');
+            flash()->error('Had an error while updating the status of the user.');
+            return redirect()->route('app.user.index');
         }
         return redirect()->route('app.user.index');
     }

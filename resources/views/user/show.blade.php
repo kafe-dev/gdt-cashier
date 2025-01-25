@@ -104,7 +104,7 @@
                     </ul>
                 </div>
                 <div class="card-footer">
-                    {{ \App\Utils\ActionWidget::renderUpdateBtn(route('app.user.update', ['id' => $user->id]), 'Update', 'btn btn-warning text-white') }}
+                    {{ \App\Utils\ActionWidget::renderUpdateBtn(route('app.user.edit', ['id' => $user->id]), 'Update', 'btn btn-warning text-white') }}
                     {{ \App\Utils\ActionWidget::renderDeleteBtn($user->id, route('app.user.delete', ['id' => $user->id]), 'Delete', 'btn btn-danger') }}
                     {{ \App\Utils\ActionWidget::renderGoBackBtn('Go Back', 'btn btn-primary') }}
                 </div>
