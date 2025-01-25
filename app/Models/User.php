@@ -44,12 +44,15 @@ class User extends Authenticatable
 
     public final const int ROLE_SELLER = 4;
 
+    public final const int ROLE_SUB_ADMIN = 5;
+
     public final const array ROLES = [
         self::ROLE_USER => 'User',
         self::ROLE_ADMIN => 'Admin',
         self::ROLE_ACCOUNTANT => 'Accountant',
         self::ROLE_SUPPORT => 'Support',
         self::ROLE_SELLER => 'Seller',
+        self::ROLE_SUB_ADMIN => 'SubAdmin',
     ];
 
     public final const int STATUS_INACTIVE = 0;

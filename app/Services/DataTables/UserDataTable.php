@@ -50,7 +50,11 @@ class UserDataTable extends BaseDataTable
             ->setTransformer(UserTransformer::class)
             ->setRowId('id')
             ->escapeColumns(['username', 'email'])
-            ->rawColumns(['action']);
+            ->rawColumns(['action'])
+            ->filter(function ($query) {
+                $query->where('role', '!=', 1)
+                      ->where('id', '!=', auth()->id());
+            });
 
         return UserFilter::perform($dataTable);
     }
