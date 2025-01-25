@@ -14,7 +14,7 @@
             <div class="card">
                 <div class="card-header">
                     <h4 class="card-title">Store ID: {{ $store->id }}</h4>
-                    <p class="text-muted mb-0">This table below is showing the detail information of user ID: {{ $store->id }}</p>
+                    <p class="text-muted mb-0">This table below is showing the detail information of store ID: {{ $store->id }}</p>
                 </div>
                 <div class="card-body">
                     <ul class="list-group">
