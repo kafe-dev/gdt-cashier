@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Dispute;
+use App\Http\Middlewares\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middlewares\Auth;
 

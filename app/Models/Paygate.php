@@ -30,7 +30,7 @@ class Paygate extends Model
 
     public final const int TYPE_STRIPE = 1;
 
-    public final const array TYPES = [
+    public final const array TYPE = [
         self::TYPE_PAYPAL => 'Paypal',
         self::TYPE_STRIPE => 'Stripe',
     ];
@@ -41,7 +41,7 @@ class Paygate extends Model
 
     public final const int STATUS_DRAFT = 2;
 
-    public final const array STATUSES = [
+    public final const array STATUS = [
         self::STATUS_INACTIVE => 'Inactive',
         self::STATUS_ACTIVE => 'Active',
         self::STATUS_DRAFT => 'Draft',
