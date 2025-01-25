@@ -24,7 +24,7 @@
                     </tr>
                     </thead>
                     <tbody>
-                    @foreach($paygates as $index => $paygate)
+                    @foreach($disputes as $index => $dispute)
                         <tr>
                             <th scope="row">{{ $index + 1 }}</th>
                             <td>{{ $paygate->name }}</td>
@@ -34,7 +34,7 @@
                             <td>
                                 <a href="{{ route('app.paygate.show', $paygate->id) }}" class="btn btn-light btn-sm">Chi tiết</a>
                                 <a href="{{ route('app.paygate.update', $paygate->id) }}" class="btn btn-light btn-sm">Sửa</a>
-                                @if ($paygate->status == Paygate::STATUS_ACTIVE)
+                                @if ($paygate->status == Paygate::STAUTS_ACTIVE)
                                     <a href="{{ route('app.paygate.block', $paygate->id) }}"
                                        class="btn btn-light btn-sm">Block</a>
                                 @else

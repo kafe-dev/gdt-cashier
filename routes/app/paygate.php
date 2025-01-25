@@ -13,7 +13,9 @@ Route::controller(Paygate::class)
         Route::get('/show/{id}', 'show')->name('show');
         Route::get('/create', 'create')->name('create');
         Route::get('/update/{id}', 'update')->name('update');
+        Route::post('/updated/{id}', 'updated')->name('updated');
         Route::post('/delete/{id}', 'delete')->name('delete');
         Route::post('/store', 'store')->name('store');
-
+        Route::get('/block/{id}', 'block')->name('block');
+        Route::get('/unblock/{id}', 'unblock')->name('unblock');
     });

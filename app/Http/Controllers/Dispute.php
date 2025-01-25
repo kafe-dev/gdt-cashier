@@ -20,7 +20,8 @@ class Dispute extends BaseController
      */
     public function index()
     {
-        return view('dispute.index');
+        $disputes = \App\Models\Dispute::all();
+        return view('dispute.index',compact('disputes'));
     }
 
     /**
@@ -30,7 +31,8 @@ class Dispute extends BaseController
      */
     public function show(int|string $id): View
     {
-        return view('dispute.show');
+        $dispute = \App\Models\Dispute::find($id);
+        return view('dispute.show',compact('dispute'));
     }
 
     /**

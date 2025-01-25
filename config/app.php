@@ -127,6 +127,7 @@ return [
     'version' => env('APP_VERSION', '0.0.1'),
     'commands' => [
         App\Console\Commands\Test::class,
+        \App\Console\Commands\Order::class,
     ],
 
 ];

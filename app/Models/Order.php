@@ -21,6 +21,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string|null $link
  * @property mixed $created_at
  * @property mixed $updated_at
+ * @method errors()
  */
 class Order extends Model
 {
