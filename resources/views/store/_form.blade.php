@@ -27,6 +27,7 @@
                    value="{{ old('url', $store->url ?? '') }}" required>
         </div>
 
+
         <div class="mb-3">
             <label class="form-label" for="api_data">Description</label>
             <textarea class="form-control" id="api_data" name="description" rows="5"
@@ -34,8 +35,8 @@
         </div>
 
         <div class="mb-3">
-            <label class="form-label" for="api_data">API Data <span class="text-danger">*</span></label>
-            <textarea class="form-control" id="api_data" name="api_data" rows="5" required
+            <label class="form-label" for="api_data">API Data </label>
+            <textarea class="form-control" id="api_data" name="api_data" rows="5"
                       placeholder="Enter API data store.">{{ old('api_data', $store->api_data ?? '') }}</textarea>
         </div>
 

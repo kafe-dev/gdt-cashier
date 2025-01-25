@@ -75,6 +75,7 @@ class Store extends BaseController
     public function update(int|string $id, Request $request): View|RedirectResponse
     {
         return view('store.update', [
+            'users' => UserModel::query()->select('id', 'username', 'email')->get()->toArray(),
             'store' => $this->getStore($id),
         ]);
     }
@@ -110,7 +111,31 @@ class Store extends BaseController
 
     public function store(Request $request): RedirectResponse
     {
-        //
+        try {
+            $this->validateStoreData($request);
+
+            if ($request->input('api_data')) {
+                if (!json_validate($request->input('api_data'))) {
+                    flash()->error('The API data you entered is invalid.');
+                    return redirect()->route('app.store.create');
+                }
+            }
+
+            $this->storeModel->create([
+                'user_id' => $request->input('user_id'),
+                'name' => $request->input('name'),
+                'url' => $request->input('url'),
+                'description' => $request->input('description'),
+                'api_data' => $request->input('api_data'),
+            ]);
+
+            flash()->success('Store created successfully.');
+        } catch (\Exception $e) {
+            flash()->error('The entered information is invalid.');
+            return redirect()->route('app.store.create');
+        }
+
+        return redirect()->route('app.store.index');
     }
 
     /**
@@ -151,4 +176,20 @@ class Store extends BaseController
     {
         return $this->storeModel->query()->findOrFail($id);
     }
+
+    /**
+     * Validates the store data before storage.
+     *
+     * @param Request $request Illuminate request object
+     */
+    private function validateStoreData(Request $request): void
+    {
+        $request->validate([
+            'name' => 'required|string|max:50|regex:/^[a-zA-Z0-9_]*$/',
+            'url' => 'required|url',
+            'description' => 'nullable|string|max:500|regex:/^[a-zA-Z0-9!@#$%^&*()_+ ]*$/',
+            'api_data' => 'nullable|string',
+        ]);
+    }
 }
+
