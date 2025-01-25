@@ -4,6 +4,8 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Models\Paygate as PaygateModel;
+use App\Services\DataTables\PaygateDataTable;
+use App\Services\DataTables\UserDataTable;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -18,9 +20,8 @@ class Paygate extends BaseController {
     /**
      * Action `index`.
      */
-    public function index() {
-        $paygates = PaygateModel::all();
-        return view('paygate.index', compact('paygates'));
+    public function index(PaygateDataTable $dataTable) {
+        return $dataTable->render('paygate.index');
     }
 
     /**
