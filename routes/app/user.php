@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 Route::controller(User::class)
     ->prefix('user')
     ->name('app.user.')
+    ->middleware([Auth::class])
     ->group(function () {
         Route::get('/manage', 'index')->name('index');
         Route::get('/show/{id}', 'show')->name('show');
@@ -15,5 +16,4 @@ Route::controller(User::class)
         Route::post('/store', 'store')->name('store');
         Route::post('/delete/{id}', 'delete')->name('delete');
         Route::get('/changeStatus{id}', 'changeStatus')->name('changeStatus');
-    })
-    ->middleware([Auth::class]);
+    });
