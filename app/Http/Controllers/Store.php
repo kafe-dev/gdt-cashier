@@ -5,10 +5,12 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Models\Store as StoreModel;
+use App\Models\User as UserModel;
 use App\Services\DataTables\StoreDataTable;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+
 
 /**
  * Class Store.
@@ -59,7 +61,9 @@ class Store extends BaseController
      */
     public function create(Request $request): View|RedirectResponse
     {
-        return view('store.create');
+        return view('store.create', [
+            'users' => UserModel::query()->select('id', 'username', 'email')->get()->toArray(),
+        ]);
     }
 
     /**
