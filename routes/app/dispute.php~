@@ -1,12 +1,11 @@
 <?php
 
-use App\Http\Controllers\Tracking;
+use App\Http\Controllers\Dispute;
 use Illuminate\Support\Facades\Route;
-use App\Http\Middlewares\Auth;
 
-Route::controller(Tracking::class)
-    ->prefix('tracking')
-    ->name('app.tracking.')
+Route::controller(Dispute::class)
+    ->prefix('dispute')
+    ->name('app.dispute.')
     ->middleware([Auth::class])
     ->group(function () {
         Route::get('/manage', 'index')->name('index');

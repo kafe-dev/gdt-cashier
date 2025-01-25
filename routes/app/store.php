@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Store;
 use Illuminate\Support\Facades\Route;
+use App\Http\Middlewares\Auth;
 
 Route::controller(Store::class)
     ->prefix('store')

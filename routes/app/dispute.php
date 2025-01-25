@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Dispute;
 use Illuminate\Support\Facades\Route;
+use App\Http\Middlewares\Auth;
 
 Route::controller(Dispute::class)
     ->prefix('dispute')

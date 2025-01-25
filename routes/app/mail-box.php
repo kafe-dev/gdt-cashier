@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\MailBox;
 use Illuminate\Support\Facades\Route;
+use App\Http\Middlewares\Auth;
 
 Route::controller(MailBox::class)
     ->prefix('mail-box')

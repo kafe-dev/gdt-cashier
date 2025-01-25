@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\User;
 use Illuminate\Support\Facades\Route;
+use App\Http\Middlewares\Auth;
 
 Route::controller(User::class)
     ->prefix('user')
