@@ -45,19 +45,20 @@ class Store extends BaseController
     /**
      * Action `show`.
      *
-     * @param  int|string  $id  The store ID
+     * @param int|string $id The store ID
      */
     public function show(int|string $id): View
     {
         return view('store.show', [
             'store' => $this->getStore($id),
+            'user' => UserModel::query()->where('id', $this->getStore($id)->user_id)->first(['username', 'email']),
         ]);
     }
 
     /**
      * Action `create`.
      *
-     * @param  Request  $request  Illuminate request object
+     * @param Request $request Illuminate request object
      */
     public function create(Request $request): View|RedirectResponse
     {
@@ -69,8 +70,8 @@ class Store extends BaseController
     /**
      * Action `update`.
      *
-     * @param  int|string  $id  The store ID
-     * @param  Request  $request  Illuminate request object
+     * @param int|string $id The store ID
+     * @param Request $request Illuminate request object
      */
     public function update(int|string $id, Request $request): View|RedirectResponse
     {
@@ -83,8 +84,8 @@ class Store extends BaseController
     /**
      * Action `delete`.
      *
-     * @param  int|string  $id  The store ID
-     * @param  Request  $request  Illuminate request object
+     * @param int|string $id The store ID
+     * @param Request $request Illuminate request object
      */
     public function delete(int|string $id, Request $request): RedirectResponse
     {
@@ -109,7 +110,7 @@ class Store extends BaseController
      *
      */
 
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request, ?int $id = null): RedirectResponse
     {
         try {
             $this->validateStoreData($request);
@@ -120,19 +121,19 @@ class Store extends BaseController
                     return redirect()->route('app.store.create');
                 }
             }
-
-            $this->storeModel->create([
-                'user_id' => $request->input('user_id'),
-                'name' => $request->input('name'),
-                'url' => $request->input('url'),
-                'description' => $request->input('description'),
-                'api_data' => $request->input('api_data'),
-            ]);
-
-            flash()->success('Store created successfully.');
+            $data = $this->getData($request);
+            if (!$id) {
+                $this->storeModel->create($data);
+                flash()->success('Store created successfully.');
+            } else {
+                $store = $this->getStore($id);
+                $store->update($data);
+                flash()->success('Store updated successfully.');
+            }
         } catch (\Exception $e) {
             flash()->error('The entered information is invalid.');
-            return redirect()->route('app.store.create');
+            if (!$id) return redirect()->route('app.store.create');
+            else return redirect()->route('app.store.update');
         }
 
         return redirect()->route('app.store.index');
@@ -190,6 +191,24 @@ class Store extends BaseController
             'description' => 'nullable|string|max:500|regex:/^[a-zA-Z0-9!@#$%^&*()_+ ]*$/',
             'api_data' => 'nullable|string',
         ]);
+    }
+
+    /**
+     *
+     * Return all the store data.
+     *
+     * @param Request $request
+     * @return array
+     */
+    private function getData(Request $request): array
+    {
+        return [
+            'user_id' => $request->input('user_id'),
+            'name' => $request->input('name'),
+            'url' => $request->input('url'),
+            'description' => $request->input('description'),
+            'api_data' => $request->input('api_data'),
+        ];
     }
 }
 

@@ -1,4 +1,4 @@
-<form action="{{ isset($store) ? route('app.store.update', $store->id) : route('app.store.store') }}" method="POST">
+<form action="{{ isset($store) ? route('app.store.store', $store->id) : route('app.store.store') }}" method="POST">
     @csrf
     <div class="card-body">
 
