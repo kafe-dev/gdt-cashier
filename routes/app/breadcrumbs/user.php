@@ -25,5 +25,5 @@ Breadcrumbs::for('create-user', function (BreadcrumbTrail $trail) {
 // Dashboard > Manage Users > Update User
 Breadcrumbs::for('update-user', function (BreadcrumbTrail $trail, User $user) {
     $trail->parent('manage-user');
-    $trail->push('Update User', route('app.user.update', ['id' => $user->id]));
+    $trail->push('Update User', route('app.user.edit', ['id' => $user->id]));
 });

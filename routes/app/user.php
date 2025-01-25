@@ -16,5 +16,5 @@ Route::controller(User::class)
         Route::post('/update/{id}', 'update')->name('update');
         Route::post('/store', 'store')->name('store');
         Route::post('/delete/{id}', 'delete')->name('delete');
-        Route::get('/changeStatus{id}', 'changeStatus')->name('changeStatus');
+        Route::get('/changeStatus/{id}', 'changeStatus')->name('changeStatus');
     });
