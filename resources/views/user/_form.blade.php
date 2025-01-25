@@ -21,8 +21,8 @@
 
         <div class="mb-3">
             <label class="form-label" for="password">Password <span class="text-danger">*</span></label>
-            <input type="password" class="form-control" id="password" name="password" placeholder="Enter password"
-                   value="{{ old('password'), $user->password ?? '' }}" @if(!isset($user)) required @endif>
+            <input type="password" minlength="8" class="form-control" id="password" name="password" placeholder="Enter password"
+                   value="" @if(!isset($user)) required @endif>
 
             @if(isset($user))
                 <small id="passwordHelp" class="form-text text-muted">If not entered, the password will not change.</small>
@@ -34,9 +34,10 @@
         <div class="mb-3">
             <label class="form-label" for="role">Permission</label>
             <select class="form-select" id="role" name="role">
-                <option value="" disabled {{ old('role', $user->role ?? '') == null ? 'selected' : '' }}>Select permission</option>
-                <option value="0" {{ old('role', $user->role ?? '') == 0 ? 'selected' : '' }}>User</option>
-                <option value="1" {{ old('role', $user->role ?? '') == 1 ? 'selected' : '' }}>Admin</option>
+                <option value="0" {{ isset($user) ? (old('role', $user->role ?? '') == 0 ? 'selected' : '' ) : 'selected'}}>User</option>
+                @if(\App\Models\User::ROLES[Auth::user()->role] == 'Admin')
+                    <option value="5" {{ old('role', $user->role ?? '') == 5 ? 'selected' : '' }}>Sub Admin</option>
+                @endif
                 <option value="2" {{ old('role', $user->role ?? '') == 2 ? 'selected' : '' }}>Accountant</option>
                 <option value="3" {{ old('role', $user->role ?? '') == 3 ? 'selected' : '' }}>Support</option>
                 <option value="4" {{ old('role', $user->role ?? '') == 4 ? 'selected' : '' }}>Seller</option>

@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Route;
 Route::controller(Paygate::class)
     ->prefix('paygate')
     ->name('app.paygate.')
+    ->middleware([Auth::class])
     ->group(function () {
         Route::get('/manage', 'index')->name('index');
         Route::get('/show/{id}', 'show')->name('show');
@@ -18,4 +19,3 @@ Route::controller(Paygate::class)
         Route::get('/block/{id}', 'block')->name('block');
         Route::get('/unblock/{id}', 'unblock')->name('unblock');
     })
-    ->middleware([Auth::class]);
