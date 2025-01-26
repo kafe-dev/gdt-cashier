@@ -173,7 +173,12 @@ class Store extends BaseController
 
     public function testConnection(Request $request, int|string $id)
     {
-        flash()->success("Test connect successful.");
+        $store = $this->getStore($id);
+        if ($store->api_data) {
+            flash()->success("Test connect successful.");
+        } else {
+            flash()->error("Test connect failed.");
+        }
         return redirect()->route('app.store.index');
     }
 
