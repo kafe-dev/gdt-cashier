@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Facades\TrackingMore;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -20,6 +21,15 @@ class Tracking extends BaseController
      */
     public function index()
     {
+        try {
+            // Create a single tracking
+            TrackingMore::tracking()->createTracking(['tracking_number' => '92144903627188110001327221', 'courier_code' => 'usps']);
+
+            $result = TrackingMore::tracking()->getTrackingResults();
+        } catch (\Exception $e) {
+            die($e->getMessage());
+        }
+
         return view('tracking.index');
     }
 
