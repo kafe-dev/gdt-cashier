@@ -88,4 +88,23 @@ class ActionWidget
             'classes' => $classes,
         ]);
     }
+
+    /**
+     * Render the test connection button.
+     *
+     * @param string $route Route to the resource action
+     * @param  string  $html  HTML content for the button
+     * @param  string  $classes  CSS classes for the button
+     */
+    public static function renderTestConnectionBtn(
+        string $route,
+        string $html = '<i class="fa fa-rss"></i>',
+        string $classes = 'btn btn-sm btn-dark'
+    ): View {
+        return view('_widgets.actions.testConnectionBtn', [
+            'route' => $route,
+            'html' => $html,
+            'classes' => $classes,
+        ]);
+    }
 }

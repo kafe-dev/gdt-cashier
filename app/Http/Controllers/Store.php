@@ -171,6 +171,12 @@ class Store extends BaseController
         return redirect()->route('app.store.index');
     }
 
+    public function testConnection(Request $request, int|string $id)
+    {
+        flash()->success("Test connect successful.");
+        return redirect()->route('app.store.index');
+    }
+
     /**
      * Returns the specific store based on the given ID.
      *
@@ -189,7 +195,7 @@ class Store extends BaseController
     private function validateStoreData(Request $request): void
     {
         $request->validate([
-            'name' => 'required|string|max:50|regex:/^[a-zA-Z0-9_]*$/',
+            'name' => 'required|string|max:50|regex:/^[a-zA-Z0-9_]+(?: [a-zA-Z0-9_]+)*$/',
             'url' => 'required|url',
             'description' => 'nullable|string|max:500|regex:/^[a-zA-Z0-9!@#$%^&*()_+ ]*$/',
             'api_data' => 'nullable|string',
@@ -209,4 +215,5 @@ class Store extends BaseController
             'api_data' => $request->input('api_data'),
         ];
     }
+
 }

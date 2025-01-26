@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Services\DataTables\Transformers;
 
 use App\Models\Store;
+use App\Models\User;
 use App\Utils\ActionWidget;
 use League\Fractal\TransformerAbstract;
 
@@ -28,7 +29,7 @@ class StoreTransformer extends TransformerAbstract
 
         return [
             'id' => '<span class="fw-bold float-start">'.$store->id.'</span>',
-            'user_id' => '<span class="fw-bold float-start">'.$store->user_id.'</span>',
+            'user_id' => '<span class="fw-bold float-start">'.$this->getUsername($store->user_id).'</span>',
             'name' => $store->name,
             'url' => '<a class="text-primary" href="'.$store->url.'">'.$store->url.'</a>',
             'description' => $store->description,
@@ -51,12 +52,20 @@ class StoreTransformer extends TransformerAbstract
         };
 
         return '
-            <div style="display: grid; gap: 5px">
+            <div style="display: grid; gap: 5px; grid-template-columns: auto auto auto">
                 '.$modify.'
                 '.ActionWidget::renderShowBtn(route('app.store.show', ['id' => $store->id])).'
                 '.ActionWidget::renderUpdateBtn(route('app.store.update', ['id' => $store->id])).'
                 '.ActionWidget::renderDeleteBtn($store->id, route('app.store.delete', ['id' => $store->id])).'
+                '.ActionWidget::renderTestConnectionBtn(route('app.store.testConnection' , ['id' => $store->id])).'
             </div>
         ';
+    }
+
+    private function getUsername(int $user_id): string
+    {
+        $user = User::query()->find($user_id);
+
+        return! empty($user)? $user->username : 'User not found';
     }
 }

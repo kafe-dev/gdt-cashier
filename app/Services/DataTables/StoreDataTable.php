@@ -62,14 +62,14 @@ class StoreDataTable extends BaseDataTable
     {
         return [
             Column::make(['data' => 'id', 'title' => 'ID'])->Width('8px')->addClass('x-id'),
-            Column::make(['data' => 'user_id', 'title' => 'UID'])->Width('35px')->addClass('x-searchable'),
+            Column::make(['data' => 'user_id', 'title' => 'Owner'])->Width('50px')->searchPanes()->addClass('x-searchable'),
             Column::make('name')->searchPanes()->addClass('x-searchable'),
-            Column::make('url')->Width('180px')->searchPanes()->addClass('x-searchable'),
-            Column::make('description')->Width('200px')->addClass('x-searchable'),
+            Column::make('url')->Width('150px')->searchPanes()->addClass('x-searchable'),
+            Column::make('description')->Width('250px')->addClass('x-searchable'),
             Column::make('status')->searchPanes(),
-            Column::make('api_data')->Width('200px')->orderable(false),
             Column::make('created_at')->searchPanes()->addClass('x-has-date-filter')->orderable(false),
             Column::make('updated_at')->searchPanes()->addClass('x-has-date-filter')->orderable(false),
         ];
     }
+
 }

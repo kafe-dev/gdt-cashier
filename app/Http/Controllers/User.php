@@ -156,7 +156,7 @@ class User extends BaseController
                 'email' => $request->input('email'),
                 'password' => bcrypt($request->input('password')),
                 'role' => $role,
-                'registration_ip' => $request->ip(),
+                'registration_ip' => $this->getRealClientIp(),
             ]);
 
             flash()->success('User created successfully.');
@@ -211,5 +211,22 @@ class User extends BaseController
         }
 
         return redirect()->route('app.user.index');
+    }
+
+    /**
+     * Return real client ip
+     *
+     * @return mixed|string
+     */
+    private function getRealClientIp(): mixed
+    {
+        return $_SERVER['HTTP_CLIENT_IP']
+            ?? $_SERVER["HTTP_CF_CONNECTING_IP"] # when behind cloudflare
+            ?? $_SERVER['HTTP_X_FORWARDED']
+            ?? $_SERVER['HTTP_X_FORWARDED_FOR']
+            ?? $_SERVER['HTTP_FORWARDED']
+            ?? $_SERVER['HTTP_FORWARDED_FOR']
+            ?? $_SERVER['REMOTE_ADDR']
+            ?? '0.0.0.0';
     }
 }
