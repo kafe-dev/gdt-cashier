@@ -1,10 +1,5 @@
 <form action="{{ isset($user) ? route('app.user.update', $user->id) : route('app.user.store') }}" method="POST">
     @csrf
-    @if (session('flash_error'))
-        <div class="alert alert-danger">
-            {{ session('flash_error') }}
-        </div>
-    @endif
     <div class="card-body">
 
         <div class="mb-3">
@@ -21,8 +16,8 @@
 
         <div class="mb-3">
             <label class="form-label" for="password">Password <span class="text-danger">*</span></label>
-            <input type="password" minlength="8" class="form-control" id="password" name="password" placeholder="Enter password"
-                   value="" @if(!isset($user)) required @endif>
+            <input type="password" minlength="8" class="form-control" id="password" name="password"
+                   value="" @if(!isset($user)) required placeholder="Enter password" @else  placeholder="********************************" @endif>
 
             @if(isset($user))
                 <small id="passwordHelp" class="form-text text-muted">If not entered, the password will not change.</small>
