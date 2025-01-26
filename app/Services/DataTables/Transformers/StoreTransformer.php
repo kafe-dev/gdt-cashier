@@ -46,8 +46,8 @@ class StoreTransformer extends TransformerAbstract
     private function renderActions(Store $store): string
     {
         $modify = match ($store->status) {
-            Store::STATUS_ACTIVE => '<a href="' . route("app.store.changeStatus", ['id' => $store->id]) .'" class="btn btn-sm btn-secondary" title="Deactivate"><i class="fa fa-ban"></i></a>',
-            Store::STATUS_INACTIVE, Store::STATUS_DRAFT => '<a href="' . route("app.store.changeStatus", ['id' => $store->id]) .'" class="btn btn-sm btn-success" title="Active"><i class="fa fa-check"></i></a>',
+            Store::STATUS_ACTIVE => '<a href="'.route('app.store.changeStatus', ['id' => $store->id]).'" class="btn btn-sm btn-secondary" title="Deactivate"><i class="fa fa-ban"></i></a>',
+            Store::STATUS_INACTIVE, Store::STATUS_DRAFT => '<a href="'.route('app.store.changeStatus', ['id' => $store->id]).'" class="btn btn-sm btn-success" title="Active"><i class="fa fa-check"></i></a>',
         };
 
         return '

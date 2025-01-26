@@ -8,49 +8,50 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * Class Dispute
  *
- * @property int                             $id
- * @property string                          $dispute_id
+ * @property int $id
+ * @property string $dispute_id
  * @property \Illuminate\Support\Carbon|null $create_time
  * @property \Illuminate\Support\Carbon|null $update_time
- * @property string|null                     $buyer_transaction_id
- * @property int                             $merchant_id
- * @property string|null                     $reason
- * @property string|null                     $status
- * @property string|null                     $dispute_state
- * @property string|null                     $dispute_amount_currency
- * @property float|null                      $dispute_amount_value
- * @property string|null                     $dispute_life_cycle_stage
- * @property string|null                     $dispute_channel
+ * @property string|null $buyer_transaction_id
+ * @property int $merchant_id
+ * @property string|null $reason
+ * @property string|null $status
+ * @property string|null $dispute_state
+ * @property string|null $dispute_amount_currency
+ * @property float|null $dispute_amount_value
+ * @property string|null $dispute_life_cycle_stage
+ * @property string|null $dispute_channel
  * @property \Illuminate\Support\Carbon|null $seller_response_due_date
- * @property string|null                     $link
- * @property int|null                        $created_at
- * @property int|null                        $updated_at
+ * @property string|null $link
+ * @property int|null $created_at
+ * @property int|null $updated_at
+ *
  * @method errors()
  */
-class Dispute extends Model {
+class Dispute extends Model
+{
+    use HasFactory;
 
-	use HasFactory;
+    protected $fillable = [
+        'dispute_id',
+        'create_time',
+        'update_time',
+        'buyer_transaction_id',
+        'merchant_id',
+        'reason',
+        'status',
+        'dispute_state',
+        'dispute_amount_currency',
+        'dispute_amount_value',
+        'dispute_life_cycle_stage',
+        'dispute_channel',
+        'seller_response_due_date',
+        'link',
+    ];
 
-	protected $fillable = [
-		'dispute_id',
-		'create_time',
-		'update_time',
-		'buyer_transaction_id',
-		'merchant_id',
-		'reason',
-		'status',
-		'dispute_state',
-		'dispute_amount_currency',
-		'dispute_amount_value',
-		'dispute_life_cycle_stage',
-		'dispute_channel',
-		'seller_response_due_date',
-		'link',
-	];
-
-	protected $casts    = [
-		'create_time'              => 'datetime',
-		'update_time'              => 'datetime',
-		'seller_response_due_date' => 'datetime',
-	];
+    protected $casts = [
+        'create_time' => 'datetime',
+        'update_time' => 'datetime',
+        'seller_response_due_date' => 'datetime',
+    ];
 }

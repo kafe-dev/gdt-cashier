@@ -53,7 +53,7 @@ class UserDataTable extends BaseDataTable
             ->rawColumns(['action'])
             ->filter(function ($query) {
                 $query->where('role', '!=', 1)
-                      ->where('id', '!=', auth()->id());
+                    ->where('id', '!=', auth()->id());
             });
 
         return UserFilter::perform($dataTable);

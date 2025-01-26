@@ -1,8 +1,8 @@
 <?php
 
 use App\Http\Controllers\User;
-use Illuminate\Support\Facades\Route;
 use App\Http\Middlewares\Auth;
+use Illuminate\Support\Facades\Route;
 
 Route::controller(User::class)
     ->prefix('user')

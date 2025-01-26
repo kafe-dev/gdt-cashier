@@ -1,8 +1,8 @@
 <?php
 
 use App\Http\Controllers\Order;
-use Illuminate\Support\Facades\Route;
 use App\Http\Middlewares\Auth;
+use Illuminate\Support\Facades\Route;
 
 Route::controller(Order::class)
     ->prefix('order')

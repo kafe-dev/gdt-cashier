@@ -3,10 +3,10 @@
 namespace App\Providers;
 
 use Illuminate\Foundation\AliasLoader;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 use Maatwebsite\Excel\Facades\Excel;
 use Mailjet\LaravelMailjet\Facades\Mailjet;
-use Illuminate\Support\Facades\Schema;
 
 class AppServiceProvider extends ServiceProvider
 {

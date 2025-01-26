@@ -1,8 +1,8 @@
 <?php
 
 use App\Http\Controllers\Tracking;
-use Illuminate\Support\Facades\Route;
 use App\Http\Middlewares\Auth;
+use Illuminate\Support\Facades\Route;
 
 Route::controller(Tracking::class)
     ->prefix('tracking')

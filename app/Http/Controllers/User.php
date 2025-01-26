@@ -43,7 +43,7 @@ class User extends BaseController
     /**
      * Action `show`.
      *
-     * @param int|string $id User ID
+     * @param  int|string  $id  User ID
      */
     public function show(int|string $id): View
     {
@@ -55,7 +55,7 @@ class User extends BaseController
     /**
      * Action `create`.
      *
-     * @param Request $request Illuminate request object
+     * @param  Request  $request  Illuminate request object
      */
     public function create(Request $request): View|RedirectResponse
     {
@@ -67,7 +67,7 @@ class User extends BaseController
      *
      * Show the form to update an existing user.
      *
-     * @param int|string $id User ID
+     * @param  int|string  $id  User ID
      */
     public function edit(int|string $id): View|RedirectResponse
     {
@@ -79,8 +79,8 @@ class User extends BaseController
     /**
      * Action `delete`.
      *
-     * @param int|string $id User ID
-     * @param Request $request Illuminate request object
+     * @param  int|string  $id  User ID
+     * @param  Request  $request  Illuminate request object
      */
     public function delete(int|string $id, Request $request): RedirectResponse
     {
@@ -100,15 +100,15 @@ class User extends BaseController
      *
      * Store the updated user information in the database.
      *
-     * @param Request $request Illuminate request object
-     * @param int|string $id User ID
+     * @param  Request  $request  Illuminate request object
+     * @param  int|string  $id  User ID
      */
     public function update(Request $request, int|string $id): RedirectResponse
     {
         try {
             $request->validate([
                 'username' => 'required|string|max:50|regex:/^[a-zA-Z0-9_]*$/',
-                'email' => 'required|email|unique:users,email,' . $id,
+                'email' => 'required|email|unique:users,email,'.$id,
                 'password' => 'nullable|string|min:8|max:100|regex:/^[a-zA-Z0-9!@#$%^&*()_+]*$/',
             ]);
 
@@ -122,9 +122,11 @@ class User extends BaseController
             ]);
 
             flash()->success('User updated successfully.');
+
             return redirect()->route('app.user.index');
         } catch (\Exception $e) {
             flash()->error('The entered information is invalid, or the email/password is already in use.');
+
             return redirect()->route('app.user.edit', $id);
         }
     }
@@ -134,8 +136,7 @@ class User extends BaseController
      *
      * Handles the storage of a new user.
      *
-     * @param Request $request Illuminate request object
-     *
+     * @param  Request  $request  Illuminate request object
      */
     public function store(Request $request): RedirectResponse
     {
@@ -147,7 +148,9 @@ class User extends BaseController
             ]);
             $role = $request->input('role');
 
-            if ($role == '') $role = UserModel::ROLE_USER;
+            if ($role == '') {
+                $role = UserModel::ROLE_USER;
+            }
             $this->userModel->create([
                 'username' => $request->input('username'),
                 'email' => $request->input('email'),
@@ -159,6 +162,7 @@ class User extends BaseController
             flash()->success('User created successfully.');
         } catch (\Exception $e) {
             flash()->error('The entered information is invalid, or the email/password is already in use.');
+
             return redirect()->route('app.user.create');
         }
 
@@ -168,7 +172,7 @@ class User extends BaseController
     /**
      * Returns the specific user based on the given ID.
      *
-     * @param int|string $id User ID
+     * @param  int|string  $id  User ID
      */
     private function getUser(int|string $id): UserModel
     {
@@ -180,8 +184,8 @@ class User extends BaseController
      *
      * Change the status of the user to active or inactive.
      *
-     * @param int|string $id User ID
-     * @param Request $request Illuminate request object
+     * @param  int|string  $id  User ID
+     * @param  Request  $request  Illuminate request object
      */
     public function changeStatus(Request $request, int|string $id): RedirectResponse
     {
@@ -202,8 +206,10 @@ class User extends BaseController
             flash()->success('Change successfully.');
         } catch (\Exception $e) {
             flash()->error('Had an error while updating the status of the user.');
+
             return redirect()->route('app.user.index');
         }
+
         return redirect()->route('app.user.index');
     }
 }
