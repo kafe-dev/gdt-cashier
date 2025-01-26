@@ -33,6 +33,7 @@
         "moneyphp/money": "^4.6",
         "php-flasher/flasher-laravel": "^2.1",
         "srmklive/paypal": "v3.0.x-dev",
+        "trackingmore/trackingmore-sdk-php": "^0.1.1",
         "yajra/laravel-datatables": "^11.0",
         "yajra/laravel-datatables-buttons": "^11.0",
         "yajra/laravel-datatables-fractal": "^11.0"
