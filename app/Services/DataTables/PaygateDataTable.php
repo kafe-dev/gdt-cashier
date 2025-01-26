@@ -58,7 +58,7 @@ class PaygateDataTable extends BaseDataTable {
             ])->addClass('x-id'),
             Column::make('url')->searchPanes()->addClass('x-searchable'),
             //Column::make('api_data')->addClass('x-searchable'),
-            //Column::make('vps_data')->addClass('x-searchable'),
+            //Column::make('vps_data')->addClass('x-searchable'),PaygateDataTable.php
             Column::make('type')->searchPanes()->addClass('x-searchable'),
             Column::make('status')->searchPanes()->addClass('x-searchable'),
             Column::make('limitation')->searchPanes()->addClass('x-searchable'),
