@@ -133,7 +133,7 @@ class Store extends BaseController
             if (! $id) {
                 return redirect()->route('app.store.create');
             } else {
-                return redirect()->route('app.store.update');
+                return redirect()->route('app.store.update', ['id' => $id]);
             }
         }
 
