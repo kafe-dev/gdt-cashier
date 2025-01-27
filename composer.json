@@ -23,6 +23,7 @@
     "require": {
         "php": ">=8.3",
         "ext-curl": "*",
+        "automattic/woocommerce": "^3.1",
         "barryvdh/laravel-snappy": "*",
         "diglactic/laravel-breadcrumbs": "^9.0",
         "laravel/cashier": "^15.6",
