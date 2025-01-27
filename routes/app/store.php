@@ -16,4 +16,5 @@ Route::controller(Store::class)
         Route::post('/store/{id?}', 'store')->name('store');
         Route::post('/delete/{id}', 'delete')->name('delete');
         Route::get('/changeStatus/{id}', 'changeStatus')->name('changeStatus');
+        Route::get('testConnection/{id}', 'testConnection')->name('testConnection');
     });

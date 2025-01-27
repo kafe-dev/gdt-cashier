@@ -133,7 +133,7 @@ class Store extends BaseController
             if (! $id) {
                 return redirect()->route('app.store.create');
             } else {
-                return redirect()->route('app.store.update');
+                return redirect()->route('app.store.update', ['id' => $id]);
             }
         }
 
@@ -171,6 +171,17 @@ class Store extends BaseController
         return redirect()->route('app.store.index');
     }
 
+    public function testConnection(Request $request, int|string $id)
+    {
+        $store = $this->getStore($id);
+        if ($store->api_data) {
+            flash()->success("Test connect successful.");
+        } else {
+            flash()->error("Test connect failed.");
+        }
+        return redirect()->route('app.store.index');
+    }
+
     /**
      * Returns the specific store based on the given ID.
      *
@@ -189,7 +200,7 @@ class Store extends BaseController
     private function validateStoreData(Request $request): void
     {
         $request->validate([
-            'name' => 'required|string|max:50|regex:/^[a-zA-Z0-9_]*$/',
+            'name' => 'required|string|max:50|regex:/^[a-zA-Z0-9_]+(?: [a-zA-Z0-9_]+)*$/',
             'url' => 'required|url',
             'description' => 'nullable|string|max:500|regex:/^[a-zA-Z0-9!@#$%^&*()_+ ]*$/',
             'api_data' => 'nullable|string',
@@ -209,4 +220,5 @@ class Store extends BaseController
             'api_data' => $request->input('api_data'),
         ];
     }
+
 }

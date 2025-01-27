@@ -53,13 +53,15 @@ class StoreFilter
     }
 
     /**
-     * Filter stores by user id.
+     * Filter stores by user id in Store Model.
+     * But show label is Username in User Model.
      */
     private static function filterUserId(): Collection
     {
         return Store::query()
-            ->select(DB::raw('`user_id` as value, `user_id` as label, COUNT(*) as total'))
-            ->groupBy('user_id')
+            ->join('users', 'users.id', '=', 'stores.user_id')
+            ->select(DB::raw('`users`.`username` as label, `stores`.`user_id` as value, COUNT(*) as total'))
+            ->groupBy('stores.user_id', 'users.username')
             ->get();
     }
 
