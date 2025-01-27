@@ -51,26 +51,29 @@
                 <a class="nav-link" href="{{ route('app.dispute.index') }}">
                     <i data-feather="trending-down" class="align-self-center menu-icon"></i>
                     <span>Dispute</span>
+                    {{ \App\Utils\NotificationWidget::render('App\Models\Dispute', 'dispute_state', 'REQUIRED_ACTION') }}
                 </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="{{ route('app.order.index') }}">
                     <i data-feather="shopping-cart" class="align-self-center menu-icon"></i>
                     <span>Store Order</span>
+                    {{ \App\Utils\NotificationWidget::render('App\Models\Order', 'status', \App\Models\Order::STATUS_NEW) }}
                 </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="{{ route('app.tracking.index') }}">
                     <i data-feather="truck" class="align-self-center menu-icon"></i>
                     <span>Delivery Tracking</span>
+                    {{ \App\Utils\NotificationWidget::render('App\Models\OrderTracking', 'type', \App\Models\OrderTracking::TYPE_OPEN) }}
                 </a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{{ route('app.mail-box.index') }}">
-                    <i data-feather="mail" class="align-self-center menu-icon"></i>
-                    <span>Mail Box</span>
-                </a>
-            </li>
+{{--            <li class="nav-item">--}}
+{{--                <a class="nav-link" href="{{ route('app.mail-box.index') }}">--}}
+{{--                    <i data-feather="mail" class="align-self-center menu-icon"></i>--}}
+{{--                    <span>Mail Box</span>--}}
+{{--                </a>--}}
+{{--            </li>--}}
 
             <hr class="hr-dashed hr-menu">
             <li class="menu-label my-2">Help Center</li>
