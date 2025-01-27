@@ -86,7 +86,7 @@
             <li class="menu-label my-2">{{ Auth::user()->username ?? 'Guest' }} ({{ \App\Models\User::ROLES[Auth::user()->role ?? 'default_role'] ?? 'Unknown Role' }})
             </li>
             <li>
-                <a href="#"><i data-feather="user" class="align-self-center menu-icon"></i><span>Profile</span></a>
+{{--                <a href="#"><i data-feather="user" class="align-self-center menu-icon"></i><span>Profile</span></a>--}}
                 <a href="#"><i data-feather="key" class="align-self-center menu-icon"></i><span>Change Password</span></a>
                 <a href="{{ route('app.security.logout') }}" onclick="event.preventDefault();document.getElementById('formLogout').submit();"><i data-feather="power" class="align-self-center menu-icon"></i><span>Logout</span></a>
                 <form id="formLogout" method="post" action="{{ route('app.security.logout') }}">
