@@ -18,7 +18,7 @@ class OrderTrackingFactory extends Factory
     public function definition(): array
     {
         return [
-            'order_id' => $this->faker->numberBetween(1, 10),
+            'order_id' => 1,
             'type' => OrderTracking::TYPE_OPEN,
         ];
     }

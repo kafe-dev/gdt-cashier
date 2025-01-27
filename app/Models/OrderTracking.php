@@ -12,10 +12,14 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @property int $id
  * @property int|null $order_id
- * @property string $tracking_number
- * @property string|null $courier
- * @property int $status
+ * @property string|null $tracking_number
+ * @property string|null $courier_code
+ * @property string|null $tracking_status
  * @property string|null $tracking_data
+ * @property int $type
+ * @property mixed|null $closed_at
+ * @property mixed|null $last_checked_at
+ * @property mixed|null $exported_at
  * @property mixed $created_at
  * @property mixed $updated_at
  */
@@ -23,16 +27,13 @@ class OrderTracking extends Model
 {
     use HasFactory;
 
-    public final const int STATUS_IN_TRANSIT = 0;
+    public final const int TYPE_OPEN = 0;
 
-    public final const int STATUS_DELIVERED = 1;
+    public final const int TYPE_CLOSED = 1;
 
-    public final const int STATUS_FAILED = 2;
-
-    public final const array STATUSES = [
-        self::STATUS_IN_TRANSIT => 'In Transit',
-        self::STATUS_DELIVERED => 'Delivered',
-        self::STATUS_FAILED => 'Failed',
+    public final const array TYPES = [
+        self::TYPE_OPEN => 'Open',
+        self::TYPE_CLOSED => 'Closed',
     ];
 
     /**
@@ -46,9 +47,13 @@ class OrderTracking extends Model
     protected $fillable = [
         'order_id',
         'tracking_number',
-        'courier',
+        'courier_code',
+        'tracking_status',
         'tracking_data',
-        'status',
+        'type',
+        'closed_at',
+        'last_checked_at',
+        'exported_at',
     ];
 
     /**
@@ -57,6 +62,9 @@ class OrderTracking extends Model
     protected function casts(): array
     {
         return [
+            'closed_at' => 'datetime',
+            'last_checked_at' => 'datetime',
+            'exported_at' => 'datetime',
             'created_at' => 'datetime',
             'updated_at' => 'datetime',
         ];
