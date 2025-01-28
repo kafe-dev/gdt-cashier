@@ -74,6 +74,28 @@ class ActionWidget
     }
 
     /**
+     * Render the mark closed button view.
+     *
+     * @param  int|string  $id  ID of the resource to delete
+     * @param  string  $route  Route to the resource delete action
+     * @param  string  $html  HTML content for the button
+     * @param  string  $classes  CSS classes for the button
+     */
+    public static function renderMarkClosedBtn(
+        int|string $id,
+        string $route,
+        string $html = '<i class="mdi mdi-check-all"></i>',
+        string $classes = 'btn btn-sm btn-success'
+    ): View {
+        return view('_widgets.actions.markclosedBtn', [
+            'id' => $id,
+            'route' => $route,
+            'html' => $html,
+            'classes' => $classes,
+        ]);
+    }
+
+    /**
      * Render the go back button view.
      *
      * @param  string  $html  HTML content for the button
