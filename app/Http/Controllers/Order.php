@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Services\DataTables\OrderDataTable;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -17,9 +18,8 @@ class Order extends BaseController {
     /**
      * Action `index`.
      */
-    public function index() {
-        $orders = \App\Models\Order::all();
-        return view('order.index', compact('orders'));
+    public function index(OrderDataTable $dataTable) {
+        return $dataTable->render('order.index');
     }
 
     /**
