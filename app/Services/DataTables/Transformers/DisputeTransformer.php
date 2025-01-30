@@ -19,8 +19,10 @@ class DisputeTransformer extends TransformerAbstract {
      * Data transformer.
      */
     public function transform(Dispute $dispute): array {
+        $paygate = Paygate::find($dispute->paygate_id);
         return [
             'id'                       => '<span class="fw-bold float-start">' . ($dispute->id ?? '') . '</span>',
+            'paygate_id'               => $paygate->name ?? '',
             'dispute_id'               => $dispute->dispute_id ?? '',
             'create_time'              => !empty($dispute->create_time) ? '<span class="x-has-time-converter">' . $dispute->create_time->format(config('app.date_format')) . '</span>' : '-',
             'update_time'              => !empty($dispute->update_time) ? '<span class="x-has-time-converter">' . $dispute->update_time->format(config('app.date_format')) . '</span>' : '-',
@@ -48,8 +50,6 @@ class DisputeTransformer extends TransformerAbstract {
 
         $btnView           = '<a href="' . route('app.dispute.show', ['id' => $dispute->id]) . '" class="btn btn-sm btn-info m-1" title="View"><i class="fa fa-eye"></i></a>';
         $btnRedirectPaypal = '<a href="https://www.sandbox.paypal.com/resolutioncenter/view/' . $dispute->dispute_id . '" class="btn btn-sm btn-primary m-1" title="View" target="_blank"><i class="fab fa-paypal"></i></a>';
-
-
         return $btnView . ' ' . $btnRedirectPaypal;
     }
 }

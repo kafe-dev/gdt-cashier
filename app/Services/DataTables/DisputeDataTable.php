@@ -59,6 +59,7 @@ class DisputeDataTable extends BaseDataTable {
                 'data'  => 'id',
                 'title' => 'ID',
             ])->addClass('x-id'),
+            Column::make('paygate_id')->searchPanes()->addClass('x-searchable'),
             Column::make('dispute_id')->searchPanes()->addClass('x-searchable'),
             Column::make('buyer_transaction_id')->searchPanes()->addClass('x-searchable'),
             Column::make('merchant_id')->searchPanes()->addClass('x-searchable'),

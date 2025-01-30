@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
  * Class Dispute
  *
  * @property int                             $id
+ * @property int                             $paygate_id
  * @property string                          $dispute_id
  * @property \Illuminate\Support\Carbon|null $create_time
  * @property \Illuminate\Support\Carbon|null $update_time
@@ -46,6 +47,7 @@ class Dispute extends Model {
 		'dispute_channel',
 		'seller_response_due_date',
 		'link',
+        'paygate_id'
 	];
 
 	protected $casts    = [

@@ -71,7 +71,7 @@ class Dispute extends Command {
             ]);
             if (!empty($response['items'])) {
                 foreach ($response['items'] as $item) {
-                    $this->newDispute($item);
+                    $this->newDispute($item,$paygate->id);
                 }
             }
         }
@@ -85,8 +85,9 @@ class Dispute extends Command {
      * @return void
      * @throws \JsonException
      */
-    public function newDispute($item): void {
+    public function newDispute($item,$paygate_id): void {
         $dispute                           = new \App\Models\Dispute();
+        $dispute->paygate_id               = $paygate_id;
         $dispute->dispute_id               = $item['dispute_id'];
         $dispute->created_at               = $item['create_time'];
         $dispute->buyer_transaction_id     = $item['disputed_transactions'][0]['buyer_transaction_id'] ?? '';
