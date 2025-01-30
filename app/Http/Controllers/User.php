@@ -288,10 +288,12 @@ class User extends BaseController
     }
 
     /**
-     * Validate password.
+     * Validate request data.
      *
      * @param Request $request Illuminate request object
-     * @param bool $passwordChange Optional flag to indicate password change
+     * @param bool $passwordChange Indicates whether a password change is requested.
+     * @param bool $nullable Indicates whether the password field is nullable. Defaults to false (password is required).
+     * @param int|string $id The user ID for uniqueness validation of the email field.
      */
     private function validate(Request $request, bool $passwordChange = false, bool $nullable = false, int|string $id = -1): void
     {
