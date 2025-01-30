@@ -110,11 +110,7 @@ class User extends BaseController
     public function update(Request $request, int|string $id): RedirectResponse
     {
         try {
-            $request->validate([
-                'username' => 'required|string|max:50|regex:/^[a-zA-Z0-9_]*$/',
-                'email' => 'required|email|unique:users,email,' . $id,
-                'password' => 'nullable|string|min:8|max:100|regex:/^[a-zA-Z0-9!@#$%^&*()_+]*$/',
-            ]);
+            $this->validate($request, false, true, $id);
 
             $user = $this->getUser($id);
 
@@ -128,8 +124,12 @@ class User extends BaseController
             flash()->success('User updated successfully.');
 
             return redirect()->route('app.user.index');
+        } catch (ValidationException $e) {
+            $this->showAllValidateErrors($e);
+
+            return redirect()->route('app.user.edit', $id);
         } catch (\Exception $e) {
-            flash()->error('The entered information is invalid, or the email/password is already in use.');
+            flash()->error('The email/password is already in use.');
 
             return redirect()->route('app.user.edit', $id);
         }
@@ -145,11 +145,8 @@ class User extends BaseController
     public function store(Request $request): RedirectResponse
     {
         try {
-            $request->validate([
-                'username' => 'required|string|max:50|regex:/^[a-zA-Z0-9_]*$/',
-                'email' => 'required|email|unique:users,email',
-                'password' => 'required|string|min:8|max:100|regex:/^[a-zA-Z0-9!@#$%^&*()_+]*$/',
-            ]);
+            $this->validate($request);
+
             $role = $request->input('role');
 
             if ($role == '') {
@@ -164,8 +161,12 @@ class User extends BaseController
             ]);
 
             flash()->success('User created successfully.');
+        } catch (ValidationException $e) {
+            $this->showAllValidateErrors($e);
+
+            return redirect()->route('app.user.create');
         } catch (\Exception $e) {
-            flash()->error('The entered information is invalid, or the email/password is already in use.');
+            flash()->error('The email/password is already in use.');
 
             return redirect()->route('app.user.create');
         }
@@ -246,7 +247,7 @@ class User extends BaseController
     {
         if ($request->isMethod('post')) {
             try {
-                $this->passwordValidate($request, true);
+                $this->validate($request, true);
 
                 $user = Auth::user();
 
@@ -260,11 +261,13 @@ class User extends BaseController
                 ]);
 
                 flash()->success('Password changed successfully.');
+                return redirect()->route('app.home.index');
             } catch (ValidationException $e) {
                 $this->showAllValidateErrors($e);
+                return redirect()->route('app.user.changePassword');
             } catch (\Exception $e) {
                 flash()->error('An error occurred while changing the password.');
-                return redirect()->back();
+                return redirect()->route('app.user.changePassword');
             }
         }
         return view('user.change_password');
@@ -284,7 +287,13 @@ class User extends BaseController
         }
     }
 
-    private function passwordValidate(Request $request, ?bool $passwordChange): void
+    /**
+     * Validate password.
+     *
+     * @param Request $request Illuminate request object
+     * @param bool $passwordChange Optional flag to indicate password change
+     */
+    private function validate(Request $request, bool $passwordChange = false, bool $nullable = false, int|string $id = -1): void
     {
         if ($passwordChange === true) {
             $request->validate([
@@ -300,8 +309,10 @@ class User extends BaseController
             ]);
         } else {
             $request->validate([
+                'username' => 'required|string|max:50|regex:/^[a-zA-Z0-9_]*$/',
+                'email' => 'required|email|unique:users,email' . ($id > -1 ? ','.$id : ''),
                 'password' => [
-                    'required',
+                    ($nullable === true ? 'nullable' : 'required'),
                     'string',
                     Password::min(8)->max(255)
                         ->mixedCase() // 1 A-Z, 1 a-z
