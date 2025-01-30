@@ -27,3 +27,9 @@ Breadcrumbs::for('update-user', function (BreadcrumbTrail $trail, User $user) {
     $trail->parent('manage-user');
     $trail->push('Update User', route('app.user.edit', ['id' => $user->id]));
 });
+
+// Dashboard > Change Password
+Breadcrumbs::for('change-password', function (BreadcrumbTrail $trail) {
+    $trail->parent('dashboard');
+    $trail->push('Change Password', route('app.user.changePassword'));
+});
