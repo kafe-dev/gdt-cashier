@@ -29,5 +29,5 @@
 @endsection
 
 @push('custom-scripts')
-    {{ $dataTable->scripts(attributes: ['type' => 'module']) }}
+    {{ $dataTable->scripts(attributes: ['type' => 'module']) }} 
 @endpush
