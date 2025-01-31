@@ -1,9 +1,9 @@
 <?php
-
 declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Services\DataTables\OrderDataTable;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -13,36 +13,31 @@ use Illuminate\View\View;
  *
  * This controller is responsible for managing order-related operations.
  */
-class Order extends BaseController
-{
+class Order extends BaseController {
+
     /**
      * Action `index`.
      */
-    public function index()
-    {
-        $orders = \App\Models\Order::all();
-
-        return view('order.index', compact('orders'));
+    public function index(OrderDataTable $dataTable) {
+        return $dataTable->render('order.index');
     }
 
     /**
      * Action `show`.
      *
-     * @param  int|string  $id  Order ID to show
+     * @param int|string $id Order ID to show
      */
-    public function show(int|string $id): View
-    {
+    public function show(int|string $id): View {
         return view('order.show');
     }
 
     /**
      * Action `delete`.
      *
-     * @param  int|string  $id  Order ID to delete
-     * @param  Request  $request  Illuminate request object
+     * @param int|string $id      Order ID to delete
+     * @param Request    $request Illuminate request object
      */
-    public function delete(int|string $id, Request $request): RedirectResponse
-    {
+    public function delete(int|string $id, Request $request): RedirectResponse {
         //
     }
 }

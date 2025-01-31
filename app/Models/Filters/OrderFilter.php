@@ -13,7 +13,7 @@ use Yajra\DataTables\EloquentDataTable;
  *
  * This class represents a filter for users.
  */
-class DisputeFilter {
+class OrderFilter {
 
     /**
      * Perform the model filter.
