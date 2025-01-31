@@ -2,7 +2,7 @@
     <div class="brand border">
         <a href="{{ route('app.home.index') }}" class="logo">
             <span>
-{{--                <img src="{{ Vite::asset('resources/assets/images/logo.png') }}" alt="logo-small" class="logo-dark mb-3" height="30xp">--}}
+                <img src="{{ asset('theme/assets/images/logo.png') }}" alt="logo-small" class="logo-dark mb-3" height="30xp">
             </span>
             <span class="text-uppercase font-22 fw-bold text-info">{{ config('app.name') }}</span>
         </a>
@@ -51,26 +51,29 @@
                 <a class="nav-link" href="{{ route('app.dispute.index') }}">
                     <i data-feather="trending-down" class="align-self-center menu-icon"></i>
                     <span>Dispute</span>
+                    {{ \App\Utils\NotificationWidget::render('App\Models\Dispute', 'dispute_state', 'REQUIRED_ACTION') }}
                 </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="{{ route('app.order.index') }}">
                     <i data-feather="shopping-cart" class="align-self-center menu-icon"></i>
                     <span>Store Order</span>
+                    {{ \App\Utils\NotificationWidget::render('App\Models\Order', 'status', \App\Models\Order::STATUS_NEW) }}
                 </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="{{ route('app.tracking.index') }}">
                     <i data-feather="truck" class="align-self-center menu-icon"></i>
                     <span>Delivery Tracking</span>
+                    {{ \App\Utils\NotificationWidget::render('App\Models\OrderTracking', 'type', \App\Models\OrderTracking::TYPE_OPEN) }}
                 </a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{{ route('app.mail-box.index') }}">
-                    <i data-feather="mail" class="align-self-center menu-icon"></i>
-                    <span>Mail Box</span>
-                </a>
-            </li>
+{{--            <li class="nav-item">--}}
+{{--                <a class="nav-link" href="{{ route('app.mail-box.index') }}">--}}
+{{--                    <i data-feather="mail" class="align-self-center menu-icon"></i>--}}
+{{--                    <span>Mail Box</span>--}}
+{{--                </a>--}}
+{{--            </li>--}}
 
             <hr class="hr-dashed hr-menu">
             <li class="menu-label my-2">Help Center</li>
@@ -83,7 +86,7 @@
             <li class="menu-label my-2">{{ Auth::user()->username ?? 'Guest' }} ({{ \App\Models\User::ROLES[Auth::user()->role ?? 'default_role'] ?? 'Unknown Role' }})
             </li>
             <li>
-                <a href="#"><i data-feather="user" class="align-self-center menu-icon"></i><span>Profile</span></a>
+{{--                <a href="#"><i data-feather="user" class="align-self-center menu-icon"></i><span>Profile</span></a>--}}
                 <a href="#"><i data-feather="key" class="align-self-center menu-icon"></i><span>Change Password</span></a>
                 <a href="{{ route('app.security.logout') }}" onclick="event.preventDefault();document.getElementById('formLogout').submit();"><i data-feather="power" class="align-self-center menu-icon"></i><span>Logout</span></a>
                 <form id="formLogout" method="post" action="{{ route('app.security.logout') }}">

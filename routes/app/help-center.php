@@ -1,7 +1,7 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
 use App\Http\Middlewares\Auth;
+use Illuminate\Support\Facades\Route;
 
 Route::prefix('help-center')
     ->name('app.help-center.')

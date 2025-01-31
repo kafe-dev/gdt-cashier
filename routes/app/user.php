@@ -1,8 +1,8 @@
 <?php
 
 use App\Http\Controllers\User;
-use Illuminate\Support\Facades\Route;
 use App\Http\Middlewares\Auth;
+use Illuminate\Support\Facades\Route;
 
 Route::controller(User::class)
     ->prefix('user')
@@ -17,4 +17,5 @@ Route::controller(User::class)
         Route::post('/store', 'store')->name('store');
         Route::post('/delete/{id}', 'delete')->name('delete');
         Route::get('/changeStatus/{id}', 'changeStatus')->name('changeStatus');
+        Route::match(['get', 'post'], '/changePassword' , 'changePassword')->name('changePassword');
     });

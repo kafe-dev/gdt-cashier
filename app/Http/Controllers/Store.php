@@ -11,7 +11,6 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
-
 /**
  * Class Store.
  *
@@ -45,7 +44,7 @@ class Store extends BaseController
     /**
      * Action `show`.
      *
-     * @param int|string $id The store ID
+     * @param  int|string  $id  The store ID
      */
     public function show(int|string $id): View
     {
@@ -58,7 +57,7 @@ class Store extends BaseController
     /**
      * Action `create`.
      *
-     * @param Request $request Illuminate request object
+     * @param  Request  $request  Illuminate request object
      */
     public function create(Request $request): View|RedirectResponse
     {
@@ -70,8 +69,8 @@ class Store extends BaseController
     /**
      * Action `update`.
      *
-     * @param int|string $id The store ID
-     * @param Request $request Illuminate request object
+     * @param  int|string  $id  The store ID
+     * @param  Request  $request  Illuminate request object
      */
     public function update(int|string $id, Request $request): View|RedirectResponse
     {
@@ -84,8 +83,8 @@ class Store extends BaseController
     /**
      * Action `delete`.
      *
-     * @param int|string $id The store ID
-     * @param Request $request Illuminate request object
+     * @param  int|string  $id  The store ID
+     * @param  Request  $request  Illuminate request object
      */
     public function delete(int|string $id, Request $request): RedirectResponse
     {
@@ -106,23 +105,22 @@ class Store extends BaseController
      * Handles the storage of a new store.
      * Handles update store.
      *
-     * @param Request $request Illuminate request object
-     *
+     * @param  Request  $request  Illuminate request object
      */
-
     public function store(Request $request, ?int $id = null): RedirectResponse
     {
         try {
             $this->validateStoreData($request);
 
             if ($request->input('api_data')) {
-                if (!json_validate($request->input('api_data'))) {
+                if (! json_validate($request->input('api_data'))) {
                     flash()->error('The API data you entered is invalid.');
+
                     return redirect()->route('app.store.create');
                 }
             }
             $data = $this->getData($request);
-            if (!$id) {
+            if (! $id) {
                 $this->storeModel->create($data);
                 flash()->success('Store created successfully.');
             } else {
@@ -132,8 +130,11 @@ class Store extends BaseController
             }
         } catch (\Exception $e) {
             flash()->error('The entered information is invalid.');
-            if (!$id) return redirect()->route('app.store.create');
-            else return redirect()->route('app.store.update');
+            if (! $id) {
+                return redirect()->route('app.store.create');
+            } else {
+                return redirect()->route('app.store.update', ['id' => $id]);
+            }
         }
 
         return redirect()->route('app.store.index');
@@ -144,8 +145,8 @@ class Store extends BaseController
      *
      * Change the status of the user to active or inactive.
      *
-     * @param int|string $id User ID
-     * @param Request $request Illuminate request object
+     * @param  int|string  $id  User ID
+     * @param  Request  $request  Illuminate request object
      */
     public function changeStatus(Request $request, int|string $id): RedirectResponse
     {
@@ -163,7 +164,20 @@ class Store extends BaseController
             }
         } catch (\Exception $e) {
             flash()->error('Had an error while updating the status of the store');
+
             return redirect()->route('app.user.index');
+        }
+
+        return redirect()->route('app.store.index');
+    }
+
+    public function testConnection(Request $request, int|string $id)
+    {
+        $store = $this->getStore($id);
+        if ($store->api_data) {
+            flash()->success("Test connect successful.");
+        } else {
+            flash()->error("Test connect failed.");
         }
         return redirect()->route('app.store.index');
     }
@@ -171,7 +185,7 @@ class Store extends BaseController
     /**
      * Returns the specific store based on the given ID.
      *
-     * @param int|string $id Store ID
+     * @param  int|string  $id  Store ID
      */
     private function getStore(int|string $id): StoreModel
     {
@@ -181,12 +195,12 @@ class Store extends BaseController
     /**
      * Validates the store data before storage.
      *
-     * @param Request $request Illuminate request object
+     * @param  Request  $request  Illuminate request object
      */
     private function validateStoreData(Request $request): void
     {
         $request->validate([
-            'name' => 'required|string|max:50|regex:/^[a-zA-Z0-9_]*$/',
+            'name' => 'required|string|max:50|regex:/^[a-zA-Z0-9_]+(?: [a-zA-Z0-9_]+)*$/',
             'url' => 'required|url',
             'description' => 'nullable|string|max:500|regex:/^[a-zA-Z0-9!@#$%^&*()_+ ]*$/',
             'api_data' => 'nullable|string',
@@ -194,11 +208,7 @@ class Store extends BaseController
     }
 
     /**
-     *
      * Return all the store data.
-     *
-     * @param Request $request
-     * @return array
      */
     private function getData(Request $request): array
     {
@@ -210,5 +220,5 @@ class Store extends BaseController
             'api_data' => $request->input('api_data'),
         ];
     }
-}
 
+}

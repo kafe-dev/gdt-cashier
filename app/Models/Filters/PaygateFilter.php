@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Models\Filters;
@@ -13,12 +14,13 @@ use Yajra\DataTables\EloquentDataTable;
  *
  * This class represents a filter for users.
  */
-class PaygateFilter {
-
+class PaygateFilter
+{
     /**
      * Perform the model filter.
      */
-    public static function perform(EloquentDataTable $dataTable): EloquentDataTable {
+    public static function perform(EloquentDataTable $dataTable): EloquentDataTable
+    {
 
         return $dataTable;
         //        return $dataTable
@@ -35,14 +37,16 @@ class PaygateFilter {
     /**
      * Filter users by username.
      */
-    private static function filterUsername(): Collection {
+    private static function filterUsername(): Collection
+    {
         return User::query()->select(DB::raw('`name` as value, `name` as label, COUNT(*) as total'))->groupBy('name')->get();
     }
 
     /**
      * Filter users by email.
      */
-    private static function filterEmail(): Collection {
+    private static function filterEmail(): Collection
+    {
         return User::query()->select(DB::raw('`email` as value, `email` as label, COUNT(*) as total'))->groupBy('email')->get();
     }
 }

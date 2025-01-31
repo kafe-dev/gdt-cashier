@@ -1,8 +1,8 @@
 <?php
 
 use App\Http\Controllers\Store;
-use Illuminate\Support\Facades\Route;
 use App\Http\Middlewares\Auth;
+use Illuminate\Support\Facades\Route;
 
 Route::controller(Store::class)
     ->prefix('store')
@@ -16,4 +16,5 @@ Route::controller(Store::class)
         Route::post('/store/{id?}', 'store')->name('store');
         Route::post('/delete/{id}', 'delete')->name('delete');
         Route::get('/changeStatus/{id}', 'changeStatus')->name('changeStatus');
+        Route::get('testConnection/{id}', 'testConnection')->name('testConnection');
     });

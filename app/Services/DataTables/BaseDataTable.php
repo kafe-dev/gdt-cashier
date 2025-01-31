@@ -32,6 +32,13 @@ abstract class BaseDataTable extends DataTable
     protected string $exportFileName;
 
     /**
+     * @var array|string[] Defines the custom buttons for the DataTable
+     */
+    protected array $customButtons = [
+        'create' => 'getCreateBtn',
+    ];
+
+    /**
      * DataTable handler.
      */
     abstract public function dataTable(): EloquentDataTable;
@@ -64,15 +71,7 @@ abstract class BaseDataTable extends DataTable
                 'layout' => [
                     'topStart' => [
                         'buttons' => [
-                            [
-                                'text' => '<i class="fa fa-plus"></i> New ',
-                                'className' => 'btn btn-success',
-                                'init' => "function (dt, node, config) {
-                                    $(node).click(() => {
-                                        window.location.href = '".route($this->createUrl)."';
-                                    });
-                                }",
-                            ],
+                            $this->renderButtons(),
                             'excel', 'csv', 'pdf', 'reset',
                             [
                                 'extend' => 'searchPanes',
@@ -190,5 +189,39 @@ abstract class BaseDataTable extends DataTable
     public function filename(): string
     {
         return $this->exportFileName.date('YmdHis');
+    }
+
+    /**
+     * Returns the "create" btn.
+     *
+     * @return string[]
+     */
+    public function getCreateBtn(): array
+    {
+        return [
+            'text' => '<i class="fa fa-plus"></i> New ',
+            'className' => 'btn btn-success',
+            'init' => "function (dt, node, config) {
+                $(node).click(() => {
+                    window.location.href = '".route($this->createUrl)."';
+                });
+            }",
+        ];
+    }
+
+    /**
+     * Render all the custom buttons.
+     */
+    private function renderButtons(): array
+    {
+        $output = [];
+
+        if (! empty($this->customButtons)) {
+            foreach ($this->customButtons as $key => $callback) {
+                $output[] = $this->$callback();
+            }
+        }
+
+        return array_values($output);
     }
 }

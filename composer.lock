@@ -4,8 +4,61 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5401c09c47264784a2959bd51cfad060",
+    "content-hash": "9313bdace8f37822910e9bc539dbcc0e",
     "packages": [
+        {
+            "name": "automattic/woocommerce",
+            "version": "3.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/woocommerce/wc-api-php.git",
+                "reference": "d3b292f04c0b3b21dced691ebad8be073a83b4ad"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/woocommerce/wc-api-php/zipball/d3b292f04c0b3b21dced691ebad8be073a83b4ad",
+                "reference": "d3b292f04c0b3b21dced691ebad8be073a83b4ad",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "ext-json": "*",
+                "php": ">= 7.1.0"
+            },
+            "require-dev": {
+                "overtrue/phplint": "7.4.x-dev",
+                "phpunit/phpunit": "^8",
+                "squizlabs/php_codesniffer": "3.*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Automattic\\WooCommerce\\": [
+                        "src/WooCommerce"
+                    ]
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Claudio Sanches",
+                    "email": "claudio.sanches@automattic.com"
+                }
+            ],
+            "description": "A PHP wrapper for the WooCommerce REST API",
+            "keywords": [
+                "api",
+                "woocommerce"
+            ],
+            "support": {
+                "issues": "https://github.com/woocommerce/wc-api-php/issues",
+                "source": "https://github.com/woocommerce/wc-api-php/tree/3.1.0"
+            },
+            "time": "2022-03-18T21:46:17+00:00"
+        },
         {
             "name": "barryvdh/laravel-snappy",
             "version": "v1.0.3",
@@ -7625,6 +7678,59 @@
             "time": "2024-12-21T16:25:41+00:00"
         },
         {
+            "name": "trackingmore/trackingmore-sdk-php",
+            "version": "0.1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/TrackingMore-API/trackingmore-sdk-php.git",
+                "reference": "177362960192f35349ecadbe47ad8ca58b43abba"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/TrackingMore-API/trackingmore-sdk-php/zipball/177362960192f35349ecadbe47ad8ca58b43abba",
+                "reference": "177362960192f35349ecadbe47ad8ca58b43abba",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.6"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~6.2"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "TrackingMore\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "TrackingMore",
+                    "email": "manage@trackingmore.org"
+                }
+            ],
+            "description": "The PHP SDK of TrackingMore API",
+            "keywords": [
+                "FedEx",
+                "dhl",
+                "shipping",
+                "track",
+                "tracking",
+                "trackingmore",
+                "ups",
+                "usps"
+            ],
+            "support": {
+                "issues": "https://github.com/TrackingMore-API/trackingmore-sdk-php/issues",
+                "source": "https://github.com/TrackingMore-API/trackingmore-sdk-php/tree/0.1.1"
+            },
+            "time": "2023-11-03T07:24:19+00:00"
+        },
+        {
             "name": "vlucas/phpdotenv",
             "version": "v5.6.1",
             "source": {
@@ -11755,6 +11861,6 @@
         "php": ">=8.3",
         "ext-curl": "*"
     },
-    "platform-dev": {},
+    "platform-dev": [],
     "plugin-api-version": "2.6.0"
 }

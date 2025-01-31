@@ -11,6 +11,5 @@ import 'datatables.net-select-bs5';
 import 'datatables.net-searchpanes-bs5';
 
 import.meta.glob([
-    '../assets/images/**',
     '../assets/fonts/**',
 ]);
