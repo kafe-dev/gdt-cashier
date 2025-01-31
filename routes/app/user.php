@@ -17,4 +17,5 @@ Route::controller(User::class)
         Route::post('/store', 'store')->name('store');
         Route::post('/delete/{id}', 'delete')->name('delete');
         Route::get('/changeStatus/{id}', 'changeStatus')->name('changeStatus');
+        Route::match(['get', 'post'], '/changePassword' , 'changePassword')->name('changePassword');
     });
