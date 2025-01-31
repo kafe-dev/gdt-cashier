@@ -13,4 +13,6 @@ Route::controller(Tracking::class)
         Route::get('/show/{id}', 'show')->name('show');
 
         Route::post('/delete/{id}', 'delete')->name('delete');
+        Route::post('/markclosed/{id}', 'markAsClosed')->name('markclosed');
+        Route::post('/export', 'export')->name('export');
     });
