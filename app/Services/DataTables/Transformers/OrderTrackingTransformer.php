@@ -45,7 +45,7 @@ class OrderTrackingTransformer extends TransformerAbstract
             'exported_at' => ! empty($orderTracking->exported_at) ? '<span class="x-has-time-converter">'.$orderTracking->exported_at->format(config('app.date_format')).'</span>' : '-',
             'created_at' => ! empty($orderTracking->created_at) ? '<span class="x-has-time-converter">'.$orderTracking->created_at->format(config('app.date_format')).'</span>' : '-',
             'updated_at' => ! empty($orderTracking->updated_at) ? '<span class="x-has-time-converter">'.$orderTracking->updated_at->format(config('app.date_format')).'</span>' : '-',
-            'action' => $this->renderActions($orderTracking)
+            'action' => $this->renderActions($orderTracking),
         ];
     }
 

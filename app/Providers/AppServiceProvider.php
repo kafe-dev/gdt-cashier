@@ -7,6 +7,7 @@ use App\Services\TrackingMore\Requests\Tracking;
 use App\Services\TrackingMore\TrackingMore;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Foundation\AliasLoader;
+use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 use Maatwebsite\Excel\Facades\Excel;
@@ -47,5 +48,9 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Schema::defaultStringLength(191);
+
+        VerifyCsrfToken::except([
+            '/tracking/export',
+        ]);
     }
 }

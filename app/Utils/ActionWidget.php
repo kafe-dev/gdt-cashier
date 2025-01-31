@@ -114,7 +114,7 @@ class ActionWidget
     /**
      * Render the test connection button.
      *
-     * @param string $route Route to the resource action
+     * @param  string  $route  Route to the resource action
      * @param  string  $html  HTML content for the button
      * @param  string  $classes  CSS classes for the button
      */

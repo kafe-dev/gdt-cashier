@@ -4,12 +4,16 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Exports\DataTableExport;
 use App\Facades\TrackingMore;
 use App\Models\OrderTracking as OrderTrackingModel;
 use App\Services\DataTables\OrderTrackingDataTable;
+use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use Maatwebsite\Excel\Facades\Excel;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Trackingmore\TrackingMoreException;
 
 /**
@@ -52,8 +56,8 @@ class Tracking extends BaseController
     public function show(int|string $id): View
     {
         return view('tracking.show', [
-            'orderTracking' => $this->getOrderTracking((int)$id),
-            'json_tracking_data' => json_decode($this->getOrderTracking((int)$id)->tracking_data),
+            'orderTracking' => $this->getOrderTracking((int) $id),
+            'json_tracking_data' => json_decode($this->getOrderTracking((int) $id)->tracking_data),
         ]);
     }
 
@@ -66,7 +70,7 @@ class Tracking extends BaseController
     public function delete(int|string $id, Request $request): RedirectResponse
     {
         if ($request->isMethod('POST')) {
-            $tracking = $this->getOrderTracking((int)$id);
+            $tracking = $this->getOrderTracking((int) $id);
 
             if ($tracking->delete()) {
                 flash()->success('Tracking has been deleted.');
@@ -79,8 +83,6 @@ class Tracking extends BaseController
     /**
      * Action 'mark as closed'
      *
-     * @param int|string $id
-     * @param Request $request
      * @return RedirectResponse
      */
     public function markAsClosed(int|string $id, Request $request)
@@ -99,10 +101,35 @@ class Tracking extends BaseController
     }
 
     /**
-     * Returns the specific order tracking based on the given ID.
+     * Exports all open OrderTracking records to an Excel file.
+     * After exporting, updates the type to closed and sets the exported_at timestamp.
      *
-     * @param int $id
-     * @return OrderTrackingModel
+     * @return BinaryFileResponse|RedirectResponse
+     */
+    public function export(): BinaryFileResponse|RedirectResponse
+    {
+        $records = OrderTrackingModel::where('type', OrderTrackingModel::TYPE_OPEN)->get();
+
+        if ($records->isEmpty()) {
+            flash()->warning('There are no tracking records.');
+            return redirect()->route('app.tracking.index');
+        }
+
+        OrderTrackingModel::whereIn('id', $records->pluck('id'))->update([
+            'type' => OrderTrackingModel::TYPE_CLOSED,
+            'exported_at' => Carbon::now(),
+            'closed_at' => Carbon::now(),
+        ]);
+
+        $fileName = 'order_tracking_export_' . now()->format('Y-m-d_H-i-s') . '.xlsx';
+
+        session(['export_records' => $records]);
+
+        return Excel::download(new DataTableExport($records), $fileName);
+    }
+
+    /**
+     * Returns the specific order tracking based on the given ID.
      */
     private function getOrderTracking(int $id): OrderTrackingModel
     {
@@ -114,11 +141,11 @@ class Tracking extends BaseController
      *
      * @throws TrackingMoreException
      */
-    private function detectCouriers(int $id, string|null $trackingNumber)
+    private function detectCouriers(int $id, ?string $trackingNumber)
     {
-        $response = TrackingMore::courier()->detect(["tracking_number" => $trackingNumber]);
+        $response = TrackingMore::courier()->detect(['tracking_number' => $trackingNumber]);
 
-        $code = $response["data"][0]["courier_code"];
+        $code = $response['data'][0]['courier_code'];
 
         OrderTrackingModel::find($id)->update(['courier_code' => $code]);
     }

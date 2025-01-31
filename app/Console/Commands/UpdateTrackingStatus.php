@@ -27,6 +27,7 @@ class UpdateTrackingStatus extends Command
 
     /**
      * Execute the console command.
+     *
      * @throws TrackingMoreException
      */
     public function handle(): void
@@ -39,10 +40,10 @@ class UpdateTrackingStatus extends Command
             $courierCode = $tracking->courier_code;
             $trackingNumber = $tracking->tracking_number;
 
-            if (is_null($courierCode) && !is_null($trackingNumber)) {
+            if (is_null($courierCode) && ! is_null($trackingNumber)) {
                 $response = TrackingMore::courier()->detect(['tracking_number' => $trackingNumber]);
 
-                if (!empty($response)) {
+                if (! empty($response)) {
                     $courierCode = $response['data'][0]['courier_code'];
 
                     DB::table('order_tracking')
@@ -51,13 +52,13 @@ class UpdateTrackingStatus extends Command
                 }
             }
 
-            if (!empty($courierCode)) {
+            if (! empty($courierCode)) {
                 $response = TrackingMore::tracking()->getTrackingResults([
                     'tracking_numbers' => $trackingNumber,
                     'courier_code' => $courierCode,
                 ]);
 
-                if (!empty($response['data'][0]['delivery_status'])) {
+                if (! empty($response['data'][0]['delivery_status'])) {
                     $trackingData = $response['data'][0];
                     $newStatus = $trackingData['delivery_status'] ?? $tracking->tracking_status;
 

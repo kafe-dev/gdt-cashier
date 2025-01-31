@@ -2,14 +2,11 @@
 
 namespace App\Services\DataTables;
 
-use App\Exports\OrderTrackingExport;
 use App\Models\Filters\OrderTrackingFilter;
 use App\Models\OrderTracking;
 use App\Services\DataTables\Transformers\OrderTrackingTransformer;
 use Illuminate\Database\Eloquent\Builder as QueryBuilder;
-use Maatwebsite\Excel\Facades\Excel;
 use Yajra\DataTables\EloquentDataTable;
-use Yajra\DataTables\Html\Builder as HtmlBuilder;
 use Yajra\DataTables\Html\Column;
 
 class OrderTrackingDataTable extends BaseDataTable
@@ -25,16 +22,17 @@ class OrderTrackingDataTable extends BaseDataTable
     protected string $createUrl = 'app.tracking.index';
 
     /**
-     * actions array
-     *
-     * @var array|string[]
+     * {@inheritdoc}
      */
-    protected array $actions = ['print', 'excel', 'exportAndClose'];
+    protected string $exportFileName = 'OrderTracking_';
 
     /**
      * {@inheritdoc}
      */
-    protected string $exportFileName = 'Users_';
+    protected array $customButtons = [
+        'sync' => 'getSyncBtn',
+        'exportExcel' => 'getExportExcelBtn',
+    ];
 
     /**
      * Return the query builder instance to be processed by DataTables.
@@ -45,11 +43,11 @@ class OrderTrackingDataTable extends BaseDataTable
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function dataTable(): EloquentDataTable
     {
-        $datatable = (new EloquentDataTable(new OrderTracking()))
+        $datatable = (new EloquentDataTable(new OrderTracking))
             ->setTransformer(OrderTrackingTransformer::class)
             ->setRowId('id')
             ->escapeColumns([])
@@ -62,7 +60,7 @@ class OrderTrackingDataTable extends BaseDataTable
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function getColumns(): array
     {
@@ -72,7 +70,7 @@ class OrderTrackingDataTable extends BaseDataTable
             Column::make('tracking_number')->searchPanes()->addClass('x-searchable'),
             Column::make('courier_code')->searchPanes()->addClass('x-searchable'),
             Column::make('tracking_status')->searchPanes(),
-//            Column::make('tracking_data')->searchPanes(),
+            //            Column::make('tracking_data')->searchPanes(),
             Column::make('type')->searchPanes(),
             Column::make('closed_at')->searchPanes()->addClass('x-has-date-filter')->orderable(false),
             Column::make('last_checked_at')->searchPanes()->addClass('x-has-date-filter')->orderable(false),
@@ -82,162 +80,73 @@ class OrderTrackingDataTable extends BaseDataTable
         ];
     }
 
-    public function html(): HtmlBuilder
+    /**
+     * Returns the "sync" btn.
+     *
+     * @return string[]
+     */
+    public function getSyncBtn(): array
     {
-        return $this->builder()
-            ->setTableId($this->tableId)
-            ->setTableHeadClass('x-searchable-wrapper')
-            ->columns($this->getColumns())
-            ->scrollX()
-            ->scrollY()
-            ->responsive()
-            ->fixedHeader()
-            ->fixedColumns(['start' => 1, 'end' => 1])
-            ->scrollCollapse(true)
-            ->minifiedAjax()
-            ->orderBy(0)
-            ->selectStyleSingle()
-            ->addAction()
-            ->parameters([
-                'layout' => [
-                    'topStart' => [
-                        'buttons' => [
-                            $this->renderButtons(),
-                            'print', 'exportAndClose', 'reset',
-                            [
-                                'extend' => 'searchPanes',
-                                'cascadePanes' => true,
-                                'attr' => [
-                                    'id' => 'filter-btn',
-                                ],
-                                'config' => [
-                                    'responsive' => true,
-                                    'layouts' => [
-                                        'columns-sm-1', 'columns-md-2', 'columns-3',
-                                    ],
-                                    'initCollapsed' => true,
-                                    'select' => [
-                                        'style' => 'multi',
-                                    ],
-                                ],
-                            ],
-                        ],
-                    ],
-                    'topEnd' => 'search',
-                    'bottomStart' => 'pageLength',
-                    'bottomEnd' => ['info', 'paging'],
-                ],
-                'language' => [
-                    'searchPanes' => [
-                        'collapse' => [
-                            0 => '<i class="fas fa-filter"></i> Filters',
-                            '_' => '<i class="fas fa-filter"></i> Filters (%d)',
-                        ],
-                    ],
-                    'search' => 'Search All:',
-                ],
-                'initComplete' => "function () {
-                            timeConverter();
+        return [
+            'text' => '<i class="fa fa-sync"></i> Sync ',
+            'className' => 'btn btn-primary',
+            'init' => "function (dt, node, config) {
+                $(node).css('background-color', 'rgba(23, 97, 253, 0.75)');
+                $(node).css('border-color', 'rgba(23, 97, 253, 0.75)');
 
-                            this.api().columns().every(function () {
-                                let column = this;
-                                let header = column.header();
-                                let input = document.createElement('input');
-                                let inputWrapper = document.createElement('div');
-
-                                inputWrapper.setAttribute('class', 'form-inline');
-                                inputWrapper.appendChild(input);
-
-                                input.setAttribute('class', 'form-control');
-                                header.appendChild(input);
-                                input.setAttribute('disabled', 'true');
-
-                                if (header.classList.contains('x-searchable')) {
-                                    input.removeAttribute('disabled');
-                                }
-
-                                if (header.classList.contains('x-has-date-filter')) {
-                                    let startDate = moment().subtract(1, 'M');
-                                    let endDate = moment();
-
-                                    let calendar = document.createElement('label');
-                                    let calendarIcon = document.createElement('i');
-                                    let dateFilterSpan = document.createElement('span');
-                                    let caretDownIcon = document.createElement('i');
-                                    let datePickerWrapper = document.createElement('span');
-
-                                    datePickerWrapper.setAttribute('class', 'date-picker-wrapper');
-
-                                    calendar.setAttribute('for', header.getAttribute('data-dt-column') + '_filter');
-                                    calendar.setAttribute('class', 'input-group-text bg-soft-primary form-control d-flex justify-content-between');
-                                    calendar.style.cursor = 'pointer';
-                                    calendar.style.height = '33.5px';
-
-                                    calendarIcon.setAttribute('class', 'fas fa-calendar pl-3');
-                                    caretDownIcon.setAttribute('class', 'fas fa-caret-down');
-
-                                    calendar.append(calendarIcon);
-                                    calendar.append(dateFilterSpan);
-                                    calendar.append(caretDownIcon);
-
-                                    header.append(calendar);
-                                    header.append(datePickerWrapper);
-
-                                    input.setAttribute('id', header.getAttribute('data-dt-column') + '_filter');
-                                    input.style.display = 'none';
-
-                                    $(calendar).daterangepicker({
-                                        startDate: startDate,
-                                        endDate: endDate,
-                                        locale: {
-                                            format: 'YYYY-MM-DD'
-                                        }
-                                    }, function (startDate, endDate) {
-                                        console.log(moment(startDate).format('YYYY-MM-DD'))
-                                        console.log(moment(endDate).format('YYYY-MM-DD'))
-
-                                        column.search(moment(startDate).format('YYYY-MM-DD'), moment(endDate).format('YYYY-MM-DD')).draw();
-                                    });
-                                }
-
-                                input.addEventListener('click', (e) => {
-                                    e.stopPropagation();
-                                });
-
-                                input.addEventListener('keyup', () => {
-                                    if (column.search() !== this.value) {
-                                        column.search(input.value).draw();
-                                    }
-                                });
-                            });
-                        }",
-            ]);
-    }
-
-    public function exportAndClose(): \Illuminate\Http\JsonResponse
-    {
-        $query = OrderTracking::query();
-
-        Excel::download(new OrderTrackingExport($query), 'order_tracking_data.xlsx');
-
-        $query->update(['type' => OrderTracking::TYPE_CLOSED]);
-
-        return response()->json(['status' => 'success', 'message' => 'Data exported and records updated to closed']);
+                $(node).click(() => {
+                    window.location.reload();
+                });
+            }",
+        ];
     }
 
     /**
-     * Render all the custom buttons.
+     * Returns the "exportExcel" button.
+     *
+     * @return string[]
      */
-    private function renderButtons(): array
+    public function getExportExcelBtn(): array
     {
-        $output = [];
+        return [
+            'text' => '<i class="fa fa-file-excel"></i> Export to Excel',
+            'className' => 'btn btn-success',
+            'init' => "function (dt, node, config) {
+                $(node).click(() => {
+                    var form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = '".route('app.tracking.export')."';
 
-        if (! empty($this->customButtons)) {
-            foreach ($this->customButtons as $key => $callback) {
-                $output[] = $this->$callback();
-            }
-        }
+                    var csrfToken = document.createElement('input');
+                    csrfToken.type = 'hidden';
+                    csrfToken.name = '_token';
+                    csrfToken.value = '".csrf_token()."';
 
-        return array_values($output);
+                    form.appendChild(csrfToken);
+
+                    var input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = 'key';
+                    input.value = 'value';
+                    form.appendChild(input);
+
+                    document.body.appendChild(form);
+                    form.submit();
+
+                    $.ajax({
+                        type: 'POST',
+                        url: form.action,
+                        data: $(form).serialize(),
+                        success: function(response) {
+                            setTimeout(function() {
+                                window.location.reload();
+                            }, 1500);
+                        },
+                        error: function() {
+                        }
+                    });
+                });
+            }",
+        ];
     }
 }
