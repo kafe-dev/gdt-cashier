@@ -1,6 +1,7 @@
-@php use Carbon\Carbon; @endphp
+@php use App\Utils\ActionWidget;use Carbon\Carbon; @endphp
 @php
     /* @var \App\Models\Dispute $dispute */
+    /* @var \App\Models\Paygate $paygate */
 @endphp
 @extends('_layouts.main')
 
@@ -12,78 +13,109 @@
     {{ Breadcrumbs::render('show-dispute',$dispute) }}
 @endpush
 
+@php
+    $paygate = \App\Models\Paygate::find($dispute->paygate_id);
+@endphp
+
 @section('content')
     <div class="row">
         <div class="col-6">
             <div class="card">
                 <div class="card-header">
-                    <h4 class="card-title">Information Dispute</h4>
-                    <p class="text-muted mb-0">Fill out the form below to create a new paygate.</p>
-                    <p class="text-muted mb-0">Field with the (<span class="text-danger">*</span>) is required.</p>
+                    <h4 class="card-title">Dispute ID: {{ $dispute->id }}</h4>
+                    <p class="text-muted mb-0">This table below is showing the detail information of dispute ID: {{ $dispute->id }}</p>
                 </div>
                 <div class="card-body">
-                    <div class="mb-3">
-                        <label class="form-label" for="name">Name <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" id="name" name="name" placeholder="Enter name" value="{{ $dispute->dispute_id }}" required>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label" for="dispute_id">Dispute ID <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" id="dispute_id" name="dispute_id" placeholder="Enter dispute ID" value="{{ $dispute->dispute_id }}" required>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label" for="create_time">Create Time</label>
-                        <input type="datetime-local" class="form-control" id="create_time" name="create_time"
-                               value="{{ Carbon::parse($dispute->create_time)->format('Y-m-d\TH:i') }}">
-                    </div>
+                    <ul class="list-group">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <span class="text-muted">ID:</span>
+                            </div>
+                            <span>{{ $dispute->id }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <span class="text-muted">Dispute ID:</span>
+                            </div>
+                            <span>{{ $dispute->dispute_id }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <span class="text-muted">Paygate ID:</span>
+                            </div>
+                            <span>{{ $paygate->name??'' }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <span class="text-muted">Merchant ID:</span>
+                            </div>
+                            <span>{{ $dispute->merchant_id }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <span class="text-muted">Reason:</span>
+                            </div>
+                            <span>{{ $dispute->reason ?? '-' }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <span class="text-muted">Status:</span>
+                            </div>
+                            <span class="badge badge-soft-{{ $dispute->status === 'closed' ? 'secondary' : 'primary' }}">{{ $dispute->status }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <span class="text-muted">Dispute State:</span>
+                            </div>
+                            <span>{{ $dispute->dispute_state ?? '-' }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <span class="text-muted">Dispute Amount:</span>
+                            </div>
+                            <span>{{ $dispute->dispute_amount_value }} {{ $dispute->dispute_amount_currency }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <span class="text-muted">Dispute Life Cycle Stage:</span>
+                            </div>
+                            <span>{{ $dispute->dispute_life_cycle_stage ?? '-' }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <span class="text-muted">Dispute Channel:</span>
+                            </div>
+                            <span>{{ $dispute->dispute_channel ?? '-' }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <span class="text-muted">Seller Response Due Date:</span>
+                            </div>
+                            {!! !empty($dispute->seller_response_due_date) ? '<span class="x-has-time-converter">'.$dispute->seller_response_due_date->format(config('app.date_format')).'</span>' : '-' !!}
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <span class="text-muted">Link:</span>
+                            </div>
+                            <span><a href="{{ $dispute->link }}" target="_blank" class="text-primary">{{$dispute->link}}</a></span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <span class="text-muted">Created At:</span>
+                            </div>
+                            {!! !empty($dispute->created_at) ? '<span class="x-has-time-converter">'.$dispute->created_at->format(config('app.date_format')).'</span>' : '-' !!}
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <span class="text-muted">Updated At:</span>
+                            </div>
+                            {!! !empty($dispute->updated_at) ? '<span class="x-has-time-converter">'.$dispute->updated_at->format(config('app.date_format')).'</span>' : '-' !!}
+                        </li>
+                    </ul>
 
-                    <div class="mb-3">
-                        <label class="form-label" for="update_time">Update Time</label>
-                        <input type="datetime-local" class="form-control" id="update_time" name="update_time" value="{{ Carbon::parse($dispute->update_time)->format('Y-m-d\TH:i') }}">
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label" for="buyer_transaction_id">Buyer Transaction ID</label>
-                        <input type="text" class="form-control" id="buyer_transaction_id" name="buyer_transaction_id" placeholder="Enter buyer transaction ID" value="{{ $dispute->buyer_transaction_id }}">
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label" for="merchant_id">Merchant ID</label>
-                        <input type="text" class="form-control" id="merchant_id" name="merchant_id" placeholder="Enter merchant ID" value="{{ $dispute->merchant_id }}">
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label" for="reason">Reason</label>
-                        <input type="text" class="form-control" id="reason" name="reason" placeholder="Enter reason" value="{{ $dispute->reason }}">
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label" for="status">Status</label>
-                        <input type="text" class="form-control" id="status" name="status" placeholder="Enter status" value="{{ $dispute->status }}">
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label" for="dispute_state">Dispute State</label>
-                        <input type="text" class="form-control" id="dispute_state" name="dispute_state" placeholder="Enter dispute state" value="{{ $dispute->dispute_state }}">
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label" for="dispute_amount_currency">Dispute Amount Currency</label>
-                        <input type="text" class="form-control" id="dispute_amount_currency" name="dispute_amount_currency" placeholder="Enter dispute amount currency" value="{{ $dispute->dispute_amount_currency }}">
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label" for="dispute_amount_value">Dispute Amount Value</label>
-                        <input type="number" step="0.01" class="form-control" id="dispute_amount_value" name="dispute_amount_value" placeholder="Enter dispute amount value" value="{{ $dispute->dispute_amount_value }}">
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label" for="dispute_life_cycle_stage">Dispute Life Cycle Stage</label>
-                        <input type="text" class="form-control" id="dispute_life_cycle_stage" name="dispute_life_cycle_stage" placeholder="Enter dispute life cycle stage" value="{{ $dispute->dispute_life_cycle_stage }}">
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label" for="dispute_channel">Dispute Channel</label>
-                        <input type="text" class="form-control" id="dispute_channel" name="dispute_channel" placeholder="Enter dispute channel" value="{{ $dispute->dispute_channel }}">
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label" for="seller_response_due_date">Seller Response Due Date</label>
-                        <input type="datetime-local" class="form-control" id="seller_response_due_date" name="seller_response_due_date" value="{{ $dispute->seller_response_due_date }}">
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label" for="link">Link</label>
-                        <input type="url" class="form-control" id="link" name="link" placeholder="Enter link" value="{{ $dispute->link }}">
-                    </div>
+                </div>
+                <div class="card-footer">
+                    {{ ActionWidget::renderGoBackBtn('Go Back', 'btn btn-primary') }}
                 </div>
             </div>
         </div>
