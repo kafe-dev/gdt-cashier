@@ -72,7 +72,13 @@ abstract class BaseDataTable extends DataTable
                     'topStart' => [
                         'buttons' => [
                             $this->renderButtons(),
-                            'excel', 'csv', 'pdf', 'reset',
+                            'print', 'pdf',
+                            [
+                                'extend' => 'reset',
+                                'attr' => [
+                                    'id' => 'reset-btn',
+                                ],
+                            ],
                             [
                                 'extend' => 'searchPanes',
                                 'cascadePanes' => true,

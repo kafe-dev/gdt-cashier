@@ -109,7 +109,7 @@ class OrderTrackingDataTable extends BaseDataTable
     public function getExportExcelBtn(): array
     {
         return [
-            'text' => '<i class="fa fa-file-excel"></i> Export to Excel',
+            'text' => '<i class="fa fa-file-excel"></i> Export',
             'className' => 'btn btn-success',
             'init' => "function (dt, node, config) {
                 $(node).click(() => {
@@ -138,9 +138,8 @@ class OrderTrackingDataTable extends BaseDataTable
                         url: form.action,
                         data: $(form).serialize(),
                         success: function(response) {
-                            setTimeout(function() {
-                                window.location.reload();
-                            }, 1500);
+                            alert('Exported successfully');
+                            $('#reset-btn').click();
                         },
                         error: function() {
                         }
