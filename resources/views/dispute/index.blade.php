@@ -21,13 +21,64 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    {{ $dataTable->table() }}
+                    <form method="GET" action="{{ route('app.dispute.index') }}" class="mb-4">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <input type="text" name="dispute_id" class="form-control" placeholder="Dispute ID" value="{{ request('dispute_id') }}">
+                            </div>
+                            <div class="col-md-3">
+                                <input type="text" name="merchant_id" class="form-control" placeholder="Merchant ID" value="{{ request('merchant_id') }}">
+                            </div>
+                            <div class="col-md-3">
+                                <input type="text" name="reason" class="form-control" placeholder="Lý do" value="{{ request('reason') }}">
+                            </div>
+                            <div class="col-md-3">
+                                <select name="status" class="form-control">
+                                    <option value="">Trạng thái</option>
+                                    <option value="open" {{ request('status') == 'open' ? 'selected' : '' }}>Open</option>
+                                    <option value="closed" {{ request('status') == 'closed' ? 'selected' : '' }}>Closed</option>
+                                </select>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary mt-2">Tìm kiếm</button>
+                    </form>
+                    <table class="table table-bordered">
+                        <thead class="thead-light">
+                        <tr>
+                            <th>ID</th>
+                            <th>Dispute ID</th>
+                            <th>Merchant ID</th>
+                            <th>Status</th>
+                            <th>Reason</th>
+                            <th>Created At</th>
+                            <th>Action</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @foreach ($disputes as $dispute)
+                            <tr>
+                                <td>{{ $dispute->id }}</td>
+                                <td>{{ $dispute->dispute_id }}</td>
+                                <td>{{ $dispute->merchant_id }}</td>
+                                <td>{{ $dispute->status }}</td>
+                                <td>{{ $dispute->reason }}</td>
+                                <td>{{ $dispute->created_at }}</td>
+                                <td>
+                                    @php
+                                        $btnView           = '<a href="' . route('app.dispute.show', ['id' => $dispute->id]) . '" class="btn btn-sm btn-info m-1" title="View"><i class="fa fa-eye"></i></a>';
+                                        $btnRedirectPaypal = '<a href="https://www.sandbox.paypal.com/resolutioncenter/view/' . $dispute->dispute_id . '" class="btn btn-sm btn-primary m-1" title="View" target="_blank"><i class="fab fa-paypal"></i></a>';
+
+                                        echo $btnView . ' ' . $btnRedirectPaypal;
+                                    @endphp
+                                </td>
+                            </tr>
+                        @endforeach
+                        </tbody>
+                    </table>
+                    {{ $disputes->onEachSide(1)->links('pagination::bootstrap-5') }} <!-- Hiển thị phân trang -->
                 </div>
             </div>
         </div>
     </div>
-@endsection
 
-@push('custom-scripts')
-    {{ $dataTable->scripts(attributes: ['type' => 'module']) }}
-@endpush
+@endsection

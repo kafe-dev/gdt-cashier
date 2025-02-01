@@ -19,9 +19,28 @@ class Dispute extends BaseController
     /**
      * Action `index`.
      */
-    public function index(DisputeDataTable $dataTable)
+    public function index(Request $request)
     {
-        return $dataTable->render('dispute.index');
+        $query = \App\Models\Dispute::query();
+
+        // Thêm điều kiện tìm kiếm
+        if ($request->filled('dispute_id')) {
+            $query->where('dispute_id', 'like', '%' . $request->dispute_id . '%');
+        }
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+        if ($request->filled('merchant_id')) {
+            $query->where('merchant_id', $request->merchant_id);
+        }
+        if ($request->filled('reason')) {
+            $query->where('reason', 'like', '%' . $request->reason . '%');
+        }
+
+        // Phân trang với 5 bản ghi mỗi trang
+        $disputes = $query->paginate(5);
+
+        return view('dispute.index', compact('disputes'));
     }
 
     /**
