@@ -19,8 +19,5 @@
     "dependencies": {
         "datatables.net-searchpanes-bs5": "^2.3.3",
         "datatables.net-select-bs5": "^2.1.0"
-    },
-    "optionalDependencies": {
-        "@rollup/rollup-linux-x64-gnu": "4.6.1"
     }
 }
