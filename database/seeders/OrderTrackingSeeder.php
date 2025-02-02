@@ -12,6 +12,20 @@ class OrderTrackingSeeder extends Seeder
      */
     public function run(): void
     {
-        OrderTracking::factory(5)->create();
+        OrderTracking::factory()->create([
+            'order_id' => 1,
+            'tracking_number' => 'VR680019778YP',
+            'courier_code' => 'yanwen'
+        ]);
+        OrderTracking::factory()->create([
+            'order_id' => 1,
+            'tracking_number' => 'YWBZ2025010114',
+            'courier_code' => 'ywbzexpress'
+        ]);
+        OrderTracking::factory()->create([
+            'order_id' => 1,
+            'tracking_number' => 'YT2500721403049056',
+            'courier_code' => 'yunexpress'
+        ]);
     }
 }

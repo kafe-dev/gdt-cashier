@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
+            $table->bigInteger('paygate_id')->unsigned();
             $table->string('code')->unique();
             $table->enum('status', ['PAID', 'NEW'])->default('NEW');
             $table->string('invoicer_email_address');

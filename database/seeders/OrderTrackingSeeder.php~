@@ -2,15 +2,16 @@
 
 namespace Database\Seeders;
 
+use App\Models\OrderTracking;
 use Illuminate\Database\Seeder;
 
-class StoreSeeder extends Seeder
+class OrderTrackingSeeder extends Seeder
 {
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
-        \App\Models\Store::factory(5)->create();
+        OrderTracking::factory(5)->create();
     }
 }

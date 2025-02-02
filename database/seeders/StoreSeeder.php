@@ -12,6 +12,16 @@ class StoreSeeder extends Seeder
      */
     public function run(): void
     {
-        Store::factory(5)->create();
+        Store::factory()->create([
+            'user_id' => 1,
+            'name' => 'Lux Print',
+            'url' => 'https://luxprint.es',
+            'description' => 'This is the demo WooCommerce store, using for testing purposes',
+            'api_key' => json_encode([
+                'consume_key' => 'LLGaCOVXdqoDehMv',
+                'consume_secret' => 'ZcTADJdHqPxcX04s'
+            ]),
+            'status' => Store::STATUS_ACTIVE,
+        ]);
     }
 }
