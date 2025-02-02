@@ -36,9 +36,18 @@ class Dispute extends BaseController
         if ($request->filled('reason')) {
             $query->where('reason', 'like', '%' . $request->reason . '%');
         }
+        if ($request->filled('create_date_range') && str_contains($request->create_date_range, ' - ')) {
+            [$startDate, $endDate] = explode(' - ', $request->create_date_range);
+            $query->whereBetween('created_at', [
+                trim($startDate) . ' 00:00:00',
+                trim($endDate) . ' 23:59:59'
+            ]);
+        }
 
-        // Phân trang với 5 bản ghi mỗi trang
-        $disputes = $query->paginate(5);
+
+
+        // Phân trang với 20 bản ghi mỗi trang
+        $disputes = $query->paginate(20);
 
         return view('dispute.index', compact('disputes'));
     }
