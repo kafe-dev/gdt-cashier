@@ -17,7 +17,7 @@ class StoreSeeder extends Seeder
             'name' => 'Lux Print',
             'url' => 'https://luxprint.es',
             'description' => 'This is the demo WooCommerce store, using for testing purposes',
-            'api_data' => json_encode([
+            'api_key' => json_encode([
                 'consume_key' => 'LLGaCOVXdqoDehMv',
                 'consume_secret' => 'ZcTADJdHqPxcX04s'
             ]),
