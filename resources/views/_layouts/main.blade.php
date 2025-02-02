@@ -9,6 +9,13 @@
     <link rel="stylesheet" href="{{ asset('theme/assets/css/metisMenu.min.css') }}">
     <link rel="stylesheet" href="{{ asset('theme/plugins/daterangepicker/daterangepicker.css') }}">
     <link rel="stylesheet" href="{{ asset('theme/assets/css/main-style.css') }}">
+    <!-- CSS của Daterangepicker -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+
+    <!-- Moment.js (hỗ trợ định dạng ngày) -->
+    <script src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <!-- Daterangepicker -->
+    <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
 
     @stack('custom-styles')
 @endpush
