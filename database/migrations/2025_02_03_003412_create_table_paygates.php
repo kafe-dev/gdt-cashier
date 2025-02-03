@@ -11,15 +11,17 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('stores', function (Blueprint $table) {
+        Schema::create('paygates', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('user_id')->unsigned()->comment('Owner of this store');
             $table->string('name');
-            $table->string('url');
-            $table->string('description')->nullable();
+            $table->string('url')->nullable();
             $table->json('api_data')->nullable();
-            $table->smallInteger('status')->default(0)->comment('0: inactive, 1: active, 2: draft');
+            $table->json('vps_data')->nullable();
+            $table->smallInteger('type')->default(0);
+            $table->smallInteger('status')->default(0);
             $table->timestamps();
+            $table->decimal('limitation', 65)->default(0.00);
+            $table->smallInteger('mode')->default(0);
         });
     }
 
@@ -28,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('stores');
+        Schema::dropIfExists('paygates');
     }
 };

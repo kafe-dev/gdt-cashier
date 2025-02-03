@@ -42,7 +42,7 @@ class OrderTransformer extends TransformerAbstract {
      */
     private function renderActions(Order $order) {
 
-        $btnView = '<a href="' . route('app.dispute.show', ['id' => $order->id]) . '" class="btn btn-sm btn-info m-1" title="View"><i class="fa fa-eye"></i></a>';
+        $btnView           = '<a href="' . route('app.dispute.show', ['id' => $order->id]) . '" class="btn btn-sm btn-info m-1" title="View"><i class="fa fa-eye"></i></a>';
         return $btnView;
     }
 }

@@ -1,4 +1,4 @@
-@php use App\Utils\ActionWidget;use Carbon\Carbon; @endphp
+@php use Carbon\Carbon; @endphp
 @php
     /* @var \App\Models\Dispute $dispute */
     /* @var \App\Models\Paygate $paygate */
@@ -115,7 +115,7 @@
 
                 </div>
                 <div class="card-footer">
-                    {{ ActionWidget::renderGoBackBtn('Go Back', 'btn btn-primary') }}
+                    {{ \App\Utils\ActionWidget::renderGoBackBtn('Go Back', 'btn btn-primary') }}
                 </div>
             </div>
         </div>
