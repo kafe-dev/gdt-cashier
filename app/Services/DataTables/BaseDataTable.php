@@ -67,6 +67,7 @@ abstract class BaseDataTable extends DataTable
             ->orderBy(0)
             ->selectStyleSingle()
             ->addAction()
+            ->serverSide()
             ->parameters([
                 'layout' => [
                     'topStart' => [
@@ -112,7 +113,61 @@ abstract class BaseDataTable extends DataTable
                     'search' => 'Search All:',
                 ],
                 'initComplete' => "function () {
-                            timeConverter();
+                    timeConverter();
+                }",
+            ]);
+    }
+
+    /**
+     * Get filename for export.
+     */
+    public function filename(): string
+    {
+        return $this->exportFileName.date('YmdHis');
+    }
+
+    /**
+     * Returns the "create" btn.
+     *
+     * @return string[]
+     */
+    public function getCreateBtn(): array
+    {
+        return [
+            'text' => '<i class="fa fa-plus"></i> New ',
+            'className' => 'btn btn-success',
+            'init' => "function (dt, node, config) {
+                $(node).click(() => {
+                    window.location.href = '".route($this->createUrl)."';
+                });
+            }",
+        ];
+    }
+
+    /**
+     * Render all the custom buttons.
+     */
+    private function renderButtons(): array
+    {
+        $output = [];
+
+        if (! empty($this->customButtons)) {
+            foreach ($this->customButtons as $key => $callback) {
+                $output[] = $this->$callback();
+            }
+        }
+
+        return array_values($output);
+    }
+
+    /**
+     * DataTable init script.
+     *
+     * @return string
+     */
+    private function initScript(): string
+    {
+        return "
 
                             this.api().columns().every(function () {
                                 let column = this;
@@ -171,7 +226,10 @@ abstract class BaseDataTable extends DataTable
                                         console.log(moment(startDate).format('YYYY-MM-DD'))
                                         console.log(moment(endDate).format('YYYY-MM-DD'))
 
-                                        column.search(moment(startDate).format('YYYY-MM-DD'), moment(endDate).format('YYYY-MM-DD')).draw();
+                                        minDate = moment(startDate).format('YYYY-MM-DD');
+                                        maxDate = moment(maxDate).format('YYYY-MM-DD');
+
+                                        //column.search(moment(startDate).format('YYYY-MM-DD'), moment(endDate).format('YYYY-MM-DD')).draw();
                                     });
                                 }
 
@@ -185,49 +243,6 @@ abstract class BaseDataTable extends DataTable
                                     }
                                 });
                             });
-                        }",
-            ]);
-    }
-
-    /**
-     * Get filename for export.
-     */
-    public function filename(): string
-    {
-        return $this->exportFileName.date('YmdHis');
-    }
-
-    /**
-     * Returns the "create" btn.
-     *
-     * @return string[]
-     */
-    public function getCreateBtn(): array
-    {
-        return [
-            'text' => '<i class="fa fa-plus"></i> New ',
-            'className' => 'btn btn-success',
-            'init' => "function (dt, node, config) {
-                $(node).click(() => {
-                    window.location.href = '".route($this->createUrl)."';
-                });
-            }",
-        ];
-    }
-
-    /**
-     * Render all the custom buttons.
-     */
-    private function renderButtons(): array
-    {
-        $output = [];
-
-        if (! empty($this->customButtons)) {
-            foreach ($this->customButtons as $key => $callback) {
-                $output[] = $this->$callback();
-            }
-        }
-
-        return array_values($output);
+        ";
     }
 }
