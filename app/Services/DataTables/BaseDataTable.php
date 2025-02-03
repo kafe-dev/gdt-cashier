@@ -85,23 +85,23 @@ abstract class BaseDataTable extends DataTable
                                 ],
                             ],
                             $this->getReloadBtn(),
-                            [
-                                'extend' => 'searchPanes',
-                                'cascadePanes' => true,
-                                'attr' => [
-                                    'id' => 'filter-btn',
-                                ],
-                                'config' => [
-                                    'responsive' => true,
-                                    'layouts' => [
-                                        'columns-sm-1', 'columns-md-2', 'columns-3',
-                                    ],
-                                    'initCollapsed' => true,
-                                    'select' => [
-                                        'style' => 'multi',
-                                    ],
-                                ],
-                            ],
+//                            [
+//                                'extend' => 'searchPanes',
+//                                'cascadePanes' => true,
+//                                'attr' => [
+//                                    'id' => 'filter-btn',
+//                                ],
+//                                'config' => [
+//                                    'responsive' => true,
+//                                    'layouts' => [
+//                                        'columns-sm-1', 'columns-md-2', 'columns-3',
+//                                    ],
+//                                    'initCollapsed' => true,
+//                                    'select' => [
+//                                        'style' => 'multi',
+//                                    ],
+//                                ],
+//                            ],
                         ],
                     ],
                     'topEnd' => 'search',
