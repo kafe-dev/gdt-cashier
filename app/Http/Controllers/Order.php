@@ -19,6 +19,8 @@ class Order extends BaseController {
      * Action `index`.
      */
     public function index(OrderDataTable $dataTable) {
+        $this->filterDateRange($dataTable);
+
         return $dataTable->render('order.index');
     }
 

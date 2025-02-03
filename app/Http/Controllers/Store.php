@@ -38,6 +38,8 @@ class Store extends BaseController
      */
     public function index(StoreDataTable $dataTable)
     {
+        $this->filterDateRange($dataTable);
+
         return $dataTable->render('store.index');
     }
 

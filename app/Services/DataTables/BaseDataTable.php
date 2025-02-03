@@ -16,6 +16,10 @@ use Yajra\DataTables\Services\DataTable;
  */
 abstract class BaseDataTable extends DataTable
 {
+    public string|null $dateToFilter = null;
+    public string|null $minDate = null;
+    public string|null $maxDate = null;
+
     /**
      * @var string Table ID
      */
@@ -80,6 +84,7 @@ abstract class BaseDataTable extends DataTable
                                     'id' => 'reset-btn',
                                 ],
                             ],
+                            $this->getReloadBtn(),
                             [
                                 'extend' => 'searchPanes',
                                 'cascadePanes' => true,
@@ -114,6 +119,7 @@ abstract class BaseDataTable extends DataTable
                 ],
                 'initComplete' => "function () {
                     timeConverter();
+                    ".$this->initScript()."
                 }",
             ]);
     }
@@ -144,6 +150,21 @@ abstract class BaseDataTable extends DataTable
         ];
     }
 
+    public function getReloadBtn(): array {
+        return [
+            'text' => '<i class="fa fa-refresh"></i> Reload ',
+            'className' => 'btn btn-danger',
+            'init' => "function (dt, node, config) {
+                $(node).click(() => {
+                    let url = window.location.href;
+
+                    url = new URL(url).origin + new URL(url).pathname;
+                    window.location.href = url;
+                });
+            }",
+        ];
+    }
+
     /**
      * Render all the custom buttons.
      */
@@ -168,7 +189,6 @@ abstract class BaseDataTable extends DataTable
     private function initScript(): string
     {
         return "
-
                             this.api().columns().every(function () {
                                 let column = this;
                                 let header = column.header();
@@ -216,6 +236,25 @@ abstract class BaseDataTable extends DataTable
                                     input.setAttribute('id', header.getAttribute('data-dt-column') + '_filter');
                                     input.style.display = 'none';
 
+                                    dateFilterSpan.setAttribute('id', header.getAttribute('data-dt-column') + '_filter_span');
+
+                                    let minDate;
+                                    let maxDate;
+                                    let url = window.location.href;
+
+                                    if (url.includes('dateToFilter') && url.includes('minDate') && url.includes('maxDate')) {
+                                        let urlParams = new URLSearchParams(new URL(url).search);
+                                        let dateToFilter = urlParams.get('dateToFilter');
+                                        let currentMinDate = urlParams.get('minDate');
+                                        let currentMaxDate = urlParams.get('maxDate');
+
+                                        $(dateFilterSpan).each(function() {
+                                            if (this.getAttribute('id') === dateToFilter + '_filter_span') {
+                                                this.textContent = currentMinDate + ' - ' + currentMaxDate;
+                                            }
+                                        });
+                                    }
+
                                     $(calendar).daterangepicker({
                                         startDate: startDate,
                                         endDate: endDate,
@@ -223,13 +262,12 @@ abstract class BaseDataTable extends DataTable
                                             format: 'YYYY-MM-DD'
                                         }
                                     }, function (startDate, endDate) {
-                                        console.log(moment(startDate).format('YYYY-MM-DD'))
-                                        console.log(moment(endDate).format('YYYY-MM-DD'))
-
                                         minDate = moment(startDate).format('YYYY-MM-DD');
-                                        maxDate = moment(maxDate).format('YYYY-MM-DD');
+                                        maxDate = moment(endDate).format('YYYY-MM-DD');
+                                        url = new URL(url).origin + new URL(url).pathname;
+                                        url += '?dateToFilter=' + header.getAttribute('data-dt-column') + '&minDate=' + minDate + '&maxDate=' + maxDate;
 
-                                        //column.search(moment(startDate).format('YYYY-MM-DD'), moment(endDate).format('YYYY-MM-DD')).draw();
+                                        window.location.href = url;
                                     });
                                 }
 

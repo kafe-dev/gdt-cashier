@@ -45,6 +45,8 @@ class Tracking extends BaseController
             }
         }
 
+        $this->filterDateRange($dataTable);
+
         return $dataTable->render('tracking.index');
     }
 

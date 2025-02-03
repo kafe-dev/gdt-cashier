@@ -46,7 +46,11 @@ class PaygateDataTable extends BaseDataTable
      */
     public function dataTable(): EloquentDataTable
     {
-        $dataTable = (new EloquentDataTable(new Paygate))->setTransformer(PaygateTransformer::class)->setRowId('id')->escapeColumns([])->rawColumns(['action']);
+        $dataTable = (new EloquentDataTable(new Paygate))->setTransformer(PaygateTransformer::class)->setRowId('id')->escapeColumns([])->rawColumns(['action'])->filter(function ($query) {
+            if (!empty($this->dateToFilter) && !empty($this->minDate) && !empty($this->maxDate)) {
+                $query->whereBetween($this->dateToFilter, [$this->minDate, $this->maxDate]);
+            }
+        });;
 
         return PaygateFilter::perform($dataTable);
     }

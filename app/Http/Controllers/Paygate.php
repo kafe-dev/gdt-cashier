@@ -22,6 +22,8 @@ class Paygate extends BaseController
      */
     public function index(PaygateDataTable $dataTable)
     {
+        $this->filterDateRange($dataTable);
+
         return $dataTable->render('paygate.index');
     }
 

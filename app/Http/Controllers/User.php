@@ -41,6 +41,8 @@ class User extends BaseController
      */
     public function index(UserDataTable $dataTable)
     {
+        $this->filterDateRange($dataTable);
+
         return $dataTable->render('user.index');
     }
 
