@@ -10,7 +10,6 @@ use Illuminate\Database\Eloquent\Model;
  * Order model.
  *
  * @property int $id
- * @property int $paygate_id
  * @property string $code
  * @property string $status
  * @property string $invoicer_email_address
@@ -45,7 +44,6 @@ class Order extends Model
      * The attributes that are mass assignable.
      */
     protected $fillable = [
-        'paygate_id',
         'code',
         'status',
         'invoicer_email_address',
