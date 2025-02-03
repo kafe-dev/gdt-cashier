@@ -20,27 +20,9 @@ class Paygate extends BaseController
     /**
      * Action `index`.
      */
-    public function index(Request $request)
+    public function index(PaygateDataTable $dataTable)
     {
-
-        $query = \App\Models\Paygate::query();
-        if ($request->filled('name')) {
-            $query->where('name', 'like', '%' . $request->name . '%');
-        }
-        if ($request->filled('status')) {
-            $query->where('status', $request->status);
-        }
-        if ($request->filled('type')) {
-            $query->where('type', $request->type);
-        }
-        if ($request->filled('mode')) {
-            $query->where('mode', $request->mode);
-        }
-
-        // Phân trang với 20 bản ghi mỗi trang
-        $paygates = $query->paginate(20);
-
-        return view('paygate.index', compact('paygates'));
+        return $dataTable->render('paygate.index');
     }
 
     /**

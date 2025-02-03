@@ -60,7 +60,6 @@ class OrderDataTable extends BaseDataTable {
                 'title' => 'ID',
             ])->addClass('x-id'),
             Column::make('code')->searchPanes()->addClass('x-searchable'),
-            Column::make('paygate_id')->searchPanes()->addClass('x-searchable'),
             Column::make('status')->searchPanes()->addClass('x-searchable'),
             Column::make('invoicer_email_address')->searchPanes()->addClass('x-searchable'),
             Column::make('billing_info')->searchPanes()->addClass('x-searchable'),
