@@ -30,7 +30,7 @@ class DisputeCommand extends Command {
      * @throws \Throwable
      */
     public function handle(): void {
-        $this->fetchv1();
+        $this->provider();
     }
 
     /**
@@ -64,7 +64,7 @@ class DisputeCommand extends Command {
     }
 
     /**
-     * @throws \JsonException
+   $  * @throws \JsonException
      */
     public function fetchv1() {
         $paygates = Paygate::all();
@@ -82,5 +82,26 @@ class DisputeCommand extends Command {
                 }
             }
         }
+    }
+
+    public function provider() {
+        $dispute_id = 'PP-R-GKB-10106525';
+        $evidences = [
+            [
+                "evidence_type" => "PROOF_OF_FULFILLMENT",
+                "evidence_info" => [
+                    "tracking_info" => [
+                        [
+                            "carrier_name" => "UPS",
+                            "tracking_number" => "1Z999AA10123456784"
+                        ]
+                    ]
+                ]
+            ]
+        ];
+        $paygate = Paygate::find(3);
+        $api_data  = $paygate->api_data ?? [];
+        $paypalApi = new PayPalAPI($api_data['client_key'], $api_data['secret_key'], true); // true = sandbox mode
+        $response  = $paypalApi->provideEvidence($dispute_id, $evidences);
     }
 }

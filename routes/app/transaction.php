@@ -1,10 +1,10 @@
 <?php
 
-use App\Http\Controllers\Paygate;
+use App\Http\Controllers\Transaction;
 use App\Http\Middlewares\Auth;
 use Illuminate\Support\Facades\Route;
 
-Route::controller(Paygate::class)
+Route::controller(Transaction::class)
     ->prefix('transaction')
     ->name('app.transaction.')
     ->middleware([Auth::class])

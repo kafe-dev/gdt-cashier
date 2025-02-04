@@ -2,6 +2,7 @@
 namespace App\Paygate;
 
 use Exception;
+use InvalidArgumentException;
 
 class PayPalAPI {
 
@@ -181,6 +182,26 @@ class PayPalAPI {
 
         // Gửi yêu cầu GET đến PayPal API
         return $this->makeRequest("GET", "/v1/customer/disputes?{$query}");
+    }
+
+    public function provideEvidence($dispute_id, $evidences, $return_shipping_address = null): array {
+        // Kiểm tra dispute_id hợp lệ
+        if (empty($dispute_id)) {
+            throw new Exception("Dispute ID is required.");
+        }
+
+        // Tạo payload JSON theo tài liệu PayPal
+        $payload = [
+            'evidences' => $evidences
+        ];
+
+        // Nếu có địa chỉ trả hàng, thêm vào payload
+        if (!empty($return_shipping_address)) {
+            $payload['return_shipping_address'] = $return_shipping_address;
+        }
+
+        // Gửi yêu cầu POST tới PayPal API
+        return $this->makeRequest("POST", "/v1/customer/disputes/{$dispute_id}/provide-evidence", $payload);
     }
 }
 
