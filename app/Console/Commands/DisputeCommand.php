@@ -4,11 +4,12 @@ namespace App\Console\Commands;
 
 use App\Helpers\Logs;
 use App\Models\Paygate;
+use App\Paygate\PayPalAPI;
 use DateTime;
 use Illuminate\Console\Command;
 use Srmklive\PayPal\Services\PayPal as PayPalClient;
 
-class Dispute extends Command {
+class DisputeCommand extends Command {
 
     /**
      * The name and signature of the console command.
@@ -29,52 +30,7 @@ class Dispute extends Command {
      * @throws \Throwable
      */
     public function handle(): void {
-        $this->fetch();
-    }
-
-    /**
-     * Lấy các giao dịch tranh chấp từ trên Paypal về theo các tài khoản paypal được cấu hình sẵn.
-     *
-     * @return void
-     * @throws \Throwable
-     */
-    public function fetch(): void {
-        $paygates = Paygate::all();
-        foreach ($paygates as $paygate) {
-            echo $paygate->name . PHP_EOL;
-            $api_data = json_decode($paygate->api_data, true, 512, JSON_THROW_ON_ERROR) ?? [];
-            $config   = [
-                'mode'           => 'sandbox',
-                'sandbox'        => [
-                    'client_id'     => $api_data['client_key'] ?? '',
-                    'client_secret' => $api_data['secret_key'] ?? '',
-                    'app_id'        => 'PAYPAL_LIVE_APP_ID',
-                ],
-                'payment_action' => 'Sale',
-                'currency'       => 'USD',
-                'notify_url'     => '#',
-                'locale'         => 'en_US',
-                'validate_ssl'   => true,
-            ];
-            $provider = new PayPalClient($config);
-            $provider->getAccessToken();
-            $now        = new DateTime();
-            $start_date = $now->format('Y-m-d') . 'T00:00:00Z';
-            $end_date   = $now->format('Y-m-d') . 'T23:59:59Z';
-            //            $response = $provider->listInvoices([
-            //                'start_date' => $start_date,
-            //                'end_da   o;  te'   => $end_date,
-            //            ]);
-            $response = $provider->listDisputes([
-                'start_date' => '2024-01-01T00:00:00Z',
-                'end_date'   => '2024-01-31T23:59:5 9Z',
-            ]);
-            if (!empty($response['items'])) {
-                foreach ($response['items'] as $item) {
-                    $this->newDispute($item,$paygate->id);
-                }
-            }
-        }
+        $this->fetchv1();
     }
 
     /**
@@ -85,7 +41,7 @@ class Dispute extends Command {
      * @return void
      * @throws \JsonException
      */
-    public function newDispute($item,$paygate_id): void {
+    public function newDispute($item, $paygate_id): void {
         $dispute                           = new \App\Models\Dispute();
         $dispute->paygate_id               = $paygate_id;
         $dispute->dispute_id               = $item['dispute_id'];
@@ -105,5 +61,26 @@ class Dispute extends Command {
             echo json_encode($dispute->errors(), JSON_THROW_ON_ERROR) . PHP_EOL;
         }
         echo $dispute->dispute_id . PHP_EOL;
+    }
+
+    /**
+     * @throws \JsonException
+     */
+    public function fetchv1() {
+        $paygates = Paygate::all();
+        foreach ($paygates as $paygate) {
+            $api_data  = $paygate->api_data ?? [];
+            $paypalApi = new PayPalAPI($api_data['client_key'], $api_data['secret_key'], true); // true = sandbox mode
+            $response  = $paypalApi->listDispute('2025-01-01T00:00:00.000Z');
+            if (!empty($response['items'])) {
+                foreach ($response['items'] as $item) {
+                    try {
+                        $this->newDispute($item, $paygate->id);
+                    } catch (\Exception $exception) {
+                        echo $exception->getMessage() . PHP_EOL;
+                    }
+                }
+            }
+        }
     }
 }

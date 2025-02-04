@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Helpers\Logs;
 use App\Models\Paygate;
+use App\Paygate\PayPalAPI;
 use DateTime;
 use Illuminate\Console\Command;
 use Srmklive\PayPal\Services\PayPal as PayPalClient;
@@ -29,7 +30,7 @@ class Order extends Command
      */
     public function handle()
     {
-        $this->fetch();
+        $this->fetchv1();
     }
 
     /**
@@ -42,7 +43,7 @@ class Order extends Command
         /** @var Paygate $paygate */
         foreach ($paygates as $paygate) {
             echo $paygate->name.PHP_EOL;
-            $api_data = json_decode($paygate->api_data, true, 512, JSON_THROW_ON_ERROR) ?? [];
+            $api_data = $paygate->api_data;
             $config = [
                 'mode' => 'sandbox',
                 'sandbox' => [
@@ -65,10 +66,15 @@ class Order extends Command
             //                'start_date' => $start_date,
             //                'end_da   o;  te'   => $end_date,
             //            ]);
-            $response = $provider->listInvoices([
-                'start_date' => '2025-01-01T00:00:00Z',
-                'end_date' => '2025-01-31T23:59:5 9Z',
-            ]);
+//            $response = $provider->listInvoices([
+//                'start_date' => '2024-12-01T00:00:00Z',
+//                'end_date' => '2025-01-31T23:59:5 9Z',
+//            ]);
+
+            $response = $provider->listInvoices();
+            echo '<pre>';
+            print_r($response);
+            die;
 
             if (! empty($response['items'])) {
                 foreach ($response['items'] as $item) {
@@ -107,5 +113,18 @@ class Order extends Command
         }
 
         return $order;
+    }
+
+    public function fetchv1() {
+        $paygates = Paygate::all();
+        foreach ($paygates as $paygate) {
+            $api_data = $paygate->api_data??[];
+            $paypalApi = new PayPalAPI($api_data['client_key'],$api_data['secret_key'],true); // true = sandbox mode
+            $orders = $paypalApi->listOrder();
+            echo '<pre>';
+            print_r($orders);
+            die;
+
+        }
     }
 }
