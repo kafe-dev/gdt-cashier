@@ -12,11 +12,12 @@
     <div class="col-auto align-self-center">
         <div class="row">
             <div class="input-group">
-                <span type="button" class="btn btn-outline-primary rounded" style="margin-right: 1rem !important;" id="db_date_filter"></span>
+                <span type="button" class="btn btn-outline-primary rounded" style="margin-right: 1rem !important;"
+                      id="db_date_filter"></span>
 
-{{--                <a href="#" class="btn btn-sm btn-outline-primary rounded" title="Download report">--}}
-{{--                    <i data-feather="download" class="align-self-center icon-xs"></i>--}}
-{{--                </a>--}}
+                {{--                <a href="#" class="btn btn-sm btn-outline-primary rounded" title="Download report">--}}
+                {{--                    <i data-feather="download" class="align-self-center icon-xs"></i>--}}
+                {{--                </a>--}}
             </div>
         </div>
     </div>
@@ -35,7 +36,7 @@
                 </div>
                 <div class="card-body">
                     <div class="">
-                        <div id="Revenu_Status" class="apex-charts"></div>
+                        <div id="Revenue_Status" class="apex-charts"></div>
                     </div>
                 </div>
             </div>
@@ -104,7 +105,7 @@
                     <div class="row">
                         <div class="col">
                             <div class="media">
-{{--                                <img src="{{ Vite::asset('resources/assets/images/money-beg.png') }}" alt="" class="align-self-center" height="40">--}}
+                                {{--                                <img src="{{ Vite::asset('resources/assets/images/money-beg.png') }}" alt="" class="align-self-center" height="40">--}}
                                 <div class="media-body align-self-center ms-3">
                                     <h6 class="m-0 font-20">$1850.00</h6>
                                     <p class="text-muted mb-0">Total Revenue</p>
@@ -112,7 +113,8 @@
                             </div>
                         </div>
                         <div class="col-auto align-self-center">
-                            <p class="mb-0"><span class="text-success"><i class="mdi mdi-trending-up"></i>4.8%</span> increase</p>
+                            <p class="mb-0"><span class="text-success"><i class="mdi mdi-trending-up"></i>4.8%</span>
+                                increase</p>
                         </div>
                     </div>
                 </div>
@@ -281,6 +283,7 @@
     <script src="{{ asset('theme/assets/pages/jquery.sales_dashboard.init.js') }}"></script>
 
     <script>
+        //date range picker
         $(document).ready(() => {
             let dateFilter = $('#db_date_filter');
             let urlParams = new URLSearchParams(window.location.search);
@@ -301,6 +304,42 @@
                 newUrl.searchParams.set('end_date', endDate.format('YYYY-MM-DD'));
                 window.location.href = newUrl.href;
             });
+        });
+    </script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            let chartData = @json($chartData);
+            var options = {
+                chart: {
+                    type: 'bar',
+                    height: 387,
+                },
+                series: [{
+                    name: 'Revenue',
+                    data: chartData.data,
+                }],
+                xaxis: {
+                    categories: chartData.categories
+                },
+                yaxis: {
+                    labels: {
+                        formatter: function (value) {
+                            return "$" + value.toLocaleString();
+                        }
+                    },
+                },
+                tooltip: {
+                    y: {
+                        formatter: function (value) {
+                            return "$" + value.toLocaleString();
+                        }
+                    }
+                }
+            }
+
+            var chart = new ApexCharts(document.querySelector("#Revenue_Status"), options);
+            chart.render();
         });
     </script>
 @endpush

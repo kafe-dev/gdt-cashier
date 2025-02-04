@@ -27,6 +27,16 @@ class Home extends BaseController
     {
         $startDate = $request->query('start_date', now()->subMonth()->format('Y-m-d'));
         $endDate = $request->query('end_date', now()->format('Y-m-d'));
+        $revenues = OrderModel::query()->whereBetween('created_at', [$startDate, $endDate])
+            ->where('status', OrderModel::STATUS_PAID)
+            ->selectRaw('DATE(created_at) as date, SUM(paid_amount) as total_revenue')
+            ->groupBy('date')
+            ->orderBy('date', 'asc')
+            ->get();
+        $chartData = [
+            'categories' => $revenues->pluck('date')->toArray(),
+            'data' => $revenues->pluck('total_revenue')->toArray(),
+        ];
 
         return view('home.index',
             [
@@ -35,6 +45,7 @@ class Home extends BaseController
                 'success_orders' => count(OrderModel::query()->where('status', OrderModel::STATUS_PAID)->get()),
                 'start_date' => $startDate,
                 'end_date' => $endDate,
+                'chartData' => $chartData,
             ]);
     }
 
