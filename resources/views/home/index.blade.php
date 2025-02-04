@@ -14,9 +14,9 @@
             <div class="input-group">
                 <span type="button" class="btn btn-outline-primary rounded" style="margin-right: 1rem !important;" id="db_date_filter"></span>
 
-                <a href="#" class="btn btn-sm btn-outline-primary rounded" title="Download report">
-                    <i data-feather="download" class="align-self-center icon-xs"></i>
-                </a>
+{{--                <a href="#" class="btn btn-sm btn-outline-primary rounded" title="Download report">--}}
+{{--                    <i data-feather="download" class="align-self-center icon-xs"></i>--}}
+{{--                </a>--}}
             </div>
         </div>
     </div>
@@ -45,7 +45,7 @@
                         <div class="card-body">
                             <div class="row align-items-center">
                                 <div class="col text-center">
-                                    <span class="h4">17</span>
+                                    <span class="h4">{{ $open_paygates }}</span>
                                     <h6 class="text-uppercase text-muted mt-2 m-0">Open Paygates</h6>
                                 </div>
                             </div>
@@ -57,7 +57,7 @@
                         <div class="card-body">
                             <div class="row align-items-center">
                                 <div class="col text-center">
-                                    <span class="h4">58</span>
+                                    <span class="h4">{{ $live_stores }}</span>
                                     <h6 class="text-uppercase text-muted mt-2 m-0">Live Stores</h6>
                                 </div>
                             </div>
@@ -69,7 +69,7 @@
                         <div class="card-body">
                             <div class="row align-items-center">
                                 <div class="col text-center">
-                                    <span class="h4">520</span>
+                                    <span class="h4">{{ $success_orders }}</span>
                                     <h6 class="text-uppercase text-muted mt-2 m-0">Success Orders</h6>
                                 </div>
                             </div>
@@ -283,8 +283,9 @@
     <script>
         $(document).ready(() => {
             let dateFilter = $('#db_date_filter');
-            let startDate = moment().subtract(1, 'M');
-            let endDate = moment();
+            let urlParams = new URLSearchParams(window.location.search);
+            let startDate = urlParams.get('start_date') ? moment(urlParams.get('start_date')) : moment().subtract(1, 'M');
+            let endDate = urlParams.get('end_date') ? moment(urlParams.get('end_date')) : moment();
 
             dateFilter.html(moment(startDate).format('YYYY-MM-DD') + ' - ' + moment(endDate).format('YYYY-MM-DD'));
 
@@ -295,7 +296,10 @@
                     format: 'YYYY-MM-DD',
                 },
             }, (startDate, endDate) => {
-                dateFilter.html(moment(startDate).format('YYYY-MM-DD') + ' - ' + moment(endDate).format('YYYY-MM-DD'));
+                let newUrl = new URL(window.location.href);
+                newUrl.searchParams.set('start_date', startDate.format('YYYY-MM-DD'));
+                newUrl.searchParams.set('end_date', endDate.format('YYYY-MM-DD'));
+                window.location.href = newUrl.href;
             });
         });
     </script>
