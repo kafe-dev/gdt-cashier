@@ -54,6 +54,10 @@ class OrderTrackingDataTable extends BaseDataTable
             ->rawColumns(['action'])
             ->filter(function ($query) {
                 $query->where('type', '=', '0');
+
+                if (!empty($this->dateToFilter) && !empty($this->minDate) && !empty($this->maxDate)) {
+                    $query->whereBetween($this->dateToFilter, [$this->minDate, $this->maxDate]);
+                }
             });
 
         return OrderTrackingFilter::perform($datatable);

@@ -54,8 +54,11 @@ class UserDataTable extends BaseDataTable
             ->filter(function ($query) {
                 $query->where('role', '!=', 1)
                     ->where('id', '!=', auth()->id());
-            });
 
+                if (!empty($this->dateToFilter) && !empty($this->minDate) && !empty($this->maxDate)) {
+                    $query->whereBetween($this->dateToFilter, [$this->minDate, $this->maxDate]);
+                }
+            });
         return UserFilter::perform($dataTable);
     }
 

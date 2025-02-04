@@ -21,6 +21,8 @@ class Dispute extends BaseController
      */
     public function index(DisputeDataTable $dataTable)
     {
+        $this->filterDateRange($dataTable);
+
         return $dataTable->render('dispute.index');
     }
 

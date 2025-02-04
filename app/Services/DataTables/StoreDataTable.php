@@ -50,7 +50,12 @@ class StoreDataTable extends BaseDataTable
             ->setTransformer(StoreTransformer::class)
             ->setRowId('id')
             ->escapeColumns(['name', 'url', 'description', 'api_data'])
-            ->rawColumns(['action']);
+            ->rawColumns(['action'])
+            ->filter(function ($query) {
+                if (!empty($this->dateToFilter) && !empty($this->minDate) && !empty($this->maxDate)) {
+                    $query->whereBetween($this->dateToFilter, [$this->minDate, $this->maxDate]);
+                }
+            });
 
         return StoreFilter::perform($dataTable);
     }

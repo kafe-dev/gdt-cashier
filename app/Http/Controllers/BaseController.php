@@ -24,4 +24,21 @@ abstract class BaseController
      * Base constructor.
      */
     public function __construct() {}
+
+    /**
+     * Filter by date range.
+     *
+     * @param $dataTable
+     *
+     * @return void
+     */
+    protected function filterDateRange($dataTable) {
+        if (!empty($_GET['dateToFilter']) && !empty($_GET['minDate']) && !empty('maxDate')) {
+            $columns = $dataTable->getColumns();
+
+            $dataTable->dateToFilter = $columns[$_GET['dateToFilter']]['data'];
+            $dataTable->minDate = $_GET['minDate'];
+            $dataTable->maxDate = $_GET['maxDate'];
+        }
+    }
 }
