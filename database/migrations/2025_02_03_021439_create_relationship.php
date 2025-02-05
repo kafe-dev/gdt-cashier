@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('orders', function(Blueprint $table) {
-            $table->foreign('paygate_id')->references('id')->on('paygates')->onDelete('RESTRICT')->onUpdate('CASCADE');
+            $table->foreign('paygate_id')->references('id')->on('paygates')->onDelete('CASCADE')->onUpdate('CASCADE');
         });
         Schema::table('stores', function(Blueprint $table) {
             $table->foreign('user_id')->references('id')->on('users')->onDelete('CASCADE')->onUpdate('CASCADE');
@@ -21,7 +21,7 @@ return new class extends Migration
             $table->foreign('order_id')->references('id')->on('orders')->onDelete('CASCADE')->onUpdate('CASCADE');
         });
         Schema::table('disputes', function(Blueprint $table) {
-            $table->foreign('paygate_id')->references('id')->on('paygates')->onDelete('RESTRICT')->onUpdate('CASCADE');
+            $table->foreign('paygate_id')->references('id')->on('paygates')->onDelete('CASCADE')->onUpdate('CASCADE');
         });
     }
 
