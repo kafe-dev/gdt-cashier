@@ -105,6 +105,10 @@ class PayPalAPI {
         return $this->makeRequest("GET", "/v1/reporting/transactions?{$query}");
     }
 
+    public function getTransactionDetail() {
+
+    }
+
     /**
      * Thực hiện yêu cầu HTTP tới PayPal API.
      *
@@ -192,7 +196,7 @@ class PayPalAPI {
 
         // Tạo payload JSON theo tài liệu PayPal
         $payload = [
-            'evidences' => $evidences
+            'evidences' => $evidences,
         ];
 
         // Nếu có địa chỉ trả hàng, thêm vào payload
@@ -220,7 +224,7 @@ class PayPalAPI {
         }
 
         $payload = [
-            "message" => $message
+            "message" => $message,
         ];
 
         return $this->makeRequest("POST", "/v1/customer/disputes/{$dispute_id}/send-message", $payload);
@@ -258,6 +262,7 @@ class PayPalAPI {
 
         return $this->makeRequest("GET", "/v1/customer/disputes/{$dispute_id}");
     }
+
 
     /**
      * Provides supporting information for a dispute.

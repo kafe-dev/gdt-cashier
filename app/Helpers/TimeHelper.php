@@ -29,4 +29,26 @@ class TimeHelper {
         // Chuyển đổi định dạng
         return $date->format('Y-m-d H:i:s');
     }
+
+    /**
+     * Tạo chuỗi định dạng ngày giờ cho Paypal API.
+     * Nhận chuỗi timestamp theo định dạng 2025-01-10T05:54:25.000Z
+     * Trả về mảng có 2 phần tử: start và end
+     * - start: chuỗi định dạng ngày giờ bắt đầu của ngày, ví dụ 2025-01-10T00:00:00.000Z
+     * - end: chuỗi định dạng ngày giờ kết thúc của ngày, ví dụ 2025-01-10T23:59:59.000Z
+     *
+     * @param string $timestamp
+     * @return array
+     */
+    public static function getStartAndEndOfDay(string $timestamp): array {
+        $date = Carbon::parse($timestamp)->setTimezone('UTC'); // Chuyển đổi về múi giờ UTC nếu cần
+
+        $startOfDay = $date->copy()->startOfDay()->format('Y-m-d\TH:i:s.000\Z');
+        $endOfDay = $date->copy()->endOfDay()->format('Y-m-d\TH:i:s.000\Z');
+
+        return [
+            'start' => $startOfDay,
+            'end' => $endOfDay,
+        ];
+    }
 }

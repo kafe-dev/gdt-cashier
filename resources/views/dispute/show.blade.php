@@ -1,8 +1,3 @@
-@php use Carbon\Carbon; @endphp
-@php
-    /* @var \App\Models\Dispute $dispute */
-    /* @var \App\Models\Paygate $paygate */
-@endphp
 @extends('_layouts.main')
 
 @push('page')
@@ -29,87 +24,79 @@
                     <ul class="list-group">
                         <li class="list-group-item d-flex justify-content-between align-items-center">
                             <div>
-                                <span class="text-muted">ID:</span>
+                                <span class="text-muted">Case ID:</span>
                             </div>
-                            <span>{{ $dispute->id }}</span>
+                            <span>{{ $dispute_arr['dispute_id'] }}</span>
                         </li>
                         <li class="list-group-item d-flex justify-content-between align-items-center">
                             <div>
-                                <span class="text-muted">Dispute ID:</span>
+                                <span class="text-muted">Disputed amount:</span>
                             </div>
-                            <span>{{ $dispute->dispute_id }}</span>
+                            <span>${{ $dispute_arr['dispute_amount']['value']??0 }} {{ $dispute_arr['dispute_amount']['currency_code']??'USD' }}</span>
                         </li>
                         <li class="list-group-item d-flex justify-content-between align-items-center">
                             <div>
-                                <span class="text-muted">Paygate ID:</span>
+                                <span class="text-muted">Buyer info:</span>
                             </div>
-                            <span>{{ $paygate->name??'' }}</span>
+                            <span>
+                                {{ $dispute_arr['disputed_transactions'][0]['buyer']['name']??'' }}<br>
+
+                            </span>
                         </li>
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            <div>
-                                <span class="text-muted">Merchant ID:</span>
+
+                    </ul>
+                    <hr>
+                    <h4 class="card-title">Your conversation with John Doe</h4>
+                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <strong>Warning!</strong> You have a message from John Doe. Respond as soon as possible..
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    <ul class="list-unstyled mb-0 mt-4">
+                        <!-- Tin nhắn nhận -->
+                        <li>
+                            <div class="row">
+                                <div class="col-auto">
+                                    <img src="https://ui-avatars.com/api/?name=Martin+Luther&background=random" alt="" class="thumb-md rounded-circle">
+                                </div>
+                                <div class="col">
+                                    <div class="bg-light rounded p-3">
+                                        <div class="row">
+                                            <div class="col">
+                                                <p class="text-dark fw-semibold mb-2">Martin Luther</p>
+                                            </div>
+                                            <div class="col-auto">
+                                                <span class="text-muted"><i class="far fa-clock me-1"></i>30 min ago</span>
+                                            </div>
+                                        </div>
+                                        <p>
+                                            It is a long established fact that a reader will be distracted by the readable content...
+                                        </p>
+                                        <a href="#" class="text-primary"><i class="fas fa-reply me-1"></i>Reply</a>
+                                    </div>
+                                </div>
                             </div>
-                            <span>{{ $dispute->merchant_id }}</span>
                         </li>
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            <div>
-                                <span class="text-muted">Reason:</span>
+
+                        <!-- Tin nhắn gửi -->
+                        <li class="mt-3">
+                            <div class="row justify-content-end">
+                                <div class="col-auto">
+                                    <div class="bg-primary text-white rounded p-3">
+                                        <div class="row">
+                                            <div class="col">
+                                                <p class="fw-semibold mb-2">You</p>
+                                            </div>
+                                            <div class="col-auto">
+                                                <span class="text-white-50"><i class="far fa-clock me-1"></i>Just now</span>
+                                            </div>
+                                        </div>
+                                        <p>
+                                            This is a sample sent message using Bootstrap 5.
+                                        </p>
+                                    </div>
+                                </div>
                             </div>
-                            <span>{{ $dispute->reason ?? '-' }}</span>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            <div>
-                                <span class="text-muted">Status:</span>
-                            </div>
-                            <span class="badge badge-soft-{{ $dispute->status === 'closed' ? 'secondary' : 'primary' }}">{{ $dispute->status }}</span>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            <div>
-                                <span class="text-muted">Dispute State:</span>
-                            </div>
-                            <span>{{ $dispute->dispute_state ?? '-' }}</span>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            <div>
-                                <span class="text-muted">Dispute Amount:</span>
-                            </div>
-                            <span>{{ $dispute->dispute_amount_value }} {{ $dispute->dispute_amount_currency }}</span>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            <div>
-                                <span class="text-muted">Dispute Life Cycle Stage:</span>
-                            </div>
-                            <span>{{ $dispute->dispute_life_cycle_stage ?? '-' }}</span>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            <div>
-                                <span class="text-muted">Dispute Channel:</span>
-                            </div>
-                            <span>{{ $dispute->dispute_channel ?? '-' }}</span>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            <div>
-                                <span class="text-muted">Seller Response Due Date:</span>
-                            </div>
-                            {!! !empty($dispute->seller_response_due_date) ? '<span class="x-has-time-converter">'.$dispute->seller_response_due_date->format(config('app.date_format')).'</span>' : '-' !!}
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            <div>
-                                <span class="text-muted">Link:</span>
-                            </div>
-                            <span><a href="{{ $dispute->link }}" target="_blank" class="text-primary">{{$dispute->link}}</a></span>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            <div>
-                                <span class="text-muted">Created At:</span>
-                            </div>
-                            {!! !empty($dispute->created_at) ? '<span class="x-has-time-converter">'.$dispute->created_at->format(config('app.date_format')).'</span>' : '-' !!}
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            <div>
-                                <span class="text-muted">Updated At:</span>
-                            </div>
-                            {!! !empty($dispute->updated_at) ? '<span class="x-has-time-converter">'.$dispute->updated_at->format(config('app.date_format')).'</span>' : '-' !!}
                         </li>
                     </ul>
 
