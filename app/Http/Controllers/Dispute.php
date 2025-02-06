@@ -28,7 +28,7 @@ class Dispute extends BaseController
         $clientId = 'AfGFZ63l-30heXk1Xf2iNiO0SnhhIKeaEq9uIsqQt4kPenxBk_ZNwFhLTDDRDsX1bdV8_uVTMPnBgLnK';
         $clientSecret = "EECgn7P9B5dgKFFvQWFQ6AH0AGqmm1ibbl7G_7njz59SKX-EKvZWCeY9beP-a8TU64WoC6FwPqdreAak";
         $paypal = new PayPalAPI($clientId, $clientSecret, true);
-        $response = $paypal->sendDisputeMessage("PP-R-GQM-10106357git check", "This is a message regarding the dispute.");
+        $response = $paypal->sendDisputeMessage("PP-R-GQM-10106357", "test3");
         print_r($response);
     }
 

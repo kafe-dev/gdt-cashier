@@ -207,6 +207,7 @@ class PayPalAPI {
     /**
      * Send a message about a dispute to the other party.
      * Determines whether the sender is the buyer or the seller based on the logged-in access token.
+     * After send message auto change dispute status.
      *
      * @param string $dispute_id The dispute ID
      * @param string $message The message content
@@ -224,6 +225,25 @@ class PayPalAPI {
 
         return $this->makeRequest("POST", "/v1/customer/disputes/{$dispute_id}/send-message", $payload);
     }
+
+    /**
+     * Update the dispute status from UNDER_REVIEW to either WAITING_FOR_BUYER_RESPONSE or WAITING_FOR_SELLER_RESPONSE.
+     *
+     * @param string $dispute_id The dispute ID
+     * @param string $action The action to perform ('BUYER_EVIDENCE' or 'SELLER_EVIDENCE')
+     * @return array The response from PayPal API
+     * @throws Exception If the input data is invalid or the API does not support the request.
+     */
+    public function updateDisputeStatus($dispute_id, $action) {
+        if (empty($dispute_id) || !in_array($action, ['BUYER_EVIDENCE', 'SELLER_EVIDENCE'])) {
+            throw new Exception("Invalid dispute ID or action. Allowed actions: BUYER_EVIDENCE, SELLER_EVIDENCE.");
+        }
+
+        $payload = ["action" => $action];
+
+        return $this->makeRequest("POST", "/v1/customer/disputes/{$dispute_id}/require-evidence", $payload);
+    }
+
 }
 
 ?>
