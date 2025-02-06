@@ -203,6 +203,27 @@ class PayPalAPI {
         // Gửi yêu cầu POST tới PayPal API
         return $this->makeRequest("POST", "/v1/customer/disputes/{$dispute_id}/provide-evidence", $payload);
     }
+
+    /**
+     * Send a message about a dispute to the other party.
+     * Determines whether the sender is the buyer or the seller based on the logged-in access token.
+     *
+     * @param string $dispute_id The dispute ID
+     * @param string $message The message content
+     * @return array The response from PayPal API
+     * @throws Exception If the dispute_id or message is empty
+     */
+    public function sendDisputeMessage($dispute_id, $message) {
+        if (empty($dispute_id) || empty($message)) {
+            throw new Exception("Dispute ID và nội dung tin nhắn là bắt buộc.");
+        }
+
+        $payload = [
+            "message" => $message
+        ];
+
+        return $this->makeRequest("POST", "/v1/customer/disputes/{$dispute_id}/send-message", $payload);
+    }
 }
 
 ?>
