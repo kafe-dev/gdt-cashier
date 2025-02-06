@@ -203,6 +203,99 @@ class PayPalAPI {
         // Gửi yêu cầu POST tới PayPal API
         return $this->makeRequest("POST", "/v1/customer/disputes/{$dispute_id}/provide-evidence", $payload);
     }
+
+    /**
+     * Send a message about a dispute to the other party.
+     * Determines whether the sender is the buyer or the seller based on the logged-in access token.
+     * After send message auto change dispute status.
+     *
+     * @param string $dispute_id The dispute ID
+     * @param string $message The message content
+     * @return array The response from PayPal API
+     * @throws Exception If the dispute_id or message is empty
+     */
+    public function sendDisputeMessage($dispute_id, $message) {
+        if (empty($dispute_id) || empty($message)) {
+            throw new Exception("Dispute ID và nội dung tin nhắn là bắt buộc.");
+        }
+
+        $payload = [
+            "message" => $message
+        ];
+
+        return $this->makeRequest("POST", "/v1/customer/disputes/{$dispute_id}/send-message", $payload);
+    }
+
+    /**
+     * Update the dispute status from UNDER_REVIEW to either WAITING_FOR_BUYER_RESPONSE or WAITING_FOR_SELLER_RESPONSE.
+     *
+     * @param string $dispute_id The dispute ID
+     * @param string $action The action to perform ('BUYER_EVIDENCE' or 'SELLER_EVIDENCE')
+     * @return array The response from PayPal API
+     * @throws Exception If the input data is invalid or the API does not support the request.
+     */
+    public function updateDisputeStatus($dispute_id, $action) {
+        if (empty($dispute_id) || !in_array($action, ['BUYER_EVIDENCE', 'SELLER_EVIDENCE'])) {
+            throw new Exception("Invalid dispute ID or action. Allowed actions: BUYER_EVIDENCE, SELLER_EVIDENCE.");
+        }
+
+        $payload = ["action" => $action];
+
+        return $this->makeRequest("POST", "/v1/customer/disputes/{$dispute_id}/require-evidence", $payload);
+    }
+
+    /**
+     * Retrieve the details of a dispute by its ID.
+     *
+     * @param string $dispute_id The dispute ID
+     * @return array The response from PayPal API
+     * @throws Exception If the dispute_id is empty or the request fails.
+     */
+    public function getDisputeDetails($dispute_id) {
+        if (empty($dispute_id)) {
+            throw new Exception("Dispute ID is required.");
+        }
+
+        return $this->makeRequest("GET", "/v1/customer/disputes/{$dispute_id}");
+    }
+
+    /**
+     * Provides supporting information for a dispute.
+     *
+     * @param string $dispute_id The dispute ID.
+     * @param string $notes A note describing the supporting information.
+     * @return array The result from the PayPal API.
+     * @throws Exception If the dispute ID or notes are empty, or if the API does not support the request.
+     */
+    public function provideSupportingInfo($dispute_id, $notes) {
+        if (empty($dispute_id) || empty($notes)) {
+            throw new Exception("Dispute ID and supporting notes are required.");
+        }
+
+        $disputeDetails = $this->getDisputeDetails($dispute_id);
+        $allowedStates  = ["CHARGEBACK", "PRE_ARBITRATION", "ARBITRATION"];
+
+        if (!in_array($disputeDetails['dispute_life_cycle_stage'], $allowedStates)) {
+            throw new Exception("Action not allowed in the current dispute state: " . $disputeDetails['dispute_life_cycle_stage']);
+        }
+
+        // Kiểm tra liên kết HATEOAS có "provide-supporting-info"
+        $allowed = false;
+        foreach ($disputeDetails['links'] as $link) {
+            if ($link['rel'] === "provide-supporting-info") {
+                $allowed = true;
+                break;
+            }
+        }
+
+        if (!$allowed) {
+            throw new Exception("The dispute does not allow providing supporting information at this stage.");
+        }
+
+        $payload = ["notes" => $notes];
+        return $this->makeRequest("POST", "/v1/customer/disputes/{$dispute_id}/provide-supporting-info", $payload);
+    }
+
 }
 
 ?>
