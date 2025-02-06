@@ -214,7 +214,8 @@ class PayPalAPI {
      * @return array The response from PayPal API
      * @throws Exception If the dispute_id or message is empty
      */
-    public function sendDisputeMessage($dispute_id, $message) {
+    public function sendDisputeMessage(string $dispute_id, string $message): array
+    {
         if (empty($dispute_id) || empty($message)) {
             throw new Exception("Dispute ID và nội dung tin nhắn là bắt buộc.");
         }
@@ -234,7 +235,8 @@ class PayPalAPI {
      * @return array The response from PayPal API
      * @throws Exception If the input data is invalid or the API does not support the request.
      */
-    public function updateDisputeStatus($dispute_id, $action) {
+    public function updateDisputeStatus(string $dispute_id, string $action): array
+    {
         if (empty($dispute_id) || !in_array($action, ['BUYER_EVIDENCE', 'SELLER_EVIDENCE'])) {
             throw new Exception("Invalid dispute ID or action. Allowed actions: BUYER_EVIDENCE, SELLER_EVIDENCE.");
         }
@@ -251,7 +253,8 @@ class PayPalAPI {
      * @return array The response from PayPal API
      * @throws Exception If the dispute_id is empty or the request fails.
      */
-    public function getDisputeDetails($dispute_id) {
+    public function getDisputeDetails(string $dispute_id): array
+    {
         if (empty($dispute_id)) {
             throw new Exception("Dispute ID is required.");
         }
@@ -267,7 +270,8 @@ class PayPalAPI {
      * @return array The result from the PayPal API.
      * @throws Exception If the dispute ID or notes are empty, or if the API does not support the request.
      */
-    public function provideSupportingInfo($dispute_id, $notes) {
+    public function provideSupportingInfo(string $dispute_id, string $notes): array
+    {
         if (empty($dispute_id) || empty($notes)) {
             throw new Exception("Dispute ID and supporting notes are required.");
         }
@@ -294,6 +298,66 @@ class PayPalAPI {
 
         $payload = ["notes" => $notes];
         return $this->makeRequest("POST", "/v1/customer/disputes/{$dispute_id}/provide-supporting-info", $payload);
+    }
+
+    /**
+     * Make an offer to resolve a dispute.
+     * Only allow when the dispute status is "INQUIRY".
+     *
+     * @param string $dispute_id The dispute ID.
+     * @param string $offer_type The type of offer (REFUND, REFUND_WITH_RETURN, etc.).
+     * @param string $note A note describing the offer.
+     * @param float|null $amount The refund amount (required for some offer types).
+     * @param string|null $currency The currency code (e.g., USD, EUR).
+     * @param string|null $invoice_id The optional invoice ID related to the refund.
+     * @return array The response from PayPal API.
+     * @throws Exception If input data is invalid.
+     */
+    public function makeOfferToResolveDispute(string $dispute_id, string $offer_type, string $note, float $amount = null, string $currency = null, string $invoice_id = null): array
+    {
+        if (empty($dispute_id) || empty($offer_type) || empty($note)) {
+            throw new Exception("Dispute ID, offer type, and note are required.");
+        }
+
+        $disputeDetails = $this->getDisputeDetails($dispute_id);
+        $disputeLifeCycleState = $disputeDetails['dispute_life_cycle_stage'] ?? null;
+
+        if ($disputeLifeCycleState !== "INQUIRY") {
+            throw new Exception("You can only make an offer when the dispute is in INQUIRY state. Current state: {$disputeLifeCycleState}");
+        }
+        if ($disputeDetails['dispute_state'] == "REQUIRED_OTHER_PARTY_ACTION") {
+            throw new Exception("You cannot make an offer to resolve a dispute. Need Buyer response!");
+        }
+
+        $allowedOfferTypes = ["REFUND", "REFUND_WITH_RETURN", "REFUND_WITH_REPLACEMENT", "REPLACEMENT_WITHOUT_REFUND"];
+
+        if (!in_array($offer_type, $allowedOfferTypes)) {
+            throw new Exception("Invalid offer type. Allowed values: " . implode(", ", $allowedOfferTypes));
+        }
+
+        $payload = [
+            "offer_type" => $offer_type,
+            "note"       => $note,
+        ];
+
+        if (!empty($amount) && !empty($currency)) {
+            $disputeAmount = $disputeDetails['dispute_amount'];
+            if ($amount <= 0) throw new Exception("Enter invalid refund amount.");
+            if ($disputeAmount["currency_code"] === $currency) {
+                if ($disputeAmount["value"] >= $amount) {
+                    $payload["offer_amount"] = [
+                        "value" => (string)$amount,
+                        "currency_code" => $currency,
+                    ];
+                } else throw new Exception("The refund amount cannot exceed the transaction amount.");
+            } else throw new Exception("Use the correct type of currency for this transaction.");
+        }
+
+        if (!empty($invoice_id)) {
+            $payload["invoice_id"] = $invoice_id;
+        }
+
+        return $this->makeRequest("POST", "/v1/customer/disputes/{$dispute_id}/make-offer", $payload);
     }
 
 }

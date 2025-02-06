@@ -27,11 +27,21 @@ class Dispute extends BaseController
 //        return $dataTable->render('dispute.index');
         $clientId = 'AfGFZ63l-30heXk1Xf2iNiO0SnhhIKeaEq9uIsqQt4kPenxBk_ZNwFhLTDDRDsX1bdV8_uVTMPnBgLnK';
         $clientSecret = "EECgn7P9B5dgKFFvQWFQ6AH0AGqmm1ibbl7G_7njz59SKX-EKvZWCeY9beP-a8TU64WoC6FwPqdreAak";
-
-        $paypal = new PayPalAPI($clientId, $clientSecret, true);
-        $response = $paypal->provideSupportingInfo("PP-R-GQM-10106357", "Additional supporting details for the dispute.");
         echo "<pre>";
+
+        $PayPal = new PayPalAPI($clientId, $clientSecret, true);
+//        $response = $PayPal->getDisputeDetails("PP-R-BYH-10106342");
+        $response = $PayPal->makeOfferToResolveDispute(
+            "PP-R-BYH-10106342",
+            "REFUND",
+            "We are offering a full refund for this transaction.",
+            100.00,  // Số tiền hoàn lại
+            "USD"     // Đơn vị tiền tệ
+        );
         print_r($response);
+
+
+
 
     }
 
