@@ -23,8 +23,12 @@
                     <span style="margin-left: 2.5px;">User Account</span>
                 </a>
                 <ul class="nav-second-level mm-collapse" aria-expanded="false">
-                    <li class="nav-item"><a class="nav-link" href="{{ route('app.user.index') }}"><i class="ti-control-record"></i>Manage User</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{{ route('app.user.create') }}"><i class="ti-control-record"></i>Add New User</a></li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('app.user.index') }}"><i class="ti-control-record"></i>Manage User</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('app.user.create') }}"><i class="ti-control-record"></i>Add New User</a>
+                    </li>
                 </ul>
             </li>
             <li>
@@ -33,8 +37,12 @@
                     <span style="margin-left: 2.5px;">Paygate</span>
                 </a>
                 <ul class="nav-second-level mm-collapse" aria-expanded="false">
-                    <li class="nav-item"><a class="nav-link" href="{{ route('app.paygate.index') }}"><i class="ti-control-record"></i>Manage Paygate</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{{ route('app.paygate.create') }}"><i class="ti-control-record"></i>Add New Paygate</a></li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('app.paygate.index') }}"><i class="ti-control-record"></i>Manage Paygate</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('app.paygate.create') }}"><i class="ti-control-record"></i>Add New Paygate</a>
+                    </li>
                 </ul>
             </li>
             <li>
@@ -43,8 +51,12 @@
                     <span style="margin-left: 2.5px;">Online Store</span>
                 </a>
                 <ul class="nav-second-level mm-collapse" aria-expanded="false">
-                    <li class="nav-item"><a class="nav-link" href="{{ route('app.store.index') }}"><i class="ti-control-record"></i>Manage Store</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{{ route('app.store.create') }}"><i class="ti-control-record"></i>Add New Store</a></li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('app.store.index') }}"><i class="ti-control-record"></i>Manage Store</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('app.store.create') }}"><i class="ti-control-record"></i>Add New Store</a>
+                    </li>
                 </ul>
             </li>
             <li class="nav-item">
@@ -62,18 +74,24 @@
                 </a>
             </li>
             <li class="nav-item">
+                <a class="nav-link" href="{{ route('app.transaction.index') }}">
+                    <i data-feather="shopping-cart" class="align-self-center menu-icon"></i>
+                    <span>Store Transaction</span>
+                </a>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link" href="{{ route('app.tracking.index') }}">
                     <i data-feather="truck" class="align-self-center menu-icon"></i>
                     <span>Delivery Tracking</span>
                     {{ \App\Utils\NotificationWidget::render('App\Models\OrderTracking', 'type', \App\Models\OrderTracking::TYPE_OPEN) }}
                 </a>
             </li>
-{{--            <li class="nav-item">--}}
-{{--                <a class="nav-link" href="{{ route('app.mail-box.index') }}">--}}
-{{--                    <i data-feather="mail" class="align-self-center menu-icon"></i>--}}
-{{--                    <span>Mail Box</span>--}}
-{{--                </a>--}}
-{{--            </li>--}}
+            {{--            <li class="nav-item">--}}
+            {{--                <a class="nav-link" href="{{ route('app.mail-box.index') }}">--}}
+            {{--                    <i data-feather="mail" class="align-self-center menu-icon"></i>--}}
+            {{--                    <span>Mail Box</span>--}}
+            {{--                </a>--}}
+            {{--            </li>--}}
 
             <hr class="hr-dashed hr-menu">
             <li class="menu-label my-2">Help Center</li>
@@ -86,7 +104,7 @@
             <li class="menu-label my-2">{{ Auth::user()->username ?? 'Guest' }} ({{ \App\Models\User::ROLES[Auth::user()->role ?? 'default_role'] ?? 'Unknown Role' }})
             </li>
             <li>
-{{--                <a href="#"><i data-feather="user" class="align-self-center menu-icon"></i><span>Profile</span></a>--}}
+                {{--                <a href="#"><i data-feather="user" class="align-self-center menu-icon"></i><span>Profile</span></a>--}}
                 <a href="#"><i data-feather="key" class="align-self-center menu-icon"></i><span>Change Password</span></a>
                 <a href="{{ route('app.security.logout') }}" onclick="event.preventDefault();document.getElementById('formLogout').submit();"><i data-feather="power" class="align-self-center menu-icon"></i><span>Logout</span></a>
                 <form id="formLogout" method="post" action="{{ route('app.security.logout') }}">
