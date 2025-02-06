@@ -22,20 +22,9 @@ class Dispute extends BaseController
      */
     public function index(DisputeDataTable $dataTable)
     {
-//        $this->filterDateRange($dataTable);
-//
-//        return $dataTable->render('dispute.index');
-        $clientId = 'AfGFZ63l-30heXk1Xf2iNiO0SnhhIKeaEq9uIsqQt4kPenxBk_ZNwFhLTDDRDsX1bdV8_uVTMPnBgLnK';
-        $clientSecret = "EECgn7P9B5dgKFFvQWFQ6AH0AGqmm1ibbl7G_7njz59SKX-EKvZWCeY9beP-a8TU64WoC6FwPqdreAak";
-        echo "<pre>";
+        $this->filterDateRange($dataTable);
 
-        $PayPal = new PayPalAPI($clientId, $clientSecret, true);
-        $response = $PayPal->getDisputeDetails("PP-R-BYH-10106342");
-        print_r($response);
-
-
-
-
+        return $dataTable->render('dispute.index');
     }
 
     /**
