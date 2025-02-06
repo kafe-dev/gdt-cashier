@@ -244,6 +244,21 @@ class PayPalAPI {
         return $this->makeRequest("POST", "/v1/customer/disputes/{$dispute_id}/require-evidence", $payload);
     }
 
+    /**
+     * Retrieve the details of a dispute by its ID.
+     *
+     * @param string $dispute_id The dispute ID
+     * @return array The response from PayPal API
+     * @throws Exception If the dispute_id is empty or the request fails.
+     */
+    public function getDisputeDetails($dispute_id) {
+        if (empty($dispute_id)) {
+            throw new Exception("Dispute ID is required.");
+        }
+
+        return $this->makeRequest("GET", "/v1/customer/disputes/{$dispute_id}");
+    }
+
 }
 
 ?>
