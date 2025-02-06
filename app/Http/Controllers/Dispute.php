@@ -29,7 +29,7 @@ class Dispute extends BaseController
         $clientSecret = "EECgn7P9B5dgKFFvQWFQ6AH0AGqmm1ibbl7G_7njz59SKX-EKvZWCeY9beP-a8TU64WoC6FwPqdreAak";
 
         $paypal = new PayPalAPI($clientId, $clientSecret, true);
-        $response = $paypal->getDisputeDetails("PP-R-GQM-10106357");
+        $response = $paypal->provideSupportingInfo("PP-R-GQM-10106357", "Additional supporting details for the dispute.");
         echo "<pre>";
         print_r($response);
 

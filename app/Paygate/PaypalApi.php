@@ -259,6 +259,43 @@ class PayPalAPI {
         return $this->makeRequest("GET", "/v1/customer/disputes/{$dispute_id}");
     }
 
+    /**
+     * Provides supporting information for a dispute.
+     *
+     * @param string $dispute_id The dispute ID.
+     * @param string $notes A note describing the supporting information.
+     * @return array The result from the PayPal API.
+     * @throws Exception If the dispute ID or notes are empty, or if the API does not support the request.
+     */
+    public function provideSupportingInfo($dispute_id, $notes) {
+        if (empty($dispute_id) || empty($notes)) {
+            throw new Exception("Dispute ID and supporting notes are required.");
+        }
+
+        $disputeDetails = $this->getDisputeDetails($dispute_id);
+        $allowedStates  = ["CHARGEBACK", "PRE_ARBITRATION", "ARBITRATION"];
+
+        if (!in_array($disputeDetails['dispute_life_cycle_stage'], $allowedStates)) {
+            throw new Exception("Action not allowed in the current dispute state: " . $disputeDetails['dispute_life_cycle_stage']);
+        }
+
+        // Kiểm tra liên kết HATEOAS có "provide-supporting-info"
+        $allowed = false;
+        foreach ($disputeDetails['links'] as $link) {
+            if ($link['rel'] === "provide-supporting-info") {
+                $allowed = true;
+                break;
+            }
+        }
+
+        if (!$allowed) {
+            throw new Exception("The dispute does not allow providing supporting information at this stage.");
+        }
+
+        $payload = ["notes" => $notes];
+        return $this->makeRequest("POST", "/v1/customer/disputes/{$dispute_id}/provide-supporting-info", $payload);
+    }
+
 }
 
 ?>
