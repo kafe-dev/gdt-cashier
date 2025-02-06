@@ -107,7 +107,7 @@
                             <div class="media">
                                 {{--                                <img src="{{ Vite::asset('resources/assets/images/money-beg.png') }}" alt="" class="align-self-center" height="40">--}}
                                 <div class="media-body align-self-center ms-3">
-                                    <h6 class="m-0 font-20">$1850.00</h6>
+                                    <h6 class="m-0 font-20">{{ number_format($total_revenue, 2) }} $</h6>
                                     <p class="text-muted mb-0">Total Revenue</p>
                                 </div>
                             </div>
@@ -308,6 +308,7 @@
     </script>
 
     <script>
+        // bar main chart
         document.addEventListener("DOMContentLoaded", function () {
             let chartData = @json($chartData);
             var options = {
