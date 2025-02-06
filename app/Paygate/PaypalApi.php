@@ -360,6 +360,68 @@ class PayPalAPI {
         return $this->makeRequest("POST", "/v1/customer/disputes/{$dispute_id}/make-offer", $payload);
     }
 
+    /**
+     * Acknowledge that the customer has returned an item for a dispute.
+     *
+     * @param string $dispute_id The ID of the dispute.
+     * @param string $note Merchant-provided note (max 2000 characters).
+     * @param array  $evidences List of supporting evidence (max 100 items).
+     * @return array Response from PayPal API.
+     * @throws Exception If invalid data is provided or the dispute type is not eligible.
+     */
+    public function acknowledgeReturnedItem(string $dispute_id, string $note, array $evidences = []): array
+    {
+        if (empty($dispute_id)) {
+            throw new Exception("Dispute ID are required.");
+        }
+
+        $disputeDetails = $this->getDisputeDetails($dispute_id);
+        if ($disputeDetails['reason'] !== "MERCHANDISE_OR_SERVICE_NOT_AS_DESCRIBED") {
+            throw new Exception("Acknowledging item return is only allowed for disputes with reason 'MERCHANDISE_OR_SERVICE_NOT_AS_DESCRIBED'.");
+        }
+
+        if (!empty($note)) {
+            $payload["note"] = substr($note, 0, 2000);
+        }
+
+        if (!empty($evidences)) {
+            $allowedEvidenceTypes = [
+                "PROOF_OF_DAMAGE",
+                "THIRDPARTY_PROOF_FOR_DAMAGE_OR_SIGNIFICANT_DIFFERENCE",
+                "DECLARATION",
+                "PROOF_OF_MISSING_ITEMS",
+                "PROOF_OF_EMPTY_PACKAGE_OR_DIFFERENT_ITEM",
+                "PROOF_OF_ITEM_NOT_RECEIVED"
+            ];
+
+            $formattedEvidences = [];
+            foreach (array_slice($evidences, 0, 100) as $evidence) {
+                if (!isset($evidence['evidence_type'], $evidence['documents'])) {
+                    throw new Exception("Each evidence entry must include 'evidence_type' and 'documents'.");
+                }
+                if (!in_array($evidence['evidence_type'], $allowedEvidenceTypes, true)) {
+                    throw new Exception("Invalid evidence type: {$evidence['evidence_type']}");
+                }
+
+                $documents = array_slice($evidence['documents'], 0, 100);
+                foreach ($documents as $doc) {
+                    if (!isset($doc['name'], $doc['url'])) {
+                        throw new Exception("Each document must include 'name' and 'url'.");
+                    }
+                }
+
+                $formattedEvidences[] = [
+                    "evidence_type" => $evidence['evidence_type'],
+                    "documents" => $documents
+                ];
+            }
+
+            $payload["evidences"] = $formattedEvidences;
+        } else $payload["acknowledgement_type"] = "ITEM_RECEIVED";
+
+        return $this->makeRequest("POST", "/v1/customer/disputes/{$dispute_id}/acknowledge-return-item", $payload);
+    }
+
 }
 
 ?>

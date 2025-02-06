@@ -30,14 +30,7 @@ class Dispute extends BaseController
         echo "<pre>";
 
         $PayPal = new PayPalAPI($clientId, $clientSecret, true);
-//        $response = $PayPal->getDisputeDetails("PP-R-BYH-10106342");
-        $response = $PayPal->makeOfferToResolveDispute(
-            "PP-R-BYH-10106342",
-            "REFUND",
-            "We are offering a full refund for this transaction.",
-            100.00,  // Số tiền hoàn lại
-            "USD"     // Đơn vị tiền tệ
-        );
+        $response = $PayPal->getDisputeDetails("PP-R-BYH-10106342");
         print_r($response);
 
 
