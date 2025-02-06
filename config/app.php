@@ -1,6 +1,6 @@
 <?php
 
-use App\Console\Commands\Dispute;
+use App\Console\Commands\DisputeCommand;
 use App\Console\Commands\Order;
 use App\Console\Commands\TransactionCommand;
 
@@ -132,7 +132,7 @@ return [
     'commands' => [
         Order::class,
         TransactionCommand::class,
-        Dispute::class,
+        DisputeCommand::class,
     ],
 
 ];
