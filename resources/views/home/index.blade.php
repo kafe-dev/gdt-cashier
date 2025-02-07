@@ -121,7 +121,7 @@
                 <div class="row">
                     <div class="col-12">
                         <div class="apexchart-wrapper">
-                            <div id="dash_spark_1" class="chart-gutters"></div>
+                            <div id="area_chart" class="chart-gutters"></div>
                         </div>
                     </div>
                 </div>
@@ -136,7 +136,7 @@
                 </div>
                 <div class="card-body">
                     <div class="text-center">
-                        <div id="ana_device" class="apex-charts"></div>
+                        <div id="dispute_chart" class="apex-charts"></div>
                     </div>
                 </div>
             </div>
@@ -341,6 +341,98 @@
 
             var chart = new ApexCharts(document.querySelector("#Revenue_Status"), options);
             chart.render();
+        });
+    </script>
+
+    <script>
+        // under totals, area chart
+        document.addEventListener("DOMContentLoaded", function () {
+            let chartData = @json($chartData);
+
+            var options = {
+                chart: {
+                    type: 'area',
+                    height: 80,
+                    sparkline: {
+                        enabled: true
+                    }
+                },
+                series: [{
+                    name: 'Revenue',
+                    data: chartData.data
+                }],
+
+                stroke: {
+                    curve: 'smooth',
+                    width: 2
+                },
+                fill: {
+                    type: 'gradient',
+                    gradient: {
+                        shadeIntensity: 1,
+                        opacityFrom: 0.5,
+                        opacityTo: 0,
+                        stops: [0, 90, 100]
+                    }
+                },
+                colors: ['#2E93fA'],
+                xaxis: {
+                    categories: chartData.categories
+                },
+                tooltip: {
+                    y: {
+                        formatter: function (value) {
+                            return "$" + value.toLocaleString();
+                        }
+                    }
+                }
+            };
+
+            var chart = new ApexCharts(document.querySelector("#area_chart"), options);
+            chart.render();
+        });
+    </script>
+
+    <script>
+        // dispute chart
+        document.addEventListener("DOMContentLoaded", function () {
+            let disputeChartData = @json($chartDataDispute);
+
+            var options = {
+                chart: {
+                    type: 'donut',
+                    height: 270,
+                },
+                labels: disputeChartData.labels,
+                series: disputeChartData.data,
+
+                legend: {
+                    position: 'bottom'
+                },
+                dataLabels: {
+                    enabled: false
+                },
+                tooltip: {
+                    enabled: true,
+                    y: {
+                        formatter: function (val) {
+                            return val.toFixed(2) + "%";
+                        }
+                    }
+                },
+                colors: ['#28a745', '#ffc107', '#dc3545'],
+                plotOptions: {
+                    pie: {
+                        donut: {
+                            size: '82%',
+                        },
+                        expandOnClick: false,
+                    }
+                },
+            };
+
+            var disputeChart = new ApexCharts(document.querySelector("#dispute_chart"), options);
+            disputeChart.render();
         });
     </script>
 @endpush

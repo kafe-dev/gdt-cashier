@@ -54,7 +54,40 @@ class Home extends BaseController
             ->sum('paid_amount');
 
         $disputeRate = $this->getDisputeRate();
+        {
+            $disputeCounts = DisputeModel::query()
+                ->selectRaw('status, COUNT(*) as count')
+                ->whereBetween('created_at', [$startDate, $endDate])
+                ->groupBy('status')
+                ->pluck('count', 'status')
+                ->toArray();
 
+            $totalDisputes = array_sum($disputeCounts);
+
+            $statusPending = (
+                ($disputeCounts[DisputeModel::STATUS_UNDER_REVIEW] ?? 0) +
+                ($disputeCounts[DisputeModel::STATUS_WAITING_FOR_BUYER_RESPONSE] ?? 0) +
+                ($disputeCounts[DisputeModel::STATUS_WAITING_FOR_SELLER_RESPONSE] ?? 0) +
+                ($disputeCounts[DisputeModel::STATUS_OPEN] ?? 0)
+            );
+
+            $statusFailed = (
+                ($disputeCounts[DisputeModel::STATUS_DENIED] ?? 0) +
+                ($disputeCounts[DisputeModel::STATUS_CLOSED] ?? 0) +
+                ($disputeCounts[DisputeModel::STATUS_EXPIRED] ?? 0)
+            );
+
+            $statusResolved = ($disputeCounts[DisputeModel::STATUS_RESOLVED] ?? 0);
+
+            $chartDataDispute = [
+                'labels' => ['Resolved', 'Pending', 'Failed'],
+                'data' => [
+                    $totalDisputes > 0 ? round(($statusResolved / $totalDisputes) * 100, 2) : 0,
+                    $totalDisputes > 0 ? round(($statusPending / $totalDisputes) * 100, 2) : 0,
+                    $totalDisputes > 0 ? round(($statusFailed / $totalDisputes) * 100, 2) : 0,
+                ],
+            ];
+        }
         return view('home.index',
             [
                 'open_paygates' => $openPaygate,
@@ -64,6 +97,7 @@ class Home extends BaseController
                 'end_date' => $endDate,
                 'chartData' => $chartData,
                 'total_revenue' => (float)$totalRevenues,
+                'chartDataDispute' => $chartDataDispute,
             ]);
     }
 
