@@ -4,12 +4,17 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Models\Permission;
 use App\Models\User as UserModel;
+use App\Services\DataTables\PermissionDatatable;
 use App\Services\DataTables\UserDataTable;
+use App\Services\DataTables\UserRoleDataTable;
+use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
@@ -25,15 +30,20 @@ class User extends BaseController
      * @var UserModel Instance of the User model
      */
     private UserModel $userModel;
+    /**
+     * @var Permission Instance of the Permission model
+     */
+    private Permission $permissionModel;
 
     /**
      * Construct a new User controller instance.
      */
-    public function __construct(UserModel $userModel)
+    public function __construct(UserModel $userModel, Permission $permissionModel)
     {
         parent::__construct();
 
         $this->userModel = $userModel;
+        $this->permissionModel = $permissionModel;
     }
 
     /**
@@ -177,6 +187,128 @@ class User extends BaseController
     }
 
     /**
+     * Action 'index' for role manage page.
+     */
+    public function roleIndex(UserRoleDataTable $dataTable)
+    {
+        $this->filterDateRange($dataTable);
+
+        return $dataTable->render('user.role.index');
+    }
+
+    /**
+     * Action `edit`.
+     *
+     * Show the form to update an existing user's role.
+     *
+     * @param int|string $id
+     * @return View
+     */
+    public function roleEdit(int|string $id): View
+    {
+        return view('user.role.edit', [
+            'user' => $this->getUser($id),
+        ]);
+    }
+
+    /**
+     * Action 'update'.
+     *
+     * Store the updated user's role in the database.
+     *
+     * @param Request $request Illuminate request object
+     * @param int|string $id User ID
+     */
+    public function roleUpdate(Request $request, int|string $id): RedirectResponse
+    {
+        try {
+            $user = $this->getUser($id);
+
+            $user->update([
+                'role' => $request->input('role'),
+                'updated_at' => Carbon::now(),
+            ]);
+
+            flash()->success('User updated successfully.');
+
+            return redirect()->route('app.user.roleManage.index');
+        }
+        catch (\Exception $e) {
+            flash()->error($e->getMessage());
+
+            return redirect()->route('app.user.roleManage.edit', $id);
+        }
+    }
+
+    /**
+     * Action 'index' for permission manage page.
+     */
+    public function permissionIndex(PermissionDatatable $datatable)
+    {
+        return $datatable->render('user.permission.index');
+    }
+
+    /**
+     * Action `edit`.
+     *
+     * Show the form to update an existing role's permission.
+     *
+     * @param int|string $id
+     * @return View
+     */
+    public function permissionEdit(int|string $id): View
+    {
+        $routeNames = collect(Route::getRoutes())
+            ->map(fn($route) => $route->getName())
+            ->filter(fn($name) => !is_null($name) && str_starts_with($name, 'app.') && !str_starts_with($name, 'app.security'))
+            ->values();
+
+        $routeNames = array_unique($routeNames->toArray());
+
+        return view('user.permission.edit', [
+            'permission' => $this->getPermission($id),
+            'routeNames' => $routeNames,
+            'routeAllowed' => Permission::getRoleAllowedRoutes($this->getPermission($id)->role) ?? ['1', '2'],
+            'hierarchyAllowed' => Permission::getAllowedRoutesWithHierarchy($this->getPermission($id)->role) ?? ['1', '2'],
+        ]);
+    }
+
+    /**
+     * Action 'update'.
+     *
+     *  Store the updated role's permission in the database.
+     *
+     * @param Request $request
+     * @param int|string $id
+     * @return RedirectResponse
+     */
+    public function permissionUpdate(Request $request, int|string $id): RedirectResponse
+    {
+        try {
+            $permission = $this->getPermission($id);
+
+            $list = $request->all();
+            unset($list['_token']);
+
+            $json = [];
+            foreach ($list as $key => $value) {
+                $json[] = $value;
+            }
+
+            $permission->update([
+                'routes' => $json,
+            ]);
+
+            flash()->success('Permission updated successfully.');
+            return redirect()->route('app.user.permission.index');
+        } catch (\Exception $e) {
+            flash()->error($e->getMessage());
+
+            return redirect()->route('app.user.permission.edit', $id);
+        }
+    }
+
+    /**
      * Returns the specific user based on the given ID.
      *
      * @param int|string $id User ID
@@ -184,6 +316,11 @@ class User extends BaseController
     private function getUser(int|string $id): UserModel
     {
         return $this->userModel->query()->findOrFail($id);
+    }
+
+    private function getPermission(int|string $id): Permission
+    {
+        return $this->permissionModel->query()->findOrFail($id);
     }
 
     /**

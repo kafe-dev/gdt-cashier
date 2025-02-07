@@ -25,6 +25,8 @@
                 <ul class="nav-second-level mm-collapse" aria-expanded="false">
                     <li class="nav-item"><a class="nav-link" href="{{ route('app.user.index') }}"><i class="ti-control-record"></i>Manage User</a></li>
                     <li class="nav-item"><a class="nav-link" href="{{ route('app.user.create') }}"><i class="ti-control-record"></i>Add New User</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ route('app.user.roleManage.index') }}"><i class="ti-control-record"></i>Manage User's Role</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ route('app.user.permission.index') }}"><i class="ti-control-record"></i>Manage Permission</a></li>
                 </ul>
             </li>
             <li>

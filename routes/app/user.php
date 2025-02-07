@@ -18,4 +18,12 @@ Route::controller(User::class)
         Route::post('/delete/{id}', 'delete')->name('delete');
         Route::get('/changeStatus/{id}', 'changeStatus')->name('changeStatus');
         Route::match(['get', 'post'], '/changePassword' , 'changePassword')->name('changePassword');
+
+        Route::get('/role', 'roleIndex')->name('roleManage.index');
+        Route::get('/role/edit/{id}', 'roleEdit')->name('roleManage.edit');
+        Route::post('/role/update/{id}', 'roleUpdate')->name('roleManage.update');
+
+        Route::get('/permission', 'permissionIndex')->name('permission.index');
+        Route::get('/permission/edit/{id}', 'permissionEdit')->name('permission.edit');
+        Route::post('/permission/update/{id}', 'permissionUpdate')->name('permission.update');
     });
