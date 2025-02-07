@@ -39,7 +39,10 @@ class PermissionDatatable extends BaseDataTable
         $dataTable = (new EloquentDataTable(new Permission()))
             ->setTransformer(PermissionTransformer::class)
             ->setRowId('id')
-            ->rawColumns(['action']);
+            ->rawColumns(['action'])
+            ->filter(function ($query) {
+                $query->where('role', '!=', 1);
+            });
         return PermissionFilter::perform($dataTable);
     }
 
