@@ -21,15 +21,14 @@ class Dispute extends BaseController {
      * Action `index`.
      */
     public function index(DisputeDataTable $dataTable) {
-        //        $this->filterDateRange($dataTable);
-        //
-        //        return $dataTable->render('dispute.index');
-        $clientId     = 'AfGFZ63l-30heXk1Xf2iNiO0SnhhIKeaEq9uIsqQt4kPenxBk_ZNwFhLTDDRDsX1bdV8_uVTMPnBgLnK';
-        $clientSecret = "EECgn7P9B5dgKFFvQWFQ6AH0AGqmm1ibbl7G_7njz59SKX-EKvZWCeY9beP-a8TU64WoC6FwPqdreAak";
-        $paypal       = new PayPalAPI($clientId, $clientSecret, true);
-        $response     = $paypal->provideSupportingInfo("PP-R-GQM-10106357", "Additional supporting details for the dispute.");
-        echo "<pre>";
-        print_r($response);
+        $this->filterDateRange($dataTable);
+        return $dataTable->render('dispute.index');
+        //        $clientId     = 'AfGFZ63l-30heXk1Xf2iNiO0SnhhIKeaEq9uIsqQt4kPenxBk_ZNwFhLTDDRDsX1bdV8_uVTMPnBgLnK';
+        //        $clientSecret = "EECgn7P9B5dgKFFvQWFQ6AH0AGqmm1ibbl7G_7njz59SKX-EKvZWCeY9beP-a8TU64WoC6FwPqdreAak";
+        //        $paypal       = new PayPalAPI($clientId, $clientSecret, true);
+        //        $response     = $paypal->provideSupportingInfo("PP-R-GQM-10106357", "Additional supporting details for the dispute.");
+        //        echo "<pre>";
+        //        print_r($response);
     }
 
     /**
@@ -40,14 +39,9 @@ class Dispute extends BaseController {
      * @throws \Exception
      */
     public function show(int|string $id): View {
-        $dispute = \App\Models\Dispute::findOrFail($id);
-        $paygate = \App\Models\Paygate::findOrFail($dispute->paygate_id);
-        $api_data = $paygate->api_data ?? [];
-        if (!isset($api_data['client_key'], $api_data['secret_key'])) {
-            abort(500, 'Missing API credentials');
-        }
-        $paypalApi = new PayPalAPI($api_data['client_key'], $api_data['secret_key'], $paygate->mode == 0 // true = sandbox mode
-        );
+        $dispute  = \App\Models\Dispute::findOrFail($id);
+        $paygate  = \App\Models\Paygate::findOrFail($dispute->paygate_id);
+        $paypalApi       = new PayPalAPI($paygate);
         $dispute_arr     = $paypalApi->getDisputeDetails($dispute->dispute_id);
         $transactionData = $dispute_arr['disputed_transactions'][0] ?? null;
         if (!$transactionData) {
@@ -59,6 +53,9 @@ class Dispute extends BaseController {
             abort(500, 'Invalid dispute transaction data');
         }
         $timestamp       = TimeHelper::getStartAndEndOfDay($create_time);
+//        echo '<pre>';
+//        print_r($dispute_arr);
+//        die;
         $transaction_arr = $paypalApi->listTransaction($timestamp['start'], $timestamp['end'], $seller_transaction_id);
         return view('dispute.show', compact('dispute_arr', 'dispute', 'transaction_arr'));
     }

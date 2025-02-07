@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Helpers;
+
 use Carbon\Carbon;
 use DateTime;
 
@@ -25,7 +26,6 @@ class TimeHelper {
     public static function convertDateTime($dateTime): string {
         // Tạo đối tượng DateTime từ chuỗi
         $date = new DateTime($dateTime);
-
         // Chuyển đổi định dạng
         return $date->format('Y-m-d H:i:s');
     }
@@ -38,17 +38,42 @@ class TimeHelper {
      * - end: chuỗi định dạng ngày giờ kết thúc của ngày, ví dụ 2025-01-10T23:59:59.000Z
      *
      * @param string $timestamp
+     *
      * @return array
      */
     public static function getStartAndEndOfDay(string $timestamp): array {
-        $date = Carbon::parse($timestamp)->setTimezone('UTC'); // Chuyển đổi về múi giờ UTC nếu cần
-
+        $date       = Carbon::parse($timestamp)->setTimezone('UTC'); // Chuyển đổi về múi giờ UTC nếu cần
         $startOfDay = $date->copy()->startOfDay()->format('Y-m-d\TH:i:s.000\Z');
-        $endOfDay = $date->copy()->endOfDay()->format('Y-m-d\TH:i:s.000\Z');
-
+        $endOfDay   = $date->copy()->endOfDay()->format('Y-m-d\TH:i:s.000\Z');
         return [
             'start' => $startOfDay,
-            'end' => $endOfDay,
+            'end'   => $endOfDay,
         ];
+    }
+
+    /**
+     * Tính toán và trả về chuỗi thể hiện khoảng thời gian cách biệt từ lúc $timestamp đến bây giờ.
+     *
+     * Ví dụ: $timestamp = 2025-01-16T12:59:53.247Z
+     *        trả về 5 days ago
+     *
+     * @param string $timestamp
+     *
+     * @return string
+     * @throws \DateMalformedStringException
+     */
+    public static function getTimeAgo($timestamp): ?string {
+        $datetime = new DateTime($timestamp);
+        $now      = new DateTime();
+        $diff     = $now->getTimestamp() - $datetime->getTimestamp();
+        if ($diff < 60) {
+            return "Just now";
+        } elseif ($diff < 3600) {
+            return floor($diff / 60) . " min ago";
+        } elseif ($diff < 86400) {
+            return floor($diff / 3600) . " hours ago";
+        } else {
+            return floor($diff / 86400) . " days ago";
+        }
     }
 }

@@ -1,7 +1,8 @@
 <?php
 
 use App\Console\Commands\DisputeCommand;
-use App\Console\Commands\Order;
+use App\Console\Commands\OrderCommand;
+use App\Console\Commands\TestCommand;
 use App\Console\Commands\TransactionCommand;
 
 return [
@@ -130,9 +131,10 @@ return [
     'date_format' => env('APP_DATE_FORMAT', 'd/m/Y H:i:s'),
     'version' => env('APP_VERSION', '0.0.1'),
     'commands' => [
-        Order::class,
+        OrderCommand::class,
         TransactionCommand::class,
         DisputeCommand::class,
+        TestCommand::class,
     ],
 
 ];
