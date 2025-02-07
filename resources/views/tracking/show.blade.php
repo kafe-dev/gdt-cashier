@@ -5,7 +5,7 @@
 @endpush
 
 @push('breadcrumbs')
-{{--    {{ Breadcrumbs::render() }}--}}
+    {{ Breadcrumbs::render('show-order-tracking', $orderTracking) }}
 @endpush
 
 @section('content')
