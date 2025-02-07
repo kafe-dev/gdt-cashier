@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Paygate\PayPalAPI;
 use App\Services\DataTables\DisputeDataTable;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;

@@ -58,6 +58,29 @@ class UpdateTrackingStatus extends Command
                     'courier_code' => $courierCode,
                 ]);
 
+                if (empty($response['data'])) {
+                    $response = TrackingMore::tracking()->createTracking([
+                        'tracking_number' => $trackingNumber,
+                        'courier_code' => $courierCode,
+                    ]);
+
+                    if (! empty($response['data']['delivery_status'])) {
+                        $trackingData = $response['data'];
+                        $newStatus = $trackingData['delivery_status'] ?? $tracking->tracking_status;
+
+                        if ($newStatus !== $tracking->tracking_status) {
+                            DB::table('order_tracking')
+                                ->where('id', $tracking->id)
+                                ->update([
+                                    'tracking_status' => $newStatus,
+                                    'tracking_data' => json_encode($trackingData),
+                                    'last_checked_at' => Carbon::now(),
+                                    'updated_at' => Carbon::now(),
+                                ]);
+                        }
+                    }
+                }
+
                 if (! empty($response['data'][0]['delivery_status'])) {
                     $trackingData = $response['data'][0];
                     $newStatus = $trackingData['delivery_status'] ?? $tracking->tracking_status;

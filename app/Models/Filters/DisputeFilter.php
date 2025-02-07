@@ -26,7 +26,11 @@ class DisputeFilter {
             ->searchPane('paygate_id', fn() => self::filterByPaygateID())
             ->searchPane('dispute_id', fn() => self::filterByDisputeID())
             ->searchPane('status', fn() => self::filterByStatus())
-            ->searchPane('dispute_amount_currency', fn() => self::filterByDisputeAmountCurrency());
+            ->searchPane('dispute_amount_currency', fn() => self::filterByDisputeAmountCurrency())
+            ->searchPane('dispute_amount_value', fn() => self::filterByDisputeAmountValue())
+            ->searchPane('reason', fn() => self::filterByReason())
+            ->searchPane('created_at', fn() => self::filterByCreatedAt())
+            ->searchPane('updated_at', fn() => self::filterByUpdatedAt());
     }
 
     /**
@@ -63,5 +67,41 @@ class DisputeFilter {
      */
     private static function filterByDisputeAmountCurrency(): Collection {
         return Dispute::query()->select(DB::raw('`dispute_amount_currency` as value, `dispute_amount_currency` as label, COUNT(*) as total'))->groupBy('dispute_amount_currency')->get();
+    }
+
+    /**
+     * Filter disputes by dispute amount value.
+     *
+     * @return Collection
+     */
+    private static function filterByDisputeAmountValue(): Collection {
+        return Dispute::query()->select(DB::raw('`dispute_amount_value` as value, `dispute_amount_value` as label, COUNT(*) as total'))->groupBy('dispute_amount_value')->get();
+    }
+
+    /**
+     * Filter disputes by reason.
+     *
+     * @return Collection
+     */
+    private static function filterByReason(): Collection {
+        return Dispute::query()->select(DB::raw('`reason` as value, `reason` as label, COUNT(*) as total'))->groupBy('reason')->get();
+    }
+
+    /**
+     * Filter disputes by created at.
+     *
+     * @return Collection
+     */
+    private static function filterByCreatedAt(): Collection {
+        return Dispute::query()->select(DB::raw('`created_at` as value, `created_at` as label'))->get();
+    }
+
+    /**
+     * Filter disputes by updated at.
+     *
+     * @return Collection
+     */
+    private static function filterByUpdatedAt(): Collection {
+        return Dispute::query()->select(DB::raw('`updated_at` as value, `updated_at` as label'))->get();
     }
 }
