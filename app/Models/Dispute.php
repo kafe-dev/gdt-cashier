@@ -37,7 +37,7 @@ class Dispute extends Model {
     public final const string STATUS_EXPIRED = 'EXPIRED';
     public final const string STATUS_RESOLVED = 'RESOLVED';
     public final const string STATUS_WAITING_FOR_BUYER_RESPONSE = 'WAITING_FOR_BUYER_RESPONSE';
-    public final const string STATUS_WAITING_FOR_SELLER_RESPONSE = 'WAITING_FOR_SELLER_RESPONSE	';
+    public final const string STATUS_WAITING_FOR_SELLER_RESPONSE = 'WAITING_FOR_SELLER_RESPONSE';
     public final const string STATUS_UNDER_REVIEW = 'UNDER_REVIEW';
     public final const string STATUS_OPEN = 'OPEN';
 

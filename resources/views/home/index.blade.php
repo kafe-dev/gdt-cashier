@@ -112,10 +112,10 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-auto align-self-center">
-                            <p class="mb-0"><span class="text-success"><i class="mdi mdi-trending-up"></i>4.8%</span>
-                                increase</p>
-                        </div>
+{{--                        <div class="col-auto align-self-center">--}}
+{{--                            <p class="mb-0"><span class="text-success"><i class="mdi mdi-trending-up"></i>4.8%</span>--}}
+{{--                                increase</p>--}}
+{{--                        </div>--}}
                     </div>
                 </div>
                 <div class="row">
@@ -144,7 +144,7 @@
     </div>
 
     <div class="row">
-        <div class="col-lg-4">
+        <div class="col-lg-5">
             <div class="card">
                 <div class="card-header">
                     <div class="row align-items-center">
@@ -159,18 +159,29 @@
                             <thead class="table-light" style="position: sticky; top: 0; z-index: 2">
                             <tr>
                                 <th class="border-top-0">Date</th>
+                                <th class="border-top-0">Under Review</th>
+                                <th class="border-top-0">Waiting for Buyer Response</th>
+                                <th class="border-top-0">Waiting for Seller Response</th>
                                 <th class="border-top-0">Open</th>
                                 <th class="border-top-0">Resolved</th>
-                                <th class="border-top-0">Failed</th>
+                                <th class="border-top-0">Denied</th>
+                                <th class="border-top-0">Closed</th>
+                                <th class="border-top-0">Expired</th>
+
                             </tr>
                             </thead>
                             <tbody>
                             @foreach($dispute_reports as $date => $report)
                                 <tr>
                                     <td>{{ \Carbon\Carbon::parse($date)->format('d/m/Y') }}</td>
-                                    <td>{{ $report['open'] }}</td>
+                                    <td>{{ $report['under_review'] }}</td>
+                                    <td>{{ $report['waiting_for_buyer'] }}</td>
+                                    <td>{{ $report['waiting_for_seller'] }}</td>
+                                    <td class="text-primary">{{ $report['open'] }}</td>
                                     <td class="text-success">{{ $report['resolved'] }}</td>
-                                    <td class="text-danger">{{ $report['failed'] }}</td>
+                                    <td class="text-danger">{{ $report['denied'] }}</td>
+                                    <td class="text-secondary">{{ $report['closed'] }}</td>
+                                    <td class="text-warning">{{ $report['expired'] }}</td>
                                 </tr>
                             @endforeach
                             </tbody>
@@ -179,7 +190,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-lg-8">
+        <div class="col-lg-7">
             <div class="card">
                 <div class="card-header">
                     <div class="row align-items-center">
@@ -203,51 +214,18 @@
                             </tr>
                             </thead>
                             <tbody>
+                            @foreach($paygate_reports as $report)
+
                             <tr>
-                                <td>01/07/2024</td>
-                                <td>#Paypal0001</td>
-                                <td><span class="badge badge-soft-secondary">Black</span></td>
-                                <td>$1000</td>
-                                <td>1.2%</td>
-                                <td>$2000</td>
-                                <td><span class="badge badge-soft-success">Live</span></td>
+                                <td>{{ \Carbon\Carbon::parse($report['created_at'])->format('Y/m/d') }}</td>
+                                <td>{{ $report['id'] }}</td>
+                                <td><span class="badge badge-soft-secondary">{{ $report['type'] }}</span></td>
+                                <td>${{ $report['revenue'] }}</td>
+                                <td>{{ $report['dispute_rate'] }}%</td>
+                                <td>${{ $report['limit'] }}</td>
+                                <td><span class="badge badge-soft-success">{{ $report['status'] }}</span></td>
                             </tr>
-                            <tr>
-                                <td>31/05/2024</td>
-                                <td>#Paypal0002</td>
-                                <td><span class="badge badge-soft-primary">White</span></td>
-                                <td>$2000</td>
-                                <td>0.2%</td>
-                                <td>$5000</td>
-                                <td><span class="badge badge-soft-success">Live</span></td>
-                            </tr>
-                            <tr>
-                                <td>05/01/2024</td>
-                                <td>#Paypal0003</td>
-                                <td><span class="badge badge-soft-primary">White</span></td>
-                                <td>$2000</td>
-                                <td>0.2%</td>
-                                <td>$5000</td>
-                                <td><span class="badge badge-soft-danger">Down</span></td>
-                            </tr>
-                            <tr>
-                                <td>01/01/2024</td>
-                                <td>#Stripe0001</td>
-                                <td><span class="badge badge-soft-primary">White</span></td>
-                                <td>$1000</td>
-                                <td>2.2%</td>
-                                <td>$1200</td>
-                                <td><span class="badge badge-soft-success">Live</span></td>
-                            </tr>
-                            <tr>
-                                <td>01/01/2024</td>
-                                <td>#Paypal0004</td>
-                                <td><span class="badge badge-soft-secondary">Black</span></td>
-                                <td>$100</td>
-                                <td>0.2%</td>
-                                <td>$2000</td>
-                                <td><span class="badge badge-soft-danger">Down</span></td>
-                            </tr>
+                            @endforeach
                             </tbody>
                         </table>
                     </div>
@@ -398,7 +376,7 @@
                         }
                     }
                 },
-                colors: ['#28a745', '#ffc107', '#dc3545'],
+                colors: ['#28a745', '#ffc107', '#dc3545', '#6f42c1', '#007bff', '#ffc107', '#fd7e14','#795548'],
                 plotOptions: {
                     pie: {
                         donut: {

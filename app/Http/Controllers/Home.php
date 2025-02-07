@@ -38,103 +38,12 @@ class Home extends BaseController
         $successOrders = count(OrderModel::query()->whereBetween('created_at', [$startDate, $endDate])
             ->where('status', OrderModel::STATUS_PAID)
             ->get());
-        {
-            $revenues = OrderModel::query()->whereBetween('created_at', [$startDate, $endDate])
-                ->where('status', OrderModel::STATUS_PAID)
-                ->selectRaw('DATE(created_at) as date, SUM(paid_amount) as total_revenue')
-                ->groupBy('date')
-                ->orderBy('date', 'asc')
-                ->get();
-            $chartData = [
-                'categories' => $revenues->pluck('date')->toArray(),
-                'data' => $revenues->pluck('total_revenue')->toArray(),
-            ];
-        }
         $totalRevenues = OrderModel::query()->whereBetween('created_at', [$startDate, $endDate])
             ->where('status', OrderModel::STATUS_PAID)
             ->sum('paid_amount');
 
         $disputeRate = $this->getDisputeRate();
-        {
-            $disputeCounts = DisputeModel::query()
-                ->selectRaw('status, COUNT(*) as count')
-                ->whereBetween('created_at', [$startDate, $endDate])
-                ->groupBy('status')
-                ->pluck('count', 'status')
-                ->toArray();
 
-            $totalDisputes = array_sum($disputeCounts);
-
-            $statusPending = (
-                ($disputeCounts[DisputeModel::STATUS_UNDER_REVIEW] ?? 0) +
-                ($disputeCounts[DisputeModel::STATUS_WAITING_FOR_BUYER_RESPONSE] ?? 0) +
-                ($disputeCounts[DisputeModel::STATUS_WAITING_FOR_SELLER_RESPONSE] ?? 0) +
-                ($disputeCounts[DisputeModel::STATUS_OPEN] ?? 0)
-            );
-
-            $statusFailed = (
-                ($disputeCounts[DisputeModel::STATUS_DENIED] ?? 0) +
-                ($disputeCounts[DisputeModel::STATUS_CLOSED] ?? 0) +
-                ($disputeCounts[DisputeModel::STATUS_EXPIRED] ?? 0)
-            );
-
-            $statusResolved = ($disputeCounts[DisputeModel::STATUS_RESOLVED] ?? 0);
-
-            $chartDataDispute = [
-                'labels' => ['Resolved', 'Pending', 'Failed'],
-                'data' => [
-                    $totalDisputes > 0 ? round(($statusResolved / $totalDisputes) * 100, 2) : 0,
-                    $totalDisputes > 0 ? round(($statusPending / $totalDisputes) * 100, 2) : 0,
-                    $totalDisputes > 0 ? round(($statusFailed / $totalDisputes) * 100, 2) : 0,
-                ],
-            ];
-        }
-
-        {
-            $disputeStats = DisputeModel::query()
-                ->whereBetween('created_at', [$startDate, $endDate])
-                ->selectRaw('DATE(created_at) as date, status, COUNT(*) as count')
-                ->groupBy('date', 'status')
-                ->orderBy('date', 'desc')
-                ->get();
-
-            $allDates = [];
-            $period = Carbon::parse($startDate)->toPeriod($endDate, '1 day');
-
-            foreach ($period as $date) {
-                $formattedDate = $date->format('Y-m-d');
-                $allDates[$formattedDate] = ['open' => 0, 'resolved' => 0, 'failed' => 0];
-            }
-
-            $allStatuses = [
-                'open' => [
-                    DisputeModel::STATUS_UNDER_REVIEW,
-                    DisputeModel::STATUS_WAITING_FOR_BUYER_RESPONSE,
-                    DisputeModel::STATUS_WAITING_FOR_SELLER_RESPONSE,
-                    DisputeModel::STATUS_OPEN,
-                ],
-                'resolved' => [DisputeModel::STATUS_RESOLVED],
-                'failed' => [
-                    DisputeModel::STATUS_DENIED,
-                    DisputeModel::STATUS_CLOSED,
-                    DisputeModel::STATUS_EXPIRED,
-                ],
-            ];
-
-            foreach ($disputeStats as $stat) {
-                $date = $stat->date;
-                $status = $stat->status;
-                $count = $stat->count;
-
-                foreach ($allStatuses as $key => $statuses) {
-                    if (in_array($status, $statuses)) {
-                        $allDates[$date][$key] += $count;
-                    }
-                }
-            }
-
-            $disputeReports = $allDates;
-        }
         return view('home.index',
             [
                 'open_paygates' => $openPaygate,
@@ -142,15 +51,163 @@ class Home extends BaseController
                 'success_orders' => $successOrders,
                 'start_date' => $startDate,
                 'end_date' => $endDate,
-                'chartData' => $chartData,
+                'chartData' => $this->getRevenueChartData($startDate, $endDate),
                 'total_revenue' => (float)$totalRevenues,
-                'chartDataDispute' => $chartDataDispute,
-                'dispute_reports' => $disputeReports,
+                'chartDataDispute' => $this->getChartDataDispute($startDate, $endDate),
+                'dispute_reports' => $this->getDisputeReports($startDate, $endDate),
+                'paygate_reports' => $this->getPaygateReports($startDate, $endDate),
             ]);
     }
 
     private function getDisputeRate(): float
     {
         return $disputes = DisputeModel::query()->count();
+    }
+
+    /**
+     * Get all Paygate report
+     *
+     * @param $startDate
+     * @param $endDate
+     * @return array
+     */
+    private function getPaygateReports($startDate, $endDate): array
+    {
+        $allPaygatesReports = [];
+        $paygateReports = [];
+
+        $allPaygates = PaygateModel::query()
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        if (!empty($allPaygates)) {
+            foreach ($allPaygates as $paygate) {
+                $paygateReports['revenue'] = 9000;
+                $paygateReports['dispute_rate'] = 1.5;
+                $paygateReports['id'] = $paygate->id;
+                $paygateReports['limit'] = $paygate->limitation;
+                $paygateReports['type'] = PaygateModel::TYPE[$paygate->type];
+                $paygateReports['status'] = PaygateModel::STATUS[$paygate->status];
+                $paygateReports['created_at'] = $paygate->created_at;
+                $allPaygatesReports[] = $paygateReports;
+            }
+        }
+        return $allPaygatesReports;
+    }
+
+    /**
+     * Gets all dispute reports
+     *
+     * @param $startDate
+     * @param $endDate
+     * @return array
+     */
+    private function getDisputeReports($startDate, $endDate): array
+    {
+        $disputeStats = DisputeModel::query()
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->selectRaw('DATE(created_at) as date, status, COUNT(*) as count')
+            ->groupBy('date', 'status')
+            ->orderBy('date', 'desc')
+            ->get();
+
+        $allDates = [];
+        $period = Carbon::parse($startDate)->toPeriod($endDate, '1 day');
+
+        foreach ($period as $date) {
+            $formattedDate = $date->format('Y-m-d');
+            $allDates[$formattedDate] = [
+                'under_review' => 0,
+                'waiting_for_buyer' => 0,
+                'waiting_for_seller' => 0,
+                'open' => 0,
+                'resolved' => 0,
+                'denied' => 0,
+                'closed' => 0,
+                'expired' => 0,
+            ];
+
+        }
+
+        $allStatuses = [
+            'under_review' => DisputeModel::STATUS_UNDER_REVIEW,
+            'waiting_for_buyer' => DisputeModel::STATUS_WAITING_FOR_BUYER_RESPONSE,
+            'waiting_for_seller' => DisputeModel::STATUS_WAITING_FOR_SELLER_RESPONSE,
+            'open' => DisputeModel::STATUS_OPEN,
+            'resolved' => DisputeModel::STATUS_RESOLVED,
+            'denied' => DisputeModel::STATUS_DENIED,
+            'closed' => DisputeModel::STATUS_CLOSED,
+            'expired' => DisputeModel::STATUS_EXPIRED,
+        ];
+
+        foreach ($disputeStats as $stat) {
+            $date = $stat->date;
+            $status = DisputeModel::STATUSES[$stat->status];
+            $count = $stat->count;
+
+            foreach ($allStatuses as $key => $value) {
+                if ($status == $value) {
+                    $allDates[$date][$key] += $count;
+                }
+            }
+        }
+
+        return $allDates;
+    }
+
+    /**
+     * Get chart data dispute
+     *
+     * @param $startDate
+     * @param $endDate
+     * @return array
+     */
+    private function getChartDataDispute($startDate, $endDate): array
+    {
+        $disputeCounts = DisputeModel::query()
+            ->selectRaw('status, COUNT(*) as count')
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->groupBy('status')
+            ->pluck('count', 'status')
+            ->toArray();
+
+        $totalDisputes = array_sum($disputeCounts);
+
+
+        return [
+            'labels' => ['Resolved', 'Expired', 'Closed', 'Denied', 'Open', 'Waiting for seller response', 'Waiting for buyer response', 'Under review'],
+            'data' => [
+                !empty($disputeCounts[DisputeModel::STATUS_RESOLVED]) ? round(($disputeCounts[DisputeModel::STATUS_RESOLVED] / $totalDisputes) * 100, 2) : 0,
+                !empty($disputeCounts[DisputeModel::STATUS_EXPIRED]) ? round(($disputeCounts[DisputeModel::STATUS_EXPIRED] / $totalDisputes) * 100, 2) : 0,
+                !empty($disputeCounts[DisputeModel::STATUS_CLOSED]) ? round(($disputeCounts[DisputeModel::STATUS_CLOSED] / $totalDisputes) * 100, 2) : 0,
+                !empty($disputeCounts[DisputeModel::STATUS_DENIED]) ? round(($disputeCounts[DisputeModel::STATUS_DENIED] / $totalDisputes) * 100, 2) : 0,
+                !empty($disputeCounts[DisputeModel::STATUS_OPEN]) ? round(($disputeCounts[DisputeModel::STATUS_OPEN] / $totalDisputes) * 100, 2) : 0,
+                !empty($disputeCounts[DisputeModel::STATUS_WAITING_FOR_SELLER_RESPONSE]) ? round(($disputeCounts[DisputeModel::STATUS_WAITING_FOR_SELLER_RESPONSE] / $totalDisputes) * 100, 2) : 0,
+                !empty($disputeCounts[DisputeModel::STATUS_WAITING_FOR_BUYER_RESPONSE]) ? round(($disputeCounts[DisputeModel::STATUS_WAITING_FOR_BUYER_RESPONSE] / $totalDisputes) * 100, 2) : 0,
+                !empty($disputeCounts[DisputeModel::STATUS_UNDER_REVIEW]) ? round(($disputeCounts[DisputeModel::STATUS_UNDER_REVIEW] / $totalDisputes) * 100, 2) : 0,
+            ],
+        ];
+    }
+
+    /**
+     * Get chart data revenue
+     *
+     * @param $startDate
+     * @param $endDate
+     * @return array
+     */
+    private function getRevenueChartData($startDate, $endDate): array
+    {
+        $revenues = OrderModel::query()->whereBetween('created_at', [$startDate, $endDate])
+            ->where('status', OrderModel::STATUS_PAID)
+            ->selectRaw('DATE(created_at) as date, SUM(paid_amount) as total_revenue')
+            ->groupBy('date')
+            ->orderBy('date', 'asc')
+            ->get();
+        return [
+            'categories' => $revenues->pluck('date')->toArray(),
+            'data' => $revenues->pluck('total_revenue')->toArray(),
+        ];
     }
 }
