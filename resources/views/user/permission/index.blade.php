@@ -1,11 +1,11 @@
 @extends('_layouts.main')
 
 @push('page')
-    Manage Order Tracking
+    Manage Roles' Permission
 @endpush
 
 @push('breadcrumbs')
-    {{ Breadcrumbs::render('manage-order-tracking') }}
+        {{ Breadcrumbs::render('manage-permission') }}
 @endpush
 
 @section('content')
@@ -14,9 +14,9 @@
             <div class="card">
                 <div class="card-header">
                     <div>
-                        <h4 class="card-title">Order Tracking List</h4>
+                        <h4 class="card-title">Role's permission List</h4>
                         <p class="text-muted mb-0">
-                            This is a list of all order trackings in the system.
+                            This is a list of all roles' permission in the system.
                         </p>
                     </div>
                 </div>
