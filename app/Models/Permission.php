@@ -49,7 +49,10 @@ class Permission extends Model
         foreach ($allowedRoles as $allowedRole) {
             $permission = self::where('role', $allowedRole)->first();
             if ($permission) {
-                $routes = array_merge($routes, $permission->routes);
+                $tempRoutes = $permission->routes;
+                if ($tempRoutes) {
+                    $routes = array_merge($routes, $tempRoutes);
+                }
             }
         }
 
