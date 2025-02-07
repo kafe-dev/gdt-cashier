@@ -10,6 +10,7 @@ use App\Models\Paygate as PaygateModel;
 use App\Models\Store as StoreModel;
 use App\Models\Order as OrderModel;
 use App\Models\Dispute as DisputeModel;
+use Carbon\Carbon;
 
 /**
  * Class Home.
@@ -88,6 +89,52 @@ class Home extends BaseController
                 ],
             ];
         }
+
+        {
+            $disputeStats = DisputeModel::query()
+                ->whereBetween('created_at', [$startDate, $endDate])
+                ->selectRaw('DATE(created_at) as date, status, COUNT(*) as count')
+                ->groupBy('date', 'status')
+                ->orderBy('date', 'desc')
+                ->get();
+
+            $allDates = [];
+            $period = Carbon::parse($startDate)->toPeriod($endDate, '1 day');
+
+            foreach ($period as $date) {
+                $formattedDate = $date->format('Y-m-d');
+                $allDates[$formattedDate] = ['open' => 0, 'resolved' => 0, 'failed' => 0];
+            }
+
+            $allStatuses = [
+                'open' => [
+                    DisputeModel::STATUS_UNDER_REVIEW,
+                    DisputeModel::STATUS_WAITING_FOR_BUYER_RESPONSE,
+                    DisputeModel::STATUS_WAITING_FOR_SELLER_RESPONSE,
+                    DisputeModel::STATUS_OPEN,
+                ],
+                'resolved' => [DisputeModel::STATUS_RESOLVED],
+                'failed' => [
+                    DisputeModel::STATUS_DENIED,
+                    DisputeModel::STATUS_CLOSED,
+                    DisputeModel::STATUS_EXPIRED,
+                ],
+            ];
+
+            foreach ($disputeStats as $stat) {
+                $date = $stat->date;
+                $status = $stat->status;
+                $count = $stat->count;
+
+                foreach ($allStatuses as $key => $statuses) {
+                    if (in_array($status, $statuses)) {
+                        $allDates[$date][$key] += $count;
+                    }
+                }
+            }
+
+            $disputeReports = $allDates;
+        }
         return view('home.index',
             [
                 'open_paygates' => $openPaygate,
@@ -98,6 +145,7 @@ class Home extends BaseController
                 'chartData' => $chartData,
                 'total_revenue' => (float)$totalRevenues,
                 'chartDataDispute' => $chartDataDispute,
+                'dispute_reports' => $disputeReports,
             ]);
     }
 

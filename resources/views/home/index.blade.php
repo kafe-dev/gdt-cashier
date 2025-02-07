@@ -154,9 +154,9 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    <div class="table-responsive">
+                    <div class="table-responsive" style="max-height: 300px; overflow-y: auto;">
                         <table class="table mb-0">
-                            <thead class="table-light">
+                            <thead class="table-light" style="position: sticky; top: 0; z-index: 2">
                             <tr>
                                 <th class="border-top-0">Date</th>
                                 <th class="border-top-0">Open</th>
@@ -165,36 +165,14 @@
                             </tr>
                             </thead>
                             <tbody>
-                            <tr>
-                                <td>02/01/2025</td>
-                                <td>50</td>
-                                <td class="text-success">50</td>
-                                <td>0</td>
-                            </tr>
-                            <tr>
-                                <td>01/01/2025</td>
-                                <td>10</td>
-                                <td class="text-success">8</td>
-                                <td class="text-danger">2</td>
-                            </tr>
-                            <tr>
-                                <td>31/12/2024</td>
-                                <td>0</td>
-                                <td class="text-success">0</td>
-                                <td>0</td>
-                            </tr>
-                            <tr>
-                                <td>30/12/2024</td>
-                                <td>5</td>
-                                <td class="text-success">1</td>
-                                <td class="text-danger">4</td>
-                            </tr>
-                            <tr>
-                                <td>29/12/2024</td>
-                                <td>0</td>
-                                <td class="text-success">0</td>
-                                <td>0</td>
-                            </tr>
+                            @foreach($dispute_reports as $date => $report)
+                                <tr>
+                                    <td>{{ \Carbon\Carbon::parse($date)->format('d/m/Y') }}</td>
+                                    <td>{{ $report['open'] }}</td>
+                                    <td class="text-success">{{ $report['resolved'] }}</td>
+                                    <td class="text-danger">{{ $report['failed'] }}</td>
+                                </tr>
+                            @endforeach
                             </tbody>
                         </table>
                     </div>
