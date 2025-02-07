@@ -5,7 +5,7 @@
 @endpush
 
 @push('breadcrumbs')
-    {{--    {{ Breadcrumbs::render('update-user', $user) }}--}}
+        {{ Breadcrumbs::render('update-permission', $permission) }}
 @endpush
 
 @section('content')

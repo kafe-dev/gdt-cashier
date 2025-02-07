@@ -1,11 +1,11 @@
 @extends('_layouts.main')
 
 @push('page')
-    Manage User's Role
+    Manage Users' Role
 @endpush
 
 @push('breadcrumbs')
-{{--    {{ Breadcrumbs::render('manage-user') }}--}}
+    {{ Breadcrumbs::render('manage-role') }}
 @endpush
 
 @section('content')

@@ -13,5 +13,5 @@ Breadcrumbs::for('manage-order-tracking', function (BreadcrumbTrail $trail) {
 // Dashboard > Manage Order Tracking > Show Order Tracking
 Breadcrumbs::for('show-order-tracking', function (BreadcrumbTrail $trail, OrderTracking $orderTracking) {
     $trail->parent('manage-order-tracking');
-    $trail->push('Show User', route('app.tracking.show', ['id' => $orderTracking->id]));
+    $trail->push('Show Order Tracking', route('app.tracking.show', ['id' => $orderTracking->id]));
 });
