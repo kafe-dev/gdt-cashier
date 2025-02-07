@@ -18,6 +18,12 @@ class PermissionHelper
             return false;
         }
 
+        if ($user->role == User::ROLE_ADMIN) {
+            return true;
+        } else if (str_starts_with($routeName, 'app.permission.')) {
+            return false;
+        }
+
         $allowedRoutes = Permission::getAllowedRoutes($user->role);
 
         return in_array($routeName, $allowedRoutes);

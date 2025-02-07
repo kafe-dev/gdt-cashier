@@ -1,3 +1,7 @@
+@php
+    use App\Helpers\PermissionHelper;
+@endphp
+
 <div class="left-sidenav">
     <div class="brand border">
         <a href="{{ route('app.home.index') }}" class="logo">
@@ -17,15 +21,19 @@
 
             <hr class="hr-dashed hr-menu">
             <li class="menu-label my-2">Management</li>
-            @if(\App\Helpers\PermissionHelper::hasAccess('app.user.index'))
+            @if(PermissionHelper::hasAccess('app.user.index'))
                 <li>
                     <a class="nav-link" href="javascript: void(0);">
                         <i data-feather="users" class="align-self-center menu-icon"></i>
                         <span style="margin-left: 2.5px;">User Account</span>
                     </a>
                     <ul class="nav-second-level mm-collapse" aria-expanded="false">
-                        <li class="nav-item"><a class="nav-link" href="{{ route('app.user.index') }}"><i class="ti-control-record"></i>Manage User</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{{ route('app.user.create') }}"><i class="ti-control-record"></i>Add New User</a></li>
+                        @if(PermissionHelper::hasAccess('app.user.index'))
+                            <li class="nav-item"><a class="nav-link" href="{{ route('app.user.index') }}"><i class="ti-control-record"></i>Manage User</a></li>
+                        @endif
+                        @if(PermissionHelper::hasAccess('app.user.create'))
+                            <li class="nav-item"><a class="nav-link" href="{{ route('app.user.create') }}"><i class="ti-control-record"></i>Add New User</a></li>
+                        @endif
                         @if(Auth::user()->role == \App\Models\User::ROLE_ADMIN)
                             <li class="nav-item"><a class="nav-link" href="{{ route('app.user.permission.index') }}"><i class="ti-control-record"></i>Manage Permission</a></li>
                             <li class="nav-item"><a class="nav-link" href="{{ route('app.user.roleManage.index') }}"><i class="ti-control-record"></i>Manage User's Role</a></li>
@@ -33,31 +41,39 @@
                     </ul>
                 </li>
             @endif
-            @if(\App\Helpers\PermissionHelper::hasAccess('app.paygate.index'))
+            @if(PermissionHelper::hasAccess('app.paygate.index'))
                 <li>
                     <a class="nav-link" href="javascript: void(0);">
                         <i data-feather="credit-card" class="align-self-center menu-icon"></i>
                         <span style="margin-left: 2.5px;">Paygate</span>
                     </a>
                     <ul class="nav-second-level mm-collapse" aria-expanded="false">
-                        <li class="nav-item"><a class="nav-link" href="{{ route('app.paygate.index') }}"><i class="ti-control-record"></i>Manage Paygate</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{{ route('app.paygate.create') }}"><i class="ti-control-record"></i>Add New Paygate</a></li>
+                        @if(PermissionHelper::hasAccess('app.paygate.index'))
+                            <li class="nav-item"><a class="nav-link" href="{{ route('app.paygate.index') }}"><i class="ti-control-record"></i>Manage Paygate</a></li>
+                        @endif
+                        @if(PermissionHelper::hasAccess('app.paygate.create'))
+                                <li class="nav-item"><a class="nav-link" href="{{ route('app.paygate.create') }}"><i class="ti-control-record"></i>Add New Paygate</a></li>
+                        @endif
                     </ul>
                 </li>
             @endif
-            @if(\App\Helpers\PermissionHelper::hasAccess('app.store.index'))
+            @if(PermissionHelper::hasAccess('app.store.index'))
                 <li>
                     <a class="nav-link" href="javascript: void(0);">
                         <i data-feather="layout" class="align-self-center menu-icon"></i>
                         <span style="margin-left: 2.5px;">Online Store</span>
                     </a>
                     <ul class="nav-second-level mm-collapse" aria-expanded="false">
-                        <li class="nav-item"><a class="nav-link" href="{{ route('app.store.index') }}"><i class="ti-control-record"></i>Manage Store</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{{ route('app.store.create') }}"><i class="ti-control-record"></i>Add New Store</a></li>
+                        @if(PermissionHelper::hasAccess('app.store.index'))
+                            <li class="nav-item"><a class="nav-link" href="{{ route('app.store.index') }}"><i class="ti-control-record"></i>Manage Store</a></li>
+                        @endif
+                        @if(PermissionHelper::hasAccess('app.store.create'))
+                            <li class="nav-item"><a class="nav-link" href="{{ route('app.store.create') }}"><i class="ti-control-record"></i>Add New Store</a></li>
+                        @endif
                     </ul>
                 </li>
             @endif
-            @if(\App\Helpers\PermissionHelper::hasAccess('app.dispute.index'))
+            @if(PermissionHelper::hasAccess('app.dispute.index'))
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('app.dispute.index') }}">
                         <i data-feather="trending-down" class="align-self-center menu-icon"></i>
@@ -66,7 +82,7 @@
                     </a>
                 </li>
             @endif
-            @if(\App\Helpers\PermissionHelper::hasAccess('app.order.index'))
+            @if(PermissionHelper::hasAccess('app.order.index'))
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('app.order.index') }}">
                         <i data-feather="shopping-cart" class="align-self-center menu-icon"></i>
@@ -75,7 +91,7 @@
                     </a>
                 </li>
             @endif
-            @if(\App\Helpers\PermissionHelper::hasAccess('app.tracking.index'))
+            @if(PermissionHelper::hasAccess('app.tracking.index'))
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('app.tracking.index') }}">
                         <i data-feather="truck" class="align-self-center menu-icon"></i>

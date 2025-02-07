@@ -130,7 +130,7 @@ class User extends BaseController
                 'username' => $request->input('username'),
                 'email' => $request->input('email'),
                 'password' => $request->input('password') ? bcrypt($request->input('password')) : $user->password,
-                'role' => $request->input('role'),
+//                'role' => $request->input('role'),
             ]);
 
             flash()->success('User updated successfully.');
@@ -260,7 +260,7 @@ class User extends BaseController
     {
         $routeNames = collect(Route::getRoutes())
             ->map(fn($route) => $route->getName())
-            ->filter(fn($name) => !is_null($name) && str_starts_with($name, 'app.') && !str_starts_with($name, 'app.security'))
+            ->filter(fn($name) => !is_null($name) && str_starts_with($name, 'app.') && !str_starts_with($name, 'app.security') && !str_starts_with($name, 'app.permission.'))
             ->values();
 
         $routeNames = array_unique($routeNames->toArray());
