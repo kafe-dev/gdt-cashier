@@ -32,6 +32,26 @@ class Dispute extends Model {
 
 	use HasFactory;
 
+    public final const string STATUS_DENIED = 'DENIED';
+    public final const string STATUS_CLOSED = 'CLOSED';
+    public final const string STATUS_EXPIRED = 'EXPIRED';
+    public final const string STATUS_RESOLVED = 'RESOLVED';
+    public final const string STATUS_WAITING_FOR_BUYER_RESPONSE = 'WAITING_FOR_BUYER_RESPONSE';
+    public final const string STATUS_WAITING_FOR_SELLER_RESPONSE = 'WAITING_FOR_SELLER_RESPONSE';
+    public final const string STATUS_UNDER_REVIEW = 'UNDER_REVIEW';
+    public final const string STATUS_OPEN = 'OPEN';
+
+    public final const array STATUSES = [
+        self::STATUS_DENIED => 'DENIED',
+        self::STATUS_CLOSED => 'CLOSED',
+        self::STATUS_EXPIRED => 'EXPIRED',
+        self::STATUS_RESOLVED => 'RESOLVED',
+        self::STATUS_WAITING_FOR_BUYER_RESPONSE => 'WAITING_FOR_BUYER_RESPONSE',
+        self::STATUS_WAITING_FOR_SELLER_RESPONSE => 'WAITING_FOR_SELLER_RESPONSE',
+        self::STATUS_UNDER_REVIEW => 'UNDER_REVIEW',
+        self::STATUS_OPEN => 'OPEN',
+    ];
+
 	protected $fillable = [
 		'dispute_id',
 		'create_time',
