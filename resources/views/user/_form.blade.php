@@ -26,18 +26,18 @@
             <small id="passwordHelp" class="form-text text-muted">Never share your password with anyone else.</small>
         </div>
 
-        <div class="mb-3">
-            <label class="form-label" for="role">Permission</label>
-            <select class="form-select" id="role" name="role">
-                <option value="0" {{ isset($user) ? (old('role', $user->role ?? '') == 0 ? 'selected' : '' ) : 'selected'}}>User</option>
-                @if(\App\Models\User::ROLES[Auth::user()->role] == 'Admin')
-                    <option value="5" {{ old('role', $user->role ?? '') == 5 ? 'selected' : '' }}>Sub Admin</option>
-                @endif
-                <option value="2" {{ old('role', $user->role ?? '') == 2 ? 'selected' : '' }}>Accountant</option>
-                <option value="3" {{ old('role', $user->role ?? '') == 3 ? 'selected' : '' }}>Support</option>
-                <option value="4" {{ old('role', $user->role ?? '') == 4 ? 'selected' : '' }}>Seller</option>
-            </select>
-        </div>
+{{--        <div class="mb-3">--}}
+{{--            <label class="form-label" for="role">Permission</label>--}}
+{{--            <select class="form-select" id="role" name="role">--}}
+{{--                <option value="0" {{ isset($user) ? (old('role', $user->role ?? '') == 0 ? 'selected' : '' ) : 'selected'}}>User</option>--}}
+{{--                @if(\App\Models\User::ROLES[Auth::user()->role] == 'Admin')--}}
+{{--                    <option value="5" {{ old('role', $user->role ?? '') == 5 ? 'selected' : '' }}>Sub Admin</option>--}}
+{{--                @endif--}}
+{{--                <option value="2" {{ old('role', $user->role ?? '') == 2 ? 'selected' : '' }}>Accountant</option>--}}
+{{--                <option value="3" {{ old('role', $user->role ?? '') == 3 ? 'selected' : '' }}>Support</option>--}}
+{{--                <option value="4" {{ old('role', $user->role ?? '') == 4 ? 'selected' : '' }}>Seller</option>--}}
+{{--            </select>--}}
+{{--        </div>--}}
 
     </div>
     <div class="card-footer">
