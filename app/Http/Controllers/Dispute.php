@@ -74,6 +74,24 @@ class Dispute extends BaseController
     {
         //
     }
+    public function sendMessage(Request $request): RedirectResponse {
+        $input   = $request->only([
+            'paygate_id',
+            'dispute_id',
+            'dispute_code',
+            'message',
+        ]);
+        $paygate = \App\Models\Paygate::find($input['paygate_id'] ?? null);
+        if (!$paygate) {
+            return redirect()->back()->with('error', 'Paygate không tồn tại.');
+        }
+        $paypalApi = new PayPalAPI($paygate);
+        $result    = $paypalApi->sendDisputeMessage($input['dispute_code'] ?? '', $input['message'] ?? '');
+        if (!$result) {
+            return redirect()->back()->with('error', 'Không thể gửi tin nhắn dispute.');
+        }
+        return redirect()->route('app.dispute.show', ['id' => $input['dispute_id'] ?? null])->with('success', 'Tin nhắn dispute đã được gửi thành công.');
+    }
 
     /**
      * Make an offer to resolve a PayPal dispute.
@@ -105,10 +123,6 @@ class Dispute extends BaseController
 
             $PaypalApi = $this->getPaypalApiByDisputeId($id);
             $response = $PaypalApi->getDisputeDetails($dispute->dispute_id);
-            echo "<pre>";
-            var_dump($response);
-            die();
-            dd($response);
 
             $response = $PaypalApi->makeOfferToResolveDispute($dispute->dispute_id, $offerType, $note, (float)$amount, $currency, $invoiceId, $returnAddress);
             flash()->success('Make offer successful!');
