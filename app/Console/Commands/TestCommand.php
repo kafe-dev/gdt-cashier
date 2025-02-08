@@ -35,9 +35,7 @@ class TestCommand extends Command
         $paypalApi = new PayPalAPI($paygate);
         $dispute_id = 'PP-R-AWA-10106528';
         $result = $paypalApi->sendDisputeMessage($dispute_id,'tesst api nha');
-        echo '<pre>';
-        print_r($result);
-        die;
+
 
     }
 
