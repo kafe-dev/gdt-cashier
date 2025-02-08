@@ -52,7 +52,7 @@ class StoreTransformer extends TransformerAbstract
         };
 
         return '
-            <div style="display: grid; gap: 5px; grid-template-columns: auto auto auto">
+            <div>
                 '.$modify.'
                 '.ActionWidget::renderShowBtn(route('app.store.show', ['id' => $store->id])).'
                 '.ActionWidget::renderUpdateBtn(route('app.store.update', ['id' => $store->id])).'
