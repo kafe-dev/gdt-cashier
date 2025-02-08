@@ -71,14 +71,23 @@ class Dispute extends BaseController {
      * @throws \Exception
      */
     public function sendMessage(Request $request): RedirectResponse {
-        $input        = $request->all();
-        $paygate_id   = $input['paygate_id'] ?? '';
-        $dispute_id   = $input['dispute_id'] ?? '';
-        $dispute_code = $input['dispute_code'] ?? '';
-        $message      = $input['message'] ?? '';
-        $paygate      = \App\Models\Paygate::find($paygate_id);
-        $paypalApi    = new PayPalAPI($paygate);
-        $result       = $paypalApi->sendDisputeMessage($dispute_code, $message);
-        return redirect()->route('app.dispute.show', ['id' => $dispute_id]);
+        $input   = $request->only([
+            'paygate_id',
+            'dispute_id',
+            'dispute_code',
+            'message',
+        ]);
+        $paygate = \App\Models\Paygate::find($input['paygate_id'] ?? null);
+        if (!$paygate) {
+            return redirect()->back()->with('error', 'Paygate không tồn tại.');
+        }
+        $paypalApi = new PayPalAPI($paygate);
+        $result    = $paypalApi->sendDisputeMessage($input['dispute_code'] ?? '', $input['message'] ?? '');
+        if (!$result) {
+            return redirect()->back()->with('error', 'Không thể gửi tin nhắn dispute.');
+        }
+        return redirect()->route('app.dispute.show', ['id' => $input['dispute_id'] ?? null])->with('success', 'Tin nhắn dispute đã được gửi thành công.');
     }
+
+
 }
