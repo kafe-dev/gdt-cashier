@@ -317,7 +317,7 @@ class PayPalAPI {
      * @return array The response from PayPal API.
      * @throws Exception If input data is invalid.
      */
-    public function makeOfferToResolveDispute(string $dispute_id, string $offer_type, string $note, float $amount = null, string $currency = null, string $invoice_id = null): array
+    public function makeOfferToResolveDispute(string $dispute_id, string $offer_type, string $note, float $amount = null, string $currency = null, string $invoice_id = null, array $returnAddress = []): array
     {
         if (empty($dispute_id) || empty($offer_type) || empty($note)) {
             throw new Exception("Dispute ID, offer type, and note are required.");
@@ -327,15 +327,18 @@ class PayPalAPI {
         $disputeLifeCycleState = $disputeDetails['dispute_life_cycle_stage'] ?? null;
 
         if ($disputeLifeCycleState !== "INQUIRY") {
+            flash()->error('You can only make an offer when the dispute is in INQUIRY state. Current state: {$disputeLifeCycleState}');
             throw new Exception("You can only make an offer when the dispute is in INQUIRY state. Current state: {$disputeLifeCycleState}");
         }
         if ($disputeDetails['dispute_state'] == "REQUIRED_OTHER_PARTY_ACTION") {
+            flash()->error('You cannot make an offer to resolve a dispute. Need Seller response!');
             throw new Exception("You cannot make an offer to resolve a dispute. Need Buyer response!");
         }
 
         $allowedOfferTypes = ["REFUND", "REFUND_WITH_RETURN", "REFUND_WITH_REPLACEMENT", "REPLACEMENT_WITHOUT_REFUND"];
 
         if (!in_array($offer_type, $allowedOfferTypes)) {
+            flash()->error('Invalid offer type. Allowed values: ' . implode(", ", $allowedOfferTypes));
             throw new Exception("Invalid offer type. Allowed values: " . implode(", ", $allowedOfferTypes));
         }
 
@@ -344,17 +347,40 @@ class PayPalAPI {
             "note"       => $note,
         ];
 
+        if (!empty($returnAddress)) {
+            $payload['return_shipping_address'] = [
+                'address_line_1' => $returnAddress['address_line_1'],
+                'address_line_2' => $returnAddress['address_line_2'] ?? null,
+                'address_line_3' => $returnAddress['address_line_3'] ?? null,
+                'admin_area_4' => $returnAddress['admin_area_4'] ?? null,
+                'admin_area_3' => $returnAddress['admin_area_3'] ?? null,
+                'admin_area_2' => $returnAddress['admin_area_2'] ?? null,
+                'admin_area_1' => $returnAddress['admin_area_1'] ?? null,
+                'postal_code' => $returnAddress['postal_code'] ?? null,
+                'country_code' => $returnAddress['country_code'],
+            ];
+        }
+
         if (!empty($amount) && !empty($currency)) {
             $disputeAmount = $disputeDetails['dispute_amount'];
-            if ($amount <= 0) throw new Exception("Enter invalid refund amount.");
+            if ($amount <= 0) {
+                flash()->error('Enter invalid refund amount.');
+                throw new Exception("Enter invalid refund amount.");
+            }
             if ($disputeAmount["currency_code"] === $currency) {
                 if ($disputeAmount["value"] >= $amount) {
                     $payload["offer_amount"] = [
                         "value" => (string)$amount,
                         "currency_code" => $currency,
                     ];
-                } else throw new Exception("The refund amount cannot exceed the transaction amount.");
-            } else throw new Exception("Use the correct type of currency for this transaction.");
+                } else {
+                    flash()->error("The refund amount cannot exceed the transaction amount.");
+                    throw new Exception("The refund amount cannot exceed the transaction amount.");
+                }
+            } else {
+                flash()->error("The currency code does not match the dispute currency.");
+                throw new Exception("Use the correct type of currency for this transaction.");
+            }
         }
 
         if (!empty($invoice_id)) {

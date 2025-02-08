@@ -13,6 +13,7 @@ Route::controller(Dispute::class)
     ->group(function () {
         Route::get('/manage', 'index')->name('index');
         Route::get('/show/{id}', 'show')->name('show');
+        Route::post('/{id}/makeOffer', 'makeOffer')->name('makeOffer');
 
         Route::post('/delete/{id}', 'delete')->name('delete');
     });
