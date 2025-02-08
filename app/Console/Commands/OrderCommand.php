@@ -9,7 +9,7 @@ use DateTime;
 use Illuminate\Console\Command;
 use Srmklive\PayPal\Services\PayPal as PayPalClient;
 
-class Order extends Command
+class OrderCommand extends Command
 {
     /**
      * The name and signature of the console command.
@@ -108,7 +108,6 @@ class Order extends Command
         $order->updated_at = $item['detail']['metadata']['create_time'] ?? '';
         if (! $order->save()) {
             Logs::create($order->errors());
-
             return false;
         }
 
@@ -124,7 +123,6 @@ class Order extends Command
             echo '<pre>';
             print_r($orders);
             die;
-
         }
     }
 }
