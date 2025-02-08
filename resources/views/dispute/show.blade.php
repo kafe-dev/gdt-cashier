@@ -52,8 +52,7 @@
                     @if($dispute_arr['status'] ==='WAITING_FOR_SELLER_RESPONSE')
                         <div class="alert alert-warning alert-dismissible fade show" role="alert">
                             <i class="fas fa-exclamation-circle"></i>
-                            <strong>Warning!</strong> You have a message from {{$buyer_name}}. Respond as soon as
-                            possible.
+                            <strong>Warning!</strong> You have a message from {{$buyer_name}}. Respond as soon as possible.
                         </div>
                     @endif
 
@@ -64,9 +63,7 @@
                                 <li>
                                     <div class="row mb-3">
                                         <div class="col-auto">
-                                            <img
-                                                src="https://ui-avatars.com/api/?name={{$buyer_name}}&background=random"
-                                                alt="" class="thumb-md rounded-circle">
+                                            <img src="https://ui-avatars.com/api/?name={{$buyer_name}}&background=random" alt="" class="thumb-md rounded-circle">
                                         </div>
                                         <div class="col">
                                             <div class="bg-light rounded p-3">
@@ -93,16 +90,10 @@
                                                 <span class="text-light"><i class="far fa-clock me-1"></i>{{TimeHelper::getTimeAgo($message['time_posted'])}}</span>
                                             </div>
                                             <p>{{$message['content']}}</p>
-                                            @foreach($offers as $offer)
-                                                @if($offer['actor'] == 'SELLER' && $offer['offer_time'] === $message['time_posted'])
-                                                    <span class="text-warning" style="font-size: larger">Offer: {{ $offer['offer_type'] }}: {{ $offer['offer_amount']['value'] }} {{ $offer['offer_amount']['currency_code'] }}</span>
-                                                @endif
-                                            @endforeach
                                         </div>
                                     </div>
                                     <div class="col-auto">
-                                        <img src="https://ui-avatars.com/api/?name=Seller&amp;background=random" alt=""
-                                             class="thumb-md rounded-circle">
+                                        <img src="https://ui-avatars.com/api/?name=Seller&amp;background=random" alt="" class="thumb-md rounded-circle">
                                     </div>
                                 </div>
                             @endif
@@ -111,16 +102,13 @@
                 </div>
                 <div class="card-footer">
                     {{ ActionWidget::renderGoBackBtn('Go Back', 'btn btn-danger') }}
-                    <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown"
-                            aria-expanded="false">Action
+                    <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">Action
                         <i class="las la-angle-right ms-1"></i></button>
                     <div class="dropdown-menu" style="">
-                        <a class="dropdown-item" href="#" data-bs-toggle="modal"
-                           data-bs-target="#send-message-dispute-modal">Send message about dispute to other party</a>
+                        <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#send-message-dispute-modal">Send message about dispute to other party</a>
                         <a class="dropdown-item" href="#">Provide evidence</a>
-                        <a class="dropdown-item" href="#">Escalate dispute to claim</a>
-                        <a class="dropdown-item" href="#" data-bs-toggle="modal"
-                           data-bs-target="#make-offer-dispute-modal">Make offer to resolve dispute</a>
+                        <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#escalate-dispute-modal">Escalate dispute to claim</a>
+                        <a class="dropdown-item" href="#">Make offer to resolve dispute</a>
                         <a class="dropdown-item" href="#">Accept claim</a>
                     </div>
                 </div>
@@ -128,13 +116,11 @@
         </div>
         <div class="col-md-6 col-12"></div>
     </div>
-    <div class="modal fade" id="send-message-dispute-modal" tabindex="-1"
-         aria-labelledby="send-message-dispute-modal-label" aria-hidden="true" style="display: none;">
+    <div class="modal fade" id="send-message-dispute-modal" tabindex="-1" aria-labelledby="send-message-dispute-modal-label" aria-hidden="true" style="display: none;">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h6 class="modal-title m-0" id="send-message-dispute-modal-label">Send message about dispute to
-                        other party</h6>
+                    <h6 class="modal-title m-0" id="send-message-dispute-modal-label">Send message about dispute to other party</h6>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div><!--end modal-header-->
                 <div class="modal-body">
@@ -153,7 +139,7 @@
                                 <label for="message">Message:</label>
                                 <textarea class="form-control" id="message" name="message" rows="4" required></textarea>
                             </div>
-                            <button type="submit" class="btn btn-primary">Gửi</button>
+                            <button type="submit" class="btn btn-primary">Submit</button>
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                         </form>
                     </div><!--end row-->
@@ -237,6 +223,42 @@
         </div><!--end modal-dialog-->
     </div>
     {{--    End Make Offer Modal--}}
+
+
+    <div class="modal fade" id="escalate-dispute-modal" tabindex="-1" aria-labelledby="escalate-dispute-modal-label" aria-hidden="true" style="display: none;">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h6 class="modal-title m-0" id="escalate-dispute-modal-label">Escalate dispute to claim</h6>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div><!--end modal-header-->
+                <div class="modal-body">
+                    <div class="row">
+                        <form action="{{ route('app.dispute.escalate') }}" method="POST">
+                            @csrf
+                            <input type="hidden" class="form-control" id="paygate_id" name="paygate_id" value="{{$paygate->id}}" required readonly>
+                            <input type="hidden" class="form-control" id="dispute_id" name="dispute_id" value="{{$dispute->id}}" required readonly>
+
+                            <div class="form-group">
+                                <label for="dispute_id">Dispute Code:</label>
+                                <input type="text" class="form-control" id="dispute_code" name="dispute_code" value="{{$dispute_arr['dispute_id']??'N/A'}}" required readonly>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="message">Note:</label>
+                                <textarea class="form-control" id="note" name="note" rows="4" required></textarea>
+                            </div>
+                            <div class="float-end">
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            </div>
+                        </form>
+                    </div><!--end row-->
+                </div><!--end modal-body-->
+            </div><!--end modal-content-->
+        </div><!--end modal-dialog-->
+    </div>
+
 @endsection
 
 @push('custom-scripts')

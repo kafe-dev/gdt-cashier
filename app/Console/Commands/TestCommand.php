@@ -33,8 +33,11 @@ class TestCommand extends Command
     {
         $paygate = Paygate::find(3);
         $paypalApi = new PayPalAPI($paygate);
-        $dispute_id = 'PP-R-AWA-10106528';
-        $result = $paypalApi->sendDisputeMessage($dispute_id,'tesst api nha');
+        $dispute_id = 'PP-R-GJB-10106359';
+        $result = $paypalApi->escalate($dispute_id,'test api v1');
+        echo '<pre>';
+        print_r($result);
+        die;
 
 
     }
