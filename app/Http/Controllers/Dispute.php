@@ -4,10 +4,12 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Helpers\TimeHelper;
+use App\Http\Middlewares\Auth;
 use App\Paygate\PayPalAPI;
 use App\Services\DataTables\DisputeDataTable;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth as Authen;
 use Illuminate\View\View;
 
 /**
@@ -39,8 +41,8 @@ class Dispute extends BaseController {
      * @throws \Exception
      */
     public function show(int|string $id): View {
-        $dispute  = \App\Models\Dispute::findOrFail($id);
-        $paygate  = \App\Models\Paygate::findOrFail($dispute->paygate_id);
+        $dispute         = \App\Models\Dispute::findOrFail($id);
+        $paygate         = \App\Models\Paygate::findOrFail($dispute->paygate_id);
         $paypalApi       = new PayPalAPI($paygate);
         $dispute_arr     = $paypalApi->getDisputeDetails($dispute->dispute_id);
         $transactionData = $dispute_arr['disputed_transactions'][0] ?? null;
@@ -52,21 +54,31 @@ class Dispute extends BaseController {
         if (!$seller_transaction_id || !$create_time) {
             abort(500, 'Invalid dispute transaction data');
         }
-        $timestamp       = TimeHelper::getStartAndEndOfDay($create_time);
-//        echo '<pre>';
-//        print_r($dispute_arr);
-//        die;
+        $timestamp = TimeHelper::getStartAndEndOfDay($create_time);
+        //        echo '<pre>';
+        //        print_r($dispute_arr);
+        //        die;
         $transaction_arr = $paypalApi->listTransaction($timestamp['start'], $timestamp['end'], $seller_transaction_id);
         return view('dispute.show', compact('dispute_arr', 'dispute', 'transaction_arr'));
     }
 
     /**
-     * Action `delete`.
+     * Action `store`.
      *
-     * @param int|string $id      Dispute ID to delete
-     * @param Request    $request Illuminate request object
+     * @param Request $request Illuminate request object
+     *
+     * @return RedirectResponse
+     * @throws \Exception
      */
-    public function delete(int|string $id, Request $request): RedirectResponse {
-        //
+    public function sendMessage(Request $request): RedirectResponse {
+        $input        = $request->all();
+        $paygate_id   = $input['paygate_id'] ?? '';
+        $dispute_id   = $input['dispute_id'] ?? '';
+        $dispute_code = $input['dispute_code'] ?? '';
+        $message      = $input['message'] ?? '';
+        $paygate      = \App\Models\Paygate::find($paygate_id);
+        $paypalApi    = new PayPalAPI($paygate);
+        $result       = $paypalApi->sendDisputeMessage($dispute_code, $message);
+        return redirect()->route('app.dispute.show', ['id' => $dispute_id]);
     }
 }

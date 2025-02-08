@@ -119,25 +119,25 @@
                 </div><!--end modal-header-->
                 <div class="modal-body">
                     <div class="row">
-                        <div class="col-lg-3 text-center align-self-center">
-                            <img src="assets/images/extra/card/btc.png" alt="" class="img-fluid">
-                        </div><!--end col-->
-                        <div class="col-lg-9">
-                            <h5>Crypto Market Services</h5>
-                            <span class="badge bg-light text-dark">Disable Services</span>
-                            <small class="text-muted ms-2">07 Oct 2024</small>
-                            <ul class="mt-2 mb-0">
-                                <li>Lorem Ipsum is dummy text.</li>
-                                <li>It is a long established reader.</li>
-                                <li>Contrary to popular belief, Lorem simply.</li>
-                            </ul>
-                        </div><!--end col-->
+                        <form action="{{ route('app.dispute.send-message') }}" method="POST">
+                            @csrf
+                            <input type="hidden" class="form-control" id="paygate_id" name="paygate_id" value="{{$paygate->id}}" required readonly>
+                            <input type="hidden" class="form-control" id="dispute_id" name="dispute_id" value="{{$dispute->id}}" required readonly>
+
+                            <div class="form-group">
+                                <label for="dispute_id">Dispute Code:</label>
+                                <input type="text" class="form-control" id="dispute_code" name="dispute_code" value="{{$dispute_arr['dispute_id']??'N/A'}}" required readonly>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="message">Message:</label>
+                                <textarea class="form-control" id="message" name="message" rows="4" required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Gửi</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        </form>
                     </div><!--end row-->
                 </div><!--end modal-body-->
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary btn-sm">Save changes</button>
-                </div><!--end modal-footer-->
             </div><!--end modal-content-->
         </div><!--end modal-dialog-->
     </div>

@@ -11,6 +11,6 @@ Route::controller(Dispute::class)
     ->group(function () {
         Route::get('/manage', 'index')->name('index');
         Route::get('/show/{id}', 'show')->name('show');
-
         Route::post('/delete/{id}', 'delete')->name('delete');
+        Route::post('/send-message', 'sendMessage')->name('send-message');
     });
