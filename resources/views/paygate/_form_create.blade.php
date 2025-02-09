@@ -28,7 +28,7 @@
             <div class="invalid-feedback">{{ $message }}</div>
             @enderror
 
-            <small id="passwordHelp" class="form-text text-muted">Enter your API data, e.g: <code>{"client_key": "your_api_key", "secret_key": "your_secret_key"}</code></small>
+            <small id="passwordHelp" class="form-text text-muted">Enter your API data, e.g: <code>{"client_key":"your_api_key","secret_key":"your_secret_key"}</code></small>
         </div>
 
         <div class="mb-3">
@@ -38,7 +38,7 @@
             <div class="invalid-feedback">{{ $message }}</div>
             @enderror
 
-            <small id="passwordHelp" class="form-text text-muted">Enter your VPS data, e.g: <code>{"ips": "vps_ip_address", "username": "vps_username", "password": "vps_password"}</code></small>
+            <small id="passwordHelp" class="form-text text-muted">Enter your VPS data, e.g: <code>{"ips":"vps_ip_address","username":"vps_username","password":"vps_password"}</code></small>
         </div>
 
         <div class="mb-3">

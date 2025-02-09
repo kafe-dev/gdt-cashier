@@ -20,4 +20,6 @@ Route::controller(Paygate::class)
         Route::post('/store', 'store')->name('store');
         Route::get('/block/{id}', 'block')->name('block');
         Route::get('/unblock/{id}', 'unblock')->name('unblock');
+
+        Route::get('/changeStatus/{id}', 'changeStatus')->name('changeStatus');
     });

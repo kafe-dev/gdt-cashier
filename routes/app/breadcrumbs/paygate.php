@@ -13,7 +13,7 @@ Breadcrumbs::for('manage-paygate', function (BreadcrumbTrail $trail) {
 // Dashboard > Manage Paygates > Show Paygate
 Breadcrumbs::for('show-paygate', function (BreadcrumbTrail $trail, Paygate $paygate) {
     $trail->parent('manage-paygate');
-    $trail->push('Show Paygate}', route('app.paygate.show', ['id' => $paygate->id]));
+    $trail->push('Show Paygate', route('app.paygate.show', ['id' => $paygate->id]));
 });
 
 // Dashboard > Manage Paygates > Create Paygate
