@@ -311,24 +311,22 @@ class PayPalAPI {
      * Make an offer to resolve a dispute.
      * Only allow when the dispute status is "INQUIRY".
      *
-     * @param string $dispute_id The dispute ID.
-     * @param string $offer_type The type of offer (REFUND, REFUND_WITH_RETURN, etc.).
-     * @param string $note A note describing the offer.
-     * @param float|null $amount The refund amount (required for some offer types).
-     * @param string|null $currency The currency code (e.g., USD, EUR).
+     * @param string      $dispute_id The dispute ID.
+     * @param string      $offer_type The type of offer (REFUND, REFUND_WITH_RETURN, etc.).
+     * @param string      $note       A note describing the offer.
+     * @param float|null  $amount     The refund amount (required for some offer types).
+     * @param string|null $currency   The currency code (e.g., USD, EUR).
      * @param string|null $invoice_id The optional invoice ID related to the refund.
+     *
      * @return array The response from PayPal API.
      * @throws Exception If input data is invalid.
      */
-    public function makeOfferToResolveDispute(string $dispute_id, string $offer_type, string $note, float $amount = null, string $currency = null, string $invoice_id = null, array $returnAddress = []): array
-    {
+    public function makeOfferToResolveDispute(string $dispute_id, string $offer_type, string $note, float $amount = null, string $currency = null, string $invoice_id = null, array $returnAddress = []): array {
         if (empty($dispute_id) || empty($offer_type) || empty($note)) {
             throw new Exception("Dispute ID, offer type, and note are required.");
         }
-
-        $disputeDetails = $this->getDisputeDetails($dispute_id);
+        $disputeDetails        = $this->getDisputeDetails($dispute_id);
         $disputeLifeCycleState = $disputeDetails['dispute_life_cycle_stage'] ?? null;
-
         if ($disputeLifeCycleState !== "INQUIRY") {
             flash()->error('You can only make an offer when the dispute is in INQUIRY state. Current state: {$disputeLifeCycleState}');
             throw new Exception("You can only make an offer when the dispute is in INQUIRY state. Current state: {$disputeLifeCycleState}");
@@ -337,33 +335,33 @@ class PayPalAPI {
             flash()->error('You cannot make an offer to resolve a dispute. Need Seller response!');
             throw new Exception("You cannot make an offer to resolve a dispute. Need Buyer response!");
         }
-
-        $allowedOfferTypes = ["REFUND", "REFUND_WITH_RETURN", "REFUND_WITH_REPLACEMENT", "REPLACEMENT_WITHOUT_REFUND"];
-
+        $allowedOfferTypes = [
+            "REFUND",
+            "REFUND_WITH_RETURN",
+            "REFUND_WITH_REPLACEMENT",
+            "REPLACEMENT_WITHOUT_REFUND",
+        ];
         if (!in_array($offer_type, $allowedOfferTypes)) {
             flash()->error('Invalid offer type. Allowed values: ' . implode(", ", $allowedOfferTypes));
             throw new Exception("Invalid offer type. Allowed values: " . implode(", ", $allowedOfferTypes));
         }
-
         $payload = [
             "offer_type" => $offer_type,
             "note"       => $note,
         ];
-
         if (!empty($returnAddress)) {
             $payload['return_shipping_address'] = [
                 'address_line_1' => $returnAddress['address_line_1'],
                 'address_line_2' => $returnAddress['address_line_2'] ?? null,
                 'address_line_3' => $returnAddress['address_line_3'] ?? null,
-                'admin_area_4' => $returnAddress['admin_area_4'] ?? null,
-                'admin_area_3' => $returnAddress['admin_area_3'] ?? null,
-                'admin_area_2' => $returnAddress['admin_area_2'] ?? null,
-                'admin_area_1' => $returnAddress['admin_area_1'] ?? null,
-                'postal_code' => $returnAddress['postal_code'] ?? null,
-                'country_code' => $returnAddress['country_code'],
+                'admin_area_4'   => $returnAddress['admin_area_4'] ?? null,
+                'admin_area_3'   => $returnAddress['admin_area_3'] ?? null,
+                'admin_area_2'   => $returnAddress['admin_area_2'] ?? null,
+                'admin_area_1'   => $returnAddress['admin_area_1'] ?? null,
+                'postal_code'    => $returnAddress['postal_code'] ?? null,
+                'country_code'   => $returnAddress['country_code'],
             ];
         }
-
         if (!empty($amount) && !empty($currency)) {
             $disputeAmount = $disputeDetails['dispute_amount'];
             if ($amount <= 0) {
@@ -373,7 +371,7 @@ class PayPalAPI {
             if ($disputeAmount["currency_code"] === $currency) {
                 if ($disputeAmount["value"] >= $amount) {
                     $payload["offer_amount"] = [
-                        "value" => (string)$amount,
+                        "value"         => (string) $amount,
                         "currency_code" => $currency,
                     ];
                 } else {
@@ -385,11 +383,9 @@ class PayPalAPI {
                 throw new Exception("Use the correct type of currency for this transaction.");
             }
         }
-
         if (!empty($invoice_id)) {
             $payload["invoice_id"] = $invoice_id;
         }
-
         return $this->makeRequest("POST", "/v1/customer/disputes/{$dispute_id}/make-offer", $payload);
     }
 
@@ -397,26 +393,23 @@ class PayPalAPI {
      * Acknowledge that the customer has returned an item for a dispute.
      *
      * @param string $dispute_id The ID of the dispute.
-     * @param string $note Merchant-provided note (max 2000 characters).
-     * @param array  $evidences List of supporting evidence (max 100 items).
+     * @param string $note       Merchant-provided note (max 2000 characters).
+     * @param array  $evidences  List of supporting evidence (max 100 items).
+     *
      * @return array Response from PayPal API.
      * @throws Exception If invalid data is provided or the dispute type is not eligible.
      */
-    public function acknowledgeReturnedItem(string $dispute_id, string $note, array $evidences = []): array
-    {
+    public function acknowledgeReturnedItem(string $dispute_id, string $note, array $evidences = []): array {
         if (empty($dispute_id)) {
             throw new Exception("Dispute ID are required.");
         }
-
         $disputeDetails = $this->getDisputeDetails($dispute_id);
         if ($disputeDetails['reason'] !== "MERCHANDISE_OR_SERVICE_NOT_AS_DESCRIBED") {
             throw new Exception("Acknowledging item return is only allowed for disputes with reason 'MERCHANDISE_OR_SERVICE_NOT_AS_DESCRIBED'.");
         }
-
         if (!empty($note)) {
             $payload["note"] = substr($note, 0, 2000);
         }
-
         if (!empty($evidences)) {
             $allowedEvidenceTypes = [
                 "PROOF_OF_DAMAGE",
@@ -424,9 +417,8 @@ class PayPalAPI {
                 "DECLARATION",
                 "PROOF_OF_MISSING_ITEMS",
                 "PROOF_OF_EMPTY_PACKAGE_OR_DIFFERENT_ITEM",
-                "PROOF_OF_ITEM_NOT_RECEIVED"
+                "PROOF_OF_ITEM_NOT_RECEIVED",
             ];
-
             $formattedEvidences = [];
             foreach (array_slice($evidences, 0, 100) as $evidence) {
                 if (!isset($evidence['evidence_type'], $evidence['documents'])) {
@@ -435,26 +427,23 @@ class PayPalAPI {
                 if (!in_array($evidence['evidence_type'], $allowedEvidenceTypes, true)) {
                     throw new Exception("Invalid evidence type: {$evidence['evidence_type']}");
                 }
-
                 $documents = array_slice($evidence['documents'], 0, 100);
                 foreach ($documents as $doc) {
                     if (!isset($doc['name'], $doc['url'])) {
                         throw new Exception("Each document must include 'name' and 'url'.");
                     }
                 }
-
                 $formattedEvidences[] = [
                     "evidence_type" => $evidence['evidence_type'],
-                    "documents" => $documents
+                    "documents"     => $documents,
                 ];
             }
-
             $payload["evidences"] = $formattedEvidences;
-        } else $payload["acknowledgement_type"] = "ITEM_RECEIVED";
-
+        } else {
+            $payload["acknowledgement_type"] = "ITEM_RECEIVED";
+        }
         return $this->makeRequest("POST", "/v1/customer/disputes/{$dispute_id}/acknowledge-return-item", $payload);
     }
-
 
     /**
      * @throws Exception
@@ -465,6 +454,20 @@ class PayPalAPI {
             'note'       => $note,
         ];
         return $this->makeRequest("POST", "/v1/customer/disputes/{$dispute_id}/escalate", $payload);
+    }
+
+    /**
+     * @param        $dispute_id
+     * @param string $note
+     *
+     * @return array
+     * @throws Exception
+     */
+    public function acceptClaim($dispute_id, string $note): array {
+        $payload = [
+            'note' => $note,
+        ];
+        return $this->makeRequest("POST", "/v1/customer/disputes/{$dispute_id}/accept-claim", $payload);
     }
 }
 

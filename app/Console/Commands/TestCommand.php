@@ -9,8 +9,8 @@ use DateTime;
 use Illuminate\Console\Command;
 use Srmklive\PayPal\Services\PayPal as PayPalClient;
 
-class TestCommand extends Command
-{
+class TestCommand extends Command {
+
     /**
      * The name and signature of the console command.
      *
@@ -29,17 +29,13 @@ class TestCommand extends Command
      * Execute the console command.
      * @throws \Exception
      */
-    public function handle()
-    {
-        $paygate = Paygate::find(3);
-        $paypalApi = new PayPalAPI($paygate);
+    public function handle() {
+        $paygate    = Paygate::find(3);
+        $paypalApi  = new PayPalAPI($paygate);
         $dispute_id = 'PP-R-GJB-10106359';
-        $result = $paypalApi->escalate($dispute_id,'test api v1');
+        $result     = $paypalApi->acceptClaim('Test Accept Calaim');
         echo '<pre>';
         print_r($result);
         die;
-
-
     }
-
 }
