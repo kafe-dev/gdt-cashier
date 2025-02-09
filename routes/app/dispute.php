@@ -14,4 +14,5 @@ Route::controller(Dispute::class)
         Route::post('/delete/{id}', 'delete')->name('delete');
         Route::post('/send-message', 'sendMessage')->name('send-message');
         Route::post('/{id}/makeOffer', 'makeOffer')->name('makeOffer');
+        Route::post('/{id}/acknowledgeReturned', 'acknowledgeReturned')->name('acknowledgeReturned');
     });

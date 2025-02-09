@@ -11,6 +11,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth as Authen;
 use Illuminate\View\View;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * Class Dispute.
@@ -132,8 +133,54 @@ class Dispute extends BaseController
         return redirect()->route('app.dispute.show', ['id' => $id]);
     }
 
+    public function acknowledgeReturned(Request $request, int|string $id)
+    {
+        try {
+            $status = $request->validate(['item_status' => 'required|in:NORMAL,ISSUE'])['item_status'];
+            $data = $request->validate([
+                'note' => 'nullable|string|max:2000',
+                'evidence_type' => [($status === "ISSUE" ? 'required' : 'nullable'), 'in:PROOF_OF_DAMAGE,THIRDPARTY_PROOF_FOR_DAMAGE_OR_SIGNIFICANT_DIFFERENCE,DECLARATION,PROOF_OF_MISSING_ITEMS,PROOF_OF_EMPTY_PACKAGE_OR_DIFFERENT_ITEM,PROOF_OF_ITEM_NOT_RECEIVED'],
+                'documents.*' => [($status === "ISSUE" ? 'required' : 'nullable'), 'mimes:jpg,jpeg,png,pdf|max:50MB'],
+            ]);
+
+            $documents = [];
+
+            if ($request->hasFile('documents')) {
+                foreach ($request->file('documents') as $file) {
+                    //app/public/uploads
+                    $filename = time() . '_' . $file->getClientOriginalName();
+                    $path = 'uploads/' . $filename;
+                    $file->move(public_path('uploads'), $filename);
+                    $documents[] = [
+                        'name' => $file->getClientOriginalName(),
+                        'url' => asset($path),
+                    ];
+                }
+            }
+
+            // this form only post 1 evidences
+            $allEvidences = [];
+            $evidences = [];
+            if ($status === "ISSUE") {
+                $evidences = [
+                    'evidence_type' => $data['evidence_type'] ?? null,
+                    'documents' => $documents ?? null,
+                ];
+            }
+            $allEvidences[] = $evidences;
+            $dispute = \App\Models\Dispute::findOrFail($id);
+            $PaypalApi = $this->getPaypalApiByDisputeId($id);
+
+            $response = $PaypalApi->acknowledgeReturnedItem($dispute->dispute_id, $data['note'], $allEvidences);
+            flash()->success('Acknowledge Returned successful!');
+        } catch (\Exception $e) {
+            return redirect()->route('app.dispute.show', ['id' => $id]);
+        }
+        return redirect()->route('app.dispute.show', ['id' => $id]);
+    }
+
     /**
-     * Get All PaypalApi by Dispute ID
+     * Get All PaypalApi by Pay gate ID
      *
      * @param int|string $id
      * @return PayPalAPI

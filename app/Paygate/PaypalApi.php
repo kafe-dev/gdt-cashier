@@ -394,24 +394,35 @@ class PayPalAPI {
      * Acknowledge that the customer has returned an item for a dispute.
      *
      * @param string $dispute_id The ID of the dispute.
-     * @param string $note Merchant-provided note (max 2000 characters).
-     * @param array  $evidences List of supporting evidence (max 100 items).
+     * @param string|null $note Merchant-provided note (max 2000 characters).
+     * @param array $evidences List of supporting evidence (max 100 items).
      * @return array Response from PayPal API.
      * @throws Exception If invalid data is provided or the dispute type is not eligible.
      */
-    public function acknowledgeReturnedItem(string $dispute_id, string $note, array $evidences = []): array
+    public function acknowledgeReturnedItem(string $dispute_id, string $note = null, array $evidences = []): array
     {
         if (empty($dispute_id)) {
             throw new Exception("Dispute ID are required.");
         }
 
         $disputeDetails = $this->getDisputeDetails($dispute_id);
+
         if ($disputeDetails['reason'] !== "MERCHANDISE_OR_SERVICE_NOT_AS_DESCRIBED") {
+            flash()->error('Acknowledging item return is only allowed for disputes with reason "MERCHANDISE_OR_SERVICE_NOT_AS_DESCRIBED".');
             throw new Exception("Acknowledging item return is only allowed for disputes with reason 'MERCHANDISE_OR_SERVICE_NOT_AS_DESCRIBED'.");
+        }
+        if ($disputeDetails['dispute_state'] == "REQUIRED_OTHER_PARTY_ACTION") {
+            flash()->error('You cannot make an offer to resolve a dispute. Need Seller response!');
+            throw new Exception("You cannot make an offer to resolve a dispute. Need Buyer response!");
+        }
+
+        if (empty(array_filter($disputeDetails['evidences'], fn($evidence) => $evidence['evidence_type'] === 'PROOF_OF_RETURN'))) {
+            flash()->error("You have not sent a return request to the customer, or the customer has not provided proof of return.");
+            throw new Exception("You have not sent a return request to the customer, or the customer has not provided proof of return.");
         }
 
         if (!empty($note)) {
-            $payload["note"] = substr($note, 0, 2000);
+            $payload["note"] = $note;
         }
 
         if (!empty($evidences)) {
@@ -425,27 +436,25 @@ class PayPalAPI {
             ];
 
             $formattedEvidences = [];
-            foreach (array_slice($evidences, 0, 100) as $evidence) {
-                if (!isset($evidence['evidence_type'], $evidence['documents'])) {
+            foreach ($evidences as $evidence) {
+                if (empty($evidence['evidence_type']) || empty($evidence['documents'])) {
                     throw new Exception("Each evidence entry must include 'evidence_type' and 'documents'.");
                 }
                 if (!in_array($evidence['evidence_type'], $allowedEvidenceTypes, true)) {
                     throw new Exception("Invalid evidence type: {$evidence['evidence_type']}");
                 }
-
-                $documents = array_slice($evidence['documents'], 0, 100);
-                foreach ($documents as $doc) {
-                    if (!isset($doc['name'], $doc['url'])) {
+                foreach ($evidence['documents'] as $doc) {
+                    if (empty($doc['name']) ||  empty($doc['url'])) {
                         throw new Exception("Each document must include 'name' and 'url'.");
                     }
                 }
 
                 $formattedEvidences[] = [
                     "evidence_type" => $evidence['evidence_type'],
-                    "documents" => $documents
+                    "documents" => $evidence['documents'],
                 ];
             }
-
+            $payload["acknowledgement_type"] = "EMPTY_PACKAGE_OR_DIFFERENT";
             $payload["evidences"] = $formattedEvidences;
         } else $payload["acknowledgement_type"] = "ITEM_RECEIVED";
 
