@@ -15,6 +15,10 @@
             @error('url')
             <div class="invalid-feedback">{{ $message }}</div>
             @enderror
+
+            <small id="passwordHelp" class="form-text text-muted">Enter your paypalme link, e.g: <code>https://www.paypal.com/paypalme/username</code></small>
+            <br>
+            <small id="passwordHelp" class="form-text text-muted">If you dont have this, enter <code>https://www.paypal.com/</code> instead</small>
         </div>
 
         <div class="mb-3">
@@ -23,6 +27,8 @@
             @error('api_data')
             <div class="invalid-feedback">{{ $message }}</div>
             @enderror
+
+            <small id="passwordHelp" class="form-text text-muted">Enter your API data, e.g: <code>{"client_key": "your_api_key", "secret_key": "your_secret_key"}</code></small>
         </div>
 
         <div class="mb-3">
@@ -31,6 +37,8 @@
             @error('vps_data')
             <div class="invalid-feedback">{{ $message }}</div>
             @enderror
+
+            <small id="passwordHelp" class="form-text text-muted">Enter your VPS data, e.g: <code>{"ips": "vps_ip_address", "username": "vps_username", "password": "vps_password"}</code></small>
         </div>
 
         <div class="mb-3">
