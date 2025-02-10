@@ -23,8 +23,13 @@ class TransactionTransformer extends TransformerAbstract
 
         return [
             'id' => '<span class="fw-bold float-start">'.($transaction->id ?? '').'</span>',
-            // 'name'       => $paygate->name ?? '',
-            'transaction_id'=>$transaction->transaction_id,
+            'transaction_id' => $transaction->transaction_id,
+            'transaction_event_code' => $transaction->transaction_event_code,
+            'transaction_initiation_date' => $transaction->transaction_initiation_date,
+            'transaction_updated_date' => $transaction->transaction_updated_date,
+            'transaction_amount_currency' => $transaction->transaction_amount_currency,
+            'transaction_amount_value' => $transaction->transaction_amount_value,
+            'transaction_status' => $transaction->transaction_status,
             'action' => $this->renderActions($transaction),
         ];
     }
@@ -32,7 +37,7 @@ class TransactionTransformer extends TransformerAbstract
     /**
      * Render action columns.
      */
-    private function renderActions(Paygate $paygate): string
+    private function renderActions(Transaction $transaction): string
     {
         return '';
     }

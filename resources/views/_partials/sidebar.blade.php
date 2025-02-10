@@ -6,8 +6,7 @@
     <div class="brand border">
         <a href="{{ route('app.home.index') }}" class="logo">
             <span>
-                <img src="{{ asset('theme/assets/images/logo.png') }}" alt="logo-small" class="logo-dark mb-3"
-                     height="30xp">
+                <img src="{{ asset('theme/assets/images/logo.png') }}" alt="logo-small" class="logo-dark mb-3" height="30xp">
             </span>
             <span class="text-uppercase font-22 fw-bold text-info">{{ config('app.name') }}</span>
         </a>
@@ -17,8 +16,7 @@
         <ul class="metismenu left-sidenav-menu x-navbar">
             <li class="menu-label mt-0">Main</li>
             <li class="nav-item">
-                <a class="nav-link" href="{{ route('app.home.index') }}"><i data-feather="home"
-                                                                            class="align-self-center menu-icon"></i><span>Dashboard</span></a>
+                <a class="nav-link" href="{{ route('app.home.index') }}"><i data-feather="home" class="align-self-center menu-icon"></i><span>Dashboard</span></a>
             </li>
 
             <hr class="hr-dashed hr-menu">
