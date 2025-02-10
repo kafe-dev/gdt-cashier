@@ -453,7 +453,7 @@ class PayPalAPI
                     throw new Exception("Invalid evidence type: {$evidence['evidence_type']}");
                 }
                 foreach ($evidence['documents'] as $doc) {
-                    if (empty($doc['name']) ||  empty($doc['url'])) {
+                    if (empty($doc['name']) || empty($doc['url'])) {
                         throw new Exception("Each document must include 'name' and 'url'.");
                     }
                 }
@@ -497,15 +497,33 @@ class PayPalAPI
      * @throws Exception If the request fails.
      */
     public function acceptClaim(
-        string $dispute_id,
-        string $note,
+        string  $dispute_id,
+        string  $note,
         ?string $accept_claim_reason = null,
         ?string $accept_claim_type = null,
-        ?array $refund_amount = null,
+        ?array  $refund_amount = null,
         ?string $invoice_id = null,
-        ?array $return_shipment_info = null,
-        ?array $return_shipping_address = null
-    ): array {
+        ?array  $return_shipment_info = null,
+        ?array  $return_shipping_address = null
+    ): array
+    {
+        if (!empty($refund_amount)) {
+            $disputeDetails = $this->getDisputeDetails($dispute_id);
+            $disputeAmount = $disputeDetails['dispute_amount'];
+            if ($refund_amount['value'] <= 0) {
+                flash()->error('Enter invalid refund amount.');
+                throw new Exception("Enter invalid refund amount.");
+            }
+            if ($disputeAmount["currency_code"] === $refund_amount['currency_code']) {
+                if ($disputeAmount["value"] < $refund_amount['value']) {
+                    flash()->error("The refund amount cannot exceed the transaction amount.");
+                    throw new Exception("The refund amount cannot exceed the transaction amount.");
+                }
+            } else {
+                flash()->error("The currency code does not match the dispute currency.");
+                throw new Exception("Use the correct type of currency for this transaction.");
+            }
+        }
         $payload = array_filter([
             'note' => $note,
             'accept_claim_reason' => $accept_claim_reason,

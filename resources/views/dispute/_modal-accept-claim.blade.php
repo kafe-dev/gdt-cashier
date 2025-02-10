@@ -31,12 +31,17 @@
                     </div>
 
                     <div class="mb-3">
+                        <label class="form-label">Invoice ID (Optional)</label>
+                        <input type="text" name="invoice_id" maxlength="127" class="form-control">
+                    </div>
+
+                    <div class="mb-3">
                         <label for="accept-claim-type" class="form-label">Accept Claim Type <span class="text-danger">*</span></label>
                         <select id="accept-claim-type" name="accept_claim_type" class="form-select" required>
-                            <option value="REFUND">Refund</option>
+                            <option value="REFUND" selected>Refund</option>
                             <option value="REFUND_WITH_RETURN">Refund with Return</option>
                             <option value="PARTIAL_REFUND">Partial Refund</option>
-                            <option value="REFUND_WITH_RETURN_SHIPMENT_LABEL">Refund with Return Shipment Label</option>
+{{--                            <option value="REFUND_WITH_RETURN_SHIPMENT_LABEL" >Refund with Return Shipment Label</option>--}}
                         </select>
                     </div>
 
@@ -55,8 +60,15 @@
                     </div>
 
                     <div id="return-shipping-section" class="mb-3" style="display: none;">
-                        <label class="form-label">Return Shipping Address</label>
-                        <textarea id="return-shipping-address" name="return_shipping_address" class="form-control" rows="2"></textarea>
+                        <div class="mb-3">
+                            <label class="form-label">Address <span class="text-danger">*</span></label>
+                            <input type="text" name="address" maxlength="300" class="form-control mb-2" placeholder="Address">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Country Code <span class="text-danger">*</span></label>
+                            <input type="text" name="country_code" maxlength="2" class="form-control mb-2"
+                                   placeholder="Country Code" pattern="^([A-Z]{2}|C2)$">
+                        </div>
                     </div>
                 </div><!--end modal-body-->
 
@@ -75,13 +87,17 @@
         const refundAmountSection = modal.querySelector("#refund-amount-section");
         const returnShippingSection = modal.querySelector("#return-shipping-section");
         const valueInput          = modal.querySelector("input[name='value']");
-        const currencySelect       = modal.querySelector("select[name='currency_code']")
+        const currencySelect       = modal.querySelector("select[name='currency_code']");
+        const addressInput          = modal.querySelector("input[name='address']");
+        const countryCodeInput          = modal.querySelector("input[name='country_code']")
 
         function updateFormFields() {
             const selectedClaimType = claimTypeSelect.value;
 
             refundAmountSection.style.display = "none";
             returnShippingSection.style.display = "none";
+            countryCodeInput.removeAttribute("required");
+            addressInput.removeAttribute("required");
             valueInput.removeAttribute("required");
             currencySelect.removeAttribute("required");
 
@@ -95,6 +111,8 @@
             // "Refund With Return"
             if (selectedClaimType === "REFUND_WITH_RETURN" || selectedClaimType === "REFUND_WITH_RETURN_SHIPMENT_LABEL") {
                 returnShippingSection.style.display = "block";
+                addressInput.setAttribute("required", "required");
+                countryCodeInput.setAttribute("required", "required");
             }
         }
 

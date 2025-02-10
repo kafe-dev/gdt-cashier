@@ -10,6 +10,7 @@ use App\Services\DataTables\DisputeDataTable;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth as Authen;
+use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Storage;
 
@@ -123,6 +124,9 @@ class Dispute extends BaseController
             $response = $PaypalApi->getDisputeDetails($dispute->dispute_id);
             $response = $PaypalApi->makeOfferToResolveDispute($dispute->dispute_id, $offerType, $note, (float)$amount, $currency, $invoiceId, $returnAddress);
             flash()->success('Make offer successful!');
+        } catch (ValidationException $e) {
+            flash()->error($e->getMessage());
+            return redirect()->route('app.dispute.show', ['id' => $id]);
         } catch (\Exception $e) {
             return redirect()->route('app.dispute.show', ['id' => $id]);
         }
@@ -173,6 +177,9 @@ class Dispute extends BaseController
             $PaypalApi = $this->getPaypalApiByDisputeId($id);
             $response = $PaypalApi->acknowledgeReturnedItem($dispute->dispute_id, $data['note'], $allEvidences);
             flash()->success('Acknowledge Returned successful!');
+        } catch (ValidationException $e) {
+            flash()->error($e->getMessage());
+            return redirect()->route('app.dispute.show', ['id' => $id]);
         } catch (\Exception $e) {
             return redirect()->route('app.dispute.show', ['id' => $id]);
         }
@@ -225,6 +232,7 @@ class Dispute extends BaseController
                 'string',
                 'size:2',
                 ($offerType === "REFUND_WITH_RETURN" ? 'required' : 'nullable'),
+                'regex:/^([A-Z]{2}|C2)$/',
             ],
         ]);
     }
@@ -259,50 +267,70 @@ class Dispute extends BaseController
         return redirect()->route('app.dispute.show', ['id' => $input['dispute_id']])->with('success', 'Tranh chấp đã được nâng cấp thành công.');
     }
 
-    public function acceptClaim(Request $request, $id)
+    public function acceptClaim(Request $request, $id): RedirectResponse
     {
         try {
-            $request->validate(array(
-                'note' => 'required|string|max:2000',
-                'accept_claim_reason' => 'nullable|string|in:DID_NOT_SHIP_ITEM,TOO_TIME_CONSUMING,LOST_IN_MAIL,NOT_ABLE_TO_WIN,COMPANY_POLICY,REASON_NOT_SET',
-                'accept_claim_type' => 'nullable|string|in:REFUND,REFUND_WITH_RETURN,PARTIAL_REFUND,REFUND_WITH_RETURN_SHIPMENT_LABEL',
-                'currency_code' => 'nullable|string|size:3',
-                'value' => 'nullable|numeric|min:0',
-                'invoice_id' => 'nullable|string|max:127',
-                'return_shipment_info' => 'nullable|array',
-                'return_shipping_address' => 'nullable|array',
-            ));
-
+            $acceptClaimType = strtoupper($request->validate(['accept_claim_type' => 'required|string|in:REFUND,REFUND_WITH_RETURN,PARTIAL_REFUND,REFUND_WITH_RETURN_SHIPMENT_LABEL'])['accept_claim_type']);
+            $data = $this->getValidatedAcceptClaimData($request, $acceptClaimType);
             $payPalApi = $this->getPaypalApiByDisputeId($id);
-
-            $data = [
-                'note' => $request->note,
-                'accept_claim_reason' => $request->accept_claim_reason,
-                'accept_claim_type' => $request->accept_claim_type,
-                'refund_amount' => $request->accept_claim_type === 'PARTIAL_REFUND' ? [
-                    'currency_code' => $request->currency_code,
-                    'value' => $request->value,
-                ] : null,
-                'invoice_id' => $request->invoice_id,
-                'return_shipment_info' => $request->accept_claim_type === 'REFUND_WITH_RETURN_SHIPMENT_LABEL' ? $request->return_shipment_info : null,
-                'return_shipping_address' => in_array($request->accept_claim_type, ['REFUND_WITH_RETURN', 'REFUND_WITH_RETURN_SHIPMENT_LABEL']) ? $request->return_shipping_address : null,
-            ];
-            dd($data);
             $dispute = \App\Models\Dispute::findOrFail($id);
             $response = $payPalApi->acceptClaim(
                 $dispute->dispute_id,
                 $data['note'],
                 $data['accept_claim_reason'],
-                $data['accept_claim_type'],
+                $acceptClaimType,
                 $data['refund_amount'],
                 $data['invoice_id'],
                 $data['return_shipment_info'],
                 $data['return_shipping_address']
             );
             flash()->success('Claim accepted successfully!');
+        } catch (ValidationException $e) {
+            flash()->error($e->getMessage());
+            return redirect()->route('app.dispute.show', ['id' => $id]);
         } catch (\Exception $e) {
             return redirect()->route('app.dispute.show', ['id' => $id]);
         }
         return redirect()->route('app.dispute.show', ['id' => $id]);
+    }
+
+    /**
+     * Get all validated accept_claim data
+     *
+     * @param Request $request
+     * @param $acceptClaimType
+     * @return array
+     */
+    private function getValidatedAcceptClaimData(Request $request, $acceptClaimType): array
+    {
+        $data = $request->validate([
+            'note' => 'required|string|max:2000',
+            'accept_claim_reason' => 'nullable|string|in:DID_NOT_SHIP_ITEM,TOO_TIME_CONSUMING,LOST_IN_MAIL,NOT_ABLE_TO_WIN,COMPANY_POLICY,REASON_NOT_SET',
+            'currency_code' => [($acceptClaimType === "PARTIAL_REFUND" ? 'required' : 'nullable'),'string','size:3'],
+            'value' => [($acceptClaimType === "PARTIAL_REFUND" ? 'required' : 'nullable'),'numeric','min:0'],
+            'invoice_id' => 'nullable|string|max:127',
+            'address' => [
+                ($acceptClaimType === "REFUND_WITH_RETURN" || $acceptClaimType === "REFUND_WITH_RETURN_SHIPMENT_LABEL" ? 'required' : 'nullable'),
+                'string', 'max:300',
+            ],
+            'country_code' => [
+                ($acceptClaimType === "REFUND_WITH_RETURN" || $acceptClaimType === "REFUND_WITH_RETURN_SHIPMENT_LABEL" ? 'required' : 'nullable'),
+                'string', 'size:2',
+                'regex:/^([A-Z]{2}|C2)$/',
+            ],
+            'return_shipment_info' => 'nullable|array',
+        ]);
+        $data['refund_amount'] = ($acceptClaimType === 'PARTIAL_REFUND' ? [
+            'currency_code' => $data['currency_code'],
+            'value' => $data['value'],
+        ] : null);
+        $data['return_shipping_address'] = (in_array($acceptClaimType, ['REFUND_WITH_RETURN', 'REFUND_WITH_RETURN_SHIPMENT_LABEL']) ?
+            [
+                'address_line_1' => $data['address'],
+                'country_code' => $data['country_code'],
+            ] : null);
+        $data['return_shipment_info'] = ($acceptClaimType === 'REFUND_WITH_RETURN_SHIPMENT_LABEL' ? $data['return_shipment_info'] : null);
+
+        return $data;
     }
 }
