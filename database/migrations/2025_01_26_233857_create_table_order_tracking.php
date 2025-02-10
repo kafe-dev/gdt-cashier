@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -13,7 +12,7 @@ return new class extends Migration
     {
         Schema::create('order_tracking', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('order_id')->unsigned()->nullable();
+            $table->string('transaction_id')->nullable();
             $table->string('tracking_number')->nullable();
             $table->string('courier_code')->nullable();
             $table->string('tracking_status')->nullable();

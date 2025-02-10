@@ -4,11 +4,14 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Exports\DataTableExport;
+use App\Exports\OrderTrackingDataTableExport;
 use App\Facades\TrackingMore;
 use App\Models\OrderTracking as OrderTrackingModel;
+use App\Models\Paygate;
+use App\Paygate\PayPalAPI;
 use App\Services\DataTables\OrderTrackingDataTable;
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -53,26 +56,26 @@ class Tracking extends BaseController
     /**
      * Action `show`.
      *
-     * @param  int|string  $id  The tracking ID
+     * @param int|string $id The tracking ID
      */
     public function show(int|string $id): View
     {
         return view('tracking.show', [
-            'orderTracking' => $this->getOrderTracking((int) $id),
-            'json_tracking_data' => json_decode($this->getOrderTracking((int) $id)->tracking_data),
+            'orderTracking' => $this->getOrderTracking((int)$id),
+            'json_tracking_data' => json_decode($this->getOrderTracking((int)$id)->tracking_data),
         ]);
     }
 
     /**
      * Action `delete`.
      *
-     * @param  int|string  $id  The tracking ID
-     * @param  Request  $request  Illuminate request object
+     * @param int|string $id The tracking ID
+     * @param Request $request Illuminate request object
      */
     public function delete(int|string $id, Request $request): RedirectResponse
     {
         if ($request->isMethod('POST')) {
-            $tracking = $this->getOrderTracking((int) $id);
+            $tracking = $this->getOrderTracking((int)$id);
 
             if ($tracking->delete()) {
                 flash()->success('Tracking has been deleted.');
@@ -127,7 +130,66 @@ class Tracking extends BaseController
 
         session(['export_records' => $records]);
 
-        return Excel::download(new DataTableExport($records), $fileName);
+        return Excel::download(new OrderTrackingDataTableExport($records), $fileName);
+    }
+
+    /**
+     * Action 'addTrackingInfoView'.
+     */
+    public function addTrackingInfoView(int|string $id)
+    {
+        return view('tracking.addTrackingInfo', [
+            'orderTracking' => $this->getOrderTracking((int)$id),
+        ]);
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function addTrackingInfo(int|string $id, Request $request)
+    {
+        if ($request->isMethod('POST')) {
+            $data = [
+                'transaction_id' => $this->getOrderTracking((int)$id)->transaction_id,
+                'status' => $request->post('status'),
+                'tracking_number' => $request->post('tracking_number'),
+                'carrier' => $request->post('courier_code'),
+            ];
+
+            $paygates = Paygate::all();
+
+            foreach ($paygates as $paygate) {
+                $api_data = $paygate->api_data ?? [];
+
+                if (is_string($api_data)) {
+                    $api_data = json_decode($api_data, true);
+                }
+
+                if (is_array($api_data) && isset($api_data['client_key'], $api_data['secret_key'])) {
+                    $paypalApi = new PayPalAPI($api_data['client_key'], $api_data['secret_key'], true);
+                } else {
+                    flash()->warning('PayPal API Error.');
+                    continue;
+                }
+
+                $response = $paypalApi->addTrackingInfo($data['transaction_id'], $data['status'], $data['tracking_number'], $data['carrier']);
+
+                if ($response == '201') {
+                    $orderTracking = $this->getOrderTracking((int)$id);
+
+                    $orderTracking->tracking_number = $data['tracking_number'];
+                    $orderTracking->courier_code = $data['carrier'];
+                    $orderTracking->tracking_status = $data['status'];
+                    $orderTracking->save();
+
+                    flash()->success('Tracking info added.');
+                } else {
+                    flash()->error('Tracking info failed to add.');
+                }
+            }
+        }
+
+        return redirect()->route('app.tracking.index');
     }
 
     /**

@@ -15,3 +15,8 @@ Breadcrumbs::for('show-order-tracking', function (BreadcrumbTrail $trail, OrderT
     $trail->parent('manage-order-tracking');
     $trail->push('Show Order Tracking', route('app.tracking.show', ['id' => $orderTracking->id]));
 });
+
+Breadcrumbs::for('add-tracking-info', function (BreadcrumbTrail $trail, OrderTracking $orderTracking) {
+    $trail->parent('manage-order-tracking');
+    $trail->push('Add Tracking Info', route('app.tracking.addTrackingView', ['id' => $orderTracking->id]));
+});
