@@ -267,6 +267,15 @@ class Dispute extends BaseController
         return redirect()->route('app.dispute.show', ['id' => $input['dispute_id']])->with('success', 'Tranh chấp đã được nâng cấp thành công.');
     }
 
+    /**
+     * Accepts a claim for a given dispute and processes the corresponding refund action.
+     *
+     * @param Request $request The HTTP request containing claim acceptance details.
+     * @param int $id The ID of the dispute to be processed.
+     *
+     * @return RedirectResponse Redirects back to the dispute details page with a success or error message.
+     *
+     */
     public function acceptClaim(Request $request, $id): RedirectResponse
     {
         try {
