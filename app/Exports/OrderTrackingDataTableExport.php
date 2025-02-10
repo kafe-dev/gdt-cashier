@@ -6,7 +6,7 @@ use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 
-class DataTableExport implements FromCollection, WithHeadings
+class OrderTrackingDataTableExport implements FromCollection, WithHeadings
 {
     /**
      * The collection of order tracking records to be exported.
@@ -35,7 +35,7 @@ class DataTableExport implements FromCollection, WithHeadings
         return $this->records->map(function ($record) {
             return [
                 'ID' => $record->id,
-                'Order ID' => $record->order_id,
+                'Transaction ID' => $record->transaction_id,
                 'Tracking Number' => $record->tracking_number,
                 'Courier Code' => $record->courier_code,
                 'Tracking Status' => $record->tracking_status,

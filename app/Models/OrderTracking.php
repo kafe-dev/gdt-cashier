@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Model;
  * OrderTracking model.
  *
  * @property int $id
- * @property int|null $order_id
+ * @property int|null $transaction_id
  * @property string|null $tracking_number
  * @property string|null $courier_code
  * @property string|null $tracking_status
@@ -45,7 +45,7 @@ class OrderTracking extends Model
      * The attributes that are mass assignable.
      */
     protected $fillable = [
-        'order_id',
+        'transaction_id',
         'tracking_number',
         'courier_code',
         'tracking_status',

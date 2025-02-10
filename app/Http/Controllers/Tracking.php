@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Exports\DataTableExport;
+use App\Exports\OrderTrackingDataTableExport;
 use App\Facades\TrackingMore;
 use App\Models\OrderTracking as OrderTrackingModel;
 use App\Services\DataTables\OrderTrackingDataTable;
@@ -127,7 +127,7 @@ class Tracking extends BaseController
 
         session(['export_records' => $records]);
 
-        return Excel::download(new DataTableExport($records), $fileName);
+        return Excel::download(new OrderTrackingDataTableExport($records), $fileName);
     }
 
     /**

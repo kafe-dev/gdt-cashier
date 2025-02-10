@@ -422,6 +422,31 @@ class PayPalAPI {
         return $this->makeRequest("POST", "/v1/customer/disputes/{$dispute_id}/acknowledge-return-item", $payload);
     }
 
+    /**
+     * Get tracking info.
+     *
+     * @param string $transactionId
+     * @param string|null $trackingNumber
+     * @param string|null $accountId
+     * @return array
+     * @throws Exception
+     */
+    public function getTrackingInfo(string $transactionId, ?string $trackingNumber = null, ?string $accountId = null): array
+    {
+        $endpoint = "/v1/shipping/trackers";
+
+        $params = [
+            "transaction_id" => $transactionId,
+            "tracking_number" => $trackingNumber,
+            "account_id" => $accountId
+        ];
+
+        $queryString = http_build_query(array_filter($params, fn($v) => $v !== null));
+        $url = $endpoint . '?' . $queryString;
+
+        return $this->makeRequest('GET', $url);
+    }
+
 }
 
-?>
+

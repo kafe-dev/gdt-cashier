@@ -1,3 +1,5 @@
+@php use App\Models\OrderTracking; @endphp
+@php use App\Utils\ActionWidget; @endphp
 @extends('_layouts.main')
 
 @push('page')
@@ -14,7 +16,8 @@
             <div class="card">
                 <div class="card-header">
                     <h4 class="card-title">Order Tracking ID: {{ $orderTracking->id }}</h4>
-                    <p class="text-muted mb-0">This table below is showing the detail information of order tracking ID: {{ $orderTracking->id }}</p>
+                    <p class="text-muted mb-0">This table below is showing the detail information of order tracking
+                        ID: {{ $orderTracking->id }}</p>
                 </div>
                 <div class="card-body">
                     <ul class="list-group">
@@ -26,9 +29,9 @@
                         </li>
                         <li class="list-group-item d-flex justify-content-between align-items-center">
                             <div>
-                                <span class="text-muted">Order ID:</span>
+                                <span class="text-muted">Transaction ID:</span>
                             </div>
-                            <span>{{ $orderTracking->order_id }}</span>
+                            <span>{{ $orderTracking->transaction_id }}</span>
                         </li>
                         <li class="list-group-item d-flex justify-content-between align-items-center">
                             <div>
@@ -66,26 +69,30 @@
                                 <span class="text-muted">Tracking data:</span>
                             </div>
                             <span>
-                                <button type="button" class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModalCenter">
+                                <button type="button" class="btn btn-outline-primary btn-sm" data-bs-toggle="modal"
+                                        data-bs-target="#exampleModalCenter">
                                     Show
                                 </button>
-                                <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-                                        <div class="modal-dialog modal-dialog-centered" role="document">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h6 class="modal-title m-0" id="exampleModalCenterTitle">Tracking data</h6>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                </div><!--end modal-header-->
-                                                <div class="modal-body">
-                                                    <div class="row">
-                                                        <div class="col-12">
-                                                            <pre>{{ json_encode($json_tracking_data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) }}</pre>
-                                                        </div>
-                                                    </div><!--end row-->
-                                                </div><!--end modal-body-->
-                                            </div><!--end modal-content-->
-                                        </div><!--end modal-dialog-->
-                                    </div>
+                                <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog"
+                                     aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h6 class="modal-title m-0"
+                                                    id="exampleModalCenterTitle">Tracking data</h6>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                        aria-label="Close"></button>
+                                            </div><!--end modal-header-->
+                                            <div class="modal-body">
+                                                <div class="row">
+                                                    <div class="col-12">
+                                                        <pre>{{ json_encode($json_tracking_data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) }}</pre>
+                                                    </div>
+                                                </div><!--end row-->
+                                            </div><!--end modal-body-->
+                                        </div><!--end modal-content-->
+                                    </div><!--end modal-dialog-->
+                                </div>
                             </span>
                         </li>
                         <li class="list-group-item d-flex justify-content-between align-items-center">
@@ -94,9 +101,9 @@
                             </div>
                             {!!
                                 $type = match ($orderTracking->type) {
-                                    \App\Models\OrderTracking::TYPE_OPEN => '<span class="badge badge-soft-primary">'.\App\Models\OrderTracking::TYPES[$orderTracking->type].'</span>',
-                                    \App\Models\OrderTracking::TYPE_CLOSED => '<span class="badge badge-soft-dark">'.\App\Models\OrderTracking::TYPES[$orderTracking->type].'</span>',
-                                    default => '<span class="badge badge-soft-secondary">'.\App\Models\OrderTracking::TYPES[$orderTracking->type].'</span>',
+                                    OrderTracking::TYPE_OPEN => '<span class="badge badge-soft-primary">'.OrderTracking::TYPES[$orderTracking->type].'</span>',
+                                    OrderTracking::TYPE_CLOSED => '<span class="badge badge-soft-dark">'.OrderTracking::TYPES[$orderTracking->type].'</span>',
+                                    default => '<span class="badge badge-soft-secondary">'.OrderTracking::TYPES[$orderTracking->type].'</span>',
                                 };
                             !!}
                         </li>
@@ -112,12 +119,12 @@
                             </div>
                             {!! ! empty($orderTracking->last_checked_at) ? '<span class="x-has-time-converter">'.$orderTracking->last_checked_at->format(config('app.date_format')).'</span>' : '-' !!}
                         </li>
-{{--                        <li class="list-group-item d-flex justify-content-between align-items-center">--}}
-{{--                            <div>--}}
-{{--                                <span class="text-muted">Exported At:</span>--}}
-{{--                            </div>--}}
-{{--                            {!! ! empty($orderTracking->exported_at) ? '<span class="x-has-time-converter">'.$orderTracking->exported_at->format(config('app.date_format')).'</span>' : '-' !!}--}}
-{{--                        </li>--}}
+                        {{--                        <li class="list-group-item d-flex justify-content-between align-items-center">--}}
+                        {{--                            <div>--}}
+                        {{--                                <span class="text-muted">Exported At:</span>--}}
+                        {{--                            </div>--}}
+                        {{--                            {!! ! empty($orderTracking->exported_at) ? '<span class="x-has-time-converter">'.$orderTracking->exported_at->format(config('app.date_format')).'</span>' : '-' !!}--}}
+                        {{--                        </li>--}}
                         <li class="list-group-item d-flex justify-content-between align-items-center">
                             <div>
                                 <span class="text-muted">Created At:</span>
@@ -133,8 +140,8 @@
                     </ul>
                 </div>
                 <div class="card-footer">
-                    {{ \App\Utils\ActionWidget::renderDeleteBtn($orderTracking->id, route('app.tracking.delete', ['id' => $orderTracking->id]), 'Delete', 'btn btn-danger') }}
-                    {{ \App\Utils\ActionWidget::renderGoBackBtn('Go Back', 'btn btn-primary') }}
+                    {{ ActionWidget::renderDeleteBtn($orderTracking->id, route('app.tracking.delete', ['id' => $orderTracking->id]), 'Delete', 'btn btn-danger') }}
+                    {{ ActionWidget::renderGoBackBtn('Go Back', 'btn btn-primary') }}
                 </div>
             </div>
         </div>
