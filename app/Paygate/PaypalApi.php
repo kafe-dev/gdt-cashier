@@ -5,7 +5,8 @@ use App\Models\Paygate;
 use Exception;
 use InvalidArgumentException;
 
-class PayPalAPI {
+class PayPalAPI
+{
 
     private $clientId, $clientSecret, $apiUrl, $accessToken;
 
@@ -16,12 +17,13 @@ class PayPalAPI {
      *
      * @throws Exception
      */
-    public function __construct(Paygate $paygate) {
-        $api_data           = $paygate->api_data ?? [];
-        $this->clientId     = $api_data['client_key'] ?? '';
+    public function __construct(Paygate $paygate)
+    {
+        $api_data = json_decode($paygate->api_data, true) ?? [];
+        $this->clientId = $api_data['client_key'] ?? '';
         $this->clientSecret = $api_data['secret_key'] ?? '';
-        $this->apiUrl       = $paygate->mode === 0 ? "https://api-m.sandbox.paypal.com" : "https://api-m.paypal.com";
-        $this->accessToken  = $this->getAccessToken();
+        $this->apiUrl = $paygate->mode === 0 ? "https://api-m.sandbox.paypal.com" : "https://api-m.paypal.com";
+        $this->accessToken = $this->getAccessToken();
     }
 
     /**
@@ -30,7 +32,8 @@ class PayPalAPI {
      * @return string
      * @throws Exception
      */
-    private function getAccessToken() {
+    private function getAccessToken()
+    {
         $response = $this->makeRequest("POST", "/v1/oauth2/token", "grant_type=client_credentials", true);
         return $response['access_token'] ?? throw new Exception("Không thể lấy Access Token.");
     }
@@ -38,21 +41,22 @@ class PayPalAPI {
     /**
      * Tạo một thanh toán mới.
      *
-     * @param float  $amount
+     * @param float $amount
      * @param string $currency
      * @param string $returnUrl
      * @param string $cancelUrl
      *
      * @return array
      */
-    public function createPayment($amount, $currency, $returnUrl, $cancelUrl) {
+    public function createPayment($amount, $currency, $returnUrl, $cancelUrl)
+    {
         return $this->makeRequest("POST", "/v1/payments/payment", [
-            "intent"        => "sale",
-            "payer"         => ["payment_method" => "paypal"],
-            "transactions"  => [
+            "intent" => "sale",
+            "payer" => ["payment_method" => "paypal"],
+            "transactions" => [
                 [
                     "amount" => [
-                        "total"    => $amount,
+                        "total" => $amount,
                         "currency" => $currency,
                     ],
                 ],
@@ -71,7 +75,8 @@ class PayPalAPI {
      *
      * @return array
      */
-    public function getPaymentDetails($paymentId) {
+    public function getPaymentDetails($paymentId)
+    {
         return $this->makeRequest("GET", "/v1/payments/payment/{$paymentId}");
     }
 
@@ -79,15 +84,16 @@ class PayPalAPI {
      * Hoàn tiền cho một thanh toán.
      *
      * @param string $saleId
-     * @param float  $amount
+     * @param float $amount
      * @param string $currency
      *
      * @return array
      */
-    public function refundPayment($saleId, $amount, $currency) {
+    public function refundPayment($saleId, $amount, $currency)
+    {
         return $this->makeRequest("POST", "/v1/payments/sale/{$saleId}/refund", [
             "amount" => [
-                "total"    => $amount,
+                "total" => $amount,
                 "currency" => $currency,
             ],
         ]);
@@ -96,42 +102,45 @@ class PayPalAPI {
     /**
      * Liệt kê các giao dịch trong khoảng thời gian nhất định.
      *
-     * @param string      $startDate
-     * @param string      $endDate
+     * @param string $startDate
+     * @param string $endDate
      * @param string|null $transactionId
-     * @param string      $fields
+     * @param string $fields
      *
      * @return array
      */
-    public function listTransaction($startDate, $endDate, $transactionId = null, $fields = "all") {
+    public function listTransaction($startDate, $endDate, $transactionId = null, $fields = "all")
+    {
         $query = http_build_query(array_filter([
-            "start_date"     => $startDate,
-            "end_date"       => $endDate,
-            "fields"         => $fields,
+            "start_date" => $startDate,
+            "end_date" => $endDate,
+            "fields" => $fields,
             "transaction_id" => $transactionId,
         ]));
         return $this->makeRequest("GET", "/v1/reporting/transactions?{$query}");
     }
 
-    public function getTransactionDetail() {
+    public function getTransactionDetail()
+    {
 
     }
 
     /**
      * Thực hiện yêu cầu HTTP tới PayPal API.
      *
-     * @param string       $method
-     * @param string       $endpoint
+     * @param string $method
+     * @param string $endpoint
      * @param array|string $data
-     * @param bool         $isAuth
+     * @param bool $isAuth
      *
      * @return array
      * @throws Exception
      */
-    private function makeRequest($method, $endpoint, $data = null, $isAuth = false) {
+    private function makeRequest($method, $endpoint, $data = null, $isAuth = false)
+    {
         $headers = ["Content-Type: application/json"];
         if ($isAuth) {
-            $auth      = base64_encode("{$this->clientId}:{$this->clientSecret}");
+            $auth = base64_encode("{$this->clientId}:{$this->clientSecret}");
             $headers[] = "Authorization: Basic {$auth}";
         } else {
             $headers[] = "Authorization: Bearer {$this->accessToken}";
@@ -139,8 +148,8 @@ class PayPalAPI {
         $ch = curl_init($this->apiUrl . $endpoint);
         curl_setopt_array($ch, [
             CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_HTTPHEADER     => $headers,
-            CURLOPT_CUSTOMREQUEST  => $method,
+            CURLOPT_HTTPHEADER => $headers,
+            CURLOPT_CUSTOMREQUEST => $method,
         ]);
         if ($method === "POST") {
             curl_setopt($ch, CURLOPT_POSTFIELDS, is_array($data) ? json_encode($data) : $data);
@@ -153,19 +162,20 @@ class PayPalAPI {
     /**
      * Liệt kê đơn hàng với các tùy chọn phân trang.
      *
-     * @param int    $page
-     * @param int    $page_size
-     * @param bool   $total_required
+     * @param int $page
+     * @param int $page_size
+     * @param bool $total_required
      * @param string $fields
      *
      * @return array
      */
-    public function listOrder($page = 1, $page_size = 20, $total_required = true, $fields = "all") {
+    public function listOrder($page = 1, $page_size = 20, $total_required = true, $fields = "all")
+    {
         $query = http_build_query(array_filter([
-            "page"           => $page,
-            "page_size"      => $page_size,
+            "page" => $page,
+            "page_size" => $page_size,
             'total_required' => $total_required,
-            "fields"         => $fields,
+            "fields" => $fields,
         ]));
         return $this->makeRequest("GET", "/v1/invoicing/invoices?{$query}");
     }
@@ -175,29 +185,31 @@ class PayPalAPI {
      * Có thể lọc theo thời gian tranh chấp (start_time) hoặc theo mã giao dịch tranh chấp (disputed_transaction_id).
      * Không được chọn cả hai tham số này.
      *
-     * @param string|null $start_time              Thời gian tranh chấp (YYYY-MM-DDTHH:MM:SSZ)
+     * @param string|null $start_time Thời gian tranh chấp (YYYY-MM-DDTHH:MM:SSZ)
      * @param string|null $disputed_transaction_id Mã giao dịch tranh chấp
-     * @param int         $page_size               Số lượng bản ghi trên mỗi trang
+     * @param int $page_size Số lượng bản ghi trên mỗi trang
      *
      * @return array Danh sách các giao dịch tranh chấp
      * @throws Exception Nếu chọn cả hai tham số start_time và disputed_transaction_id
      */
-    public function listDispute($start_time = null, $disputed_transaction_id = null, $page_size = 20) {
+    public function listDispute($start_time = null, $disputed_transaction_id = null, $page_size = 20)
+    {
         // Kiểm tra điều kiện: Chỉ được chọn start_time hoặc disputed_transaction_id, không được chọn cả hai
         if ($start_time && $disputed_transaction_id) {
             throw new Exception("Chỉ có thể chọn start_time hoặc disputed_transaction_id, không thể chọn cả hai.");
         }
         // Tạo query string từ các tham số đầu vào
         $query = http_build_query(array_filter([
-            "start_time"              => $start_time,
+            "start_time" => $start_time,
             "disputed_transaction_id" => $disputed_transaction_id,
-            "page_size"               => $page_size,
+            "page_size" => $page_size,
         ]));
         // Gửi yêu cầu GET đến PayPal API
         return $this->makeRequest("GET", "/v1/customer/disputes?{$query}");
     }
 
-    public function provideEvidence($dispute_id, $evidences, $return_shipping_address = null): array {
+    public function provideEvidence($dispute_id, $evidences, $return_shipping_address = null): array
+    {
         // Kiểm tra dispute_id hợp lệ
         if (empty($dispute_id)) {
             throw new Exception("Dispute ID is required.");
@@ -220,12 +232,13 @@ class PayPalAPI {
      * After send message auto change dispute status.
      *
      * @param string $dispute_id The dispute ID
-     * @param string $message    The message content
+     * @param string $message The message content
      *
      * @return array The response from PayPal API
      * @throws Exception If the dispute_id or message is empty
      */
-    public function sendDisputeMessage($dispute_id, $message) {
+    public function sendDisputeMessage($dispute_id, $message)
+    {
         if (empty($dispute_id) || empty($message)) {
             throw new Exception("Dispute ID và nội dung tin nhắn là bắt buộc.");
         }
@@ -239,12 +252,13 @@ class PayPalAPI {
      * Update the dispute status from UNDER_REVIEW to either WAITING_FOR_BUYER_RESPONSE or WAITING_FOR_SELLER_RESPONSE.
      *
      * @param string $dispute_id The dispute ID
-     * @param string $action     The action to perform ('BUYER_EVIDENCE' or 'SELLER_EVIDENCE')
+     * @param string $action The action to perform ('BUYER_EVIDENCE' or 'SELLER_EVIDENCE')
      *
      * @return array The response from PayPal API
      * @throws Exception If the input data is invalid or the API does not support the request.
      */
-    public function updateDisputeStatus($dispute_id, $action) {
+    public function updateDisputeStatus($dispute_id, $action)
+    {
         if (empty($dispute_id) || !in_array($action, [
                 'BUYER_EVIDENCE',
                 'SELLER_EVIDENCE',
@@ -263,7 +277,8 @@ class PayPalAPI {
      * @return array The response from PayPal API
      * @throws Exception If the dispute_id is empty or the request fails.
      */
-    public function getDisputeDetails($dispute_id) {
+    public function getDisputeDetails($dispute_id)
+    {
         if (empty($dispute_id)) {
             throw new Exception("Dispute ID is required.");
         }
@@ -274,17 +289,18 @@ class PayPalAPI {
      * Provides supporting information for a dispute.
      *
      * @param string $dispute_id The dispute ID.
-     * @param string $notes      A note describing the supporting information.
+     * @param string $notes A note describing the supporting information.
      *
      * @return array The result from the PayPal API.
      * @throws Exception If the dispute ID or notes are empty, or if the API does not support the request.
      */
-    public function provideSupportingInfo($dispute_id, $notes) {
+    public function provideSupportingInfo($dispute_id, $notes)
+    {
         if (empty($dispute_id) || empty($notes)) {
             throw new Exception("Dispute ID and supporting notes are required.");
         }
         $disputeDetails = $this->getDisputeDetails($dispute_id);
-        $allowedStates  = [
+        $allowedStates = [
             "CHARGEBACK",
             "PRE_ARBITRATION",
             "ARBITRATION",
@@ -311,21 +327,22 @@ class PayPalAPI {
      * Make an offer to resolve a dispute.
      * Only allow when the dispute status is "INQUIRY".
      *
-     * @param string      $dispute_id The dispute ID.
-     * @param string      $offer_type The type of offer (REFUND, REFUND_WITH_RETURN, etc.).
-     * @param string      $note       A note describing the offer.
-     * @param float|null  $amount     The refund amount (required for some offer types).
-     * @param string|null $currency   The currency code (e.g., USD, EUR).
+     * @param string $dispute_id The dispute ID.
+     * @param string $offer_type The type of offer (REFUND, REFUND_WITH_RETURN, etc.).
+     * @param string $note A note describing the offer.
+     * @param float|null $amount The refund amount (required for some offer types).
+     * @param string|null $currency The currency code (e.g., USD, EUR).
      * @param string|null $invoice_id The optional invoice ID related to the refund.
      *
      * @return array The response from PayPal API.
      * @throws Exception If input data is invalid.
      */
-    public function makeOfferToResolveDispute(string $dispute_id, string $offer_type, string $note, float $amount = null, string $currency = null, string $invoice_id = null, array $returnAddress = []): array {
+    public function makeOfferToResolveDispute(string $dispute_id, string $offer_type, string $note, float $amount = null, string $currency = null, string $invoice_id = null, array $returnAddress = []): array
+    {
         if (empty($dispute_id) || empty($offer_type) || empty($note)) {
             throw new Exception("Dispute ID, offer type, and note are required.");
         }
-        $disputeDetails        = $this->getDisputeDetails($dispute_id);
+        $disputeDetails = $this->getDisputeDetails($dispute_id);
         $disputeLifeCycleState = $disputeDetails['dispute_life_cycle_stage'] ?? null;
         if ($disputeLifeCycleState !== "INQUIRY") {
             flash()->error('You can only make an offer when the dispute is in INQUIRY state. Current state: {$disputeLifeCycleState}');
@@ -347,19 +364,19 @@ class PayPalAPI {
         }
         $payload = [
             "offer_type" => $offer_type,
-            "note"       => $note,
+            "note" => $note,
         ];
         if (!empty($returnAddress)) {
             $payload['return_shipping_address'] = [
                 'address_line_1' => $returnAddress['address_line_1'],
                 'address_line_2' => $returnAddress['address_line_2'] ?? null,
                 'address_line_3' => $returnAddress['address_line_3'] ?? null,
-                'admin_area_4'   => $returnAddress['admin_area_4'] ?? null,
-                'admin_area_3'   => $returnAddress['admin_area_3'] ?? null,
-                'admin_area_2'   => $returnAddress['admin_area_2'] ?? null,
-                'admin_area_1'   => $returnAddress['admin_area_1'] ?? null,
-                'postal_code'    => $returnAddress['postal_code'] ?? null,
-                'country_code'   => $returnAddress['country_code'],
+                'admin_area_4' => $returnAddress['admin_area_4'] ?? null,
+                'admin_area_3' => $returnAddress['admin_area_3'] ?? null,
+                'admin_area_2' => $returnAddress['admin_area_2'] ?? null,
+                'admin_area_1' => $returnAddress['admin_area_1'] ?? null,
+                'postal_code' => $returnAddress['postal_code'] ?? null,
+                'country_code' => $returnAddress['country_code'],
             ];
         }
         if (!empty($amount) && !empty($currency)) {
@@ -371,7 +388,7 @@ class PayPalAPI {
             if ($disputeAmount["currency_code"] === $currency) {
                 if ($disputeAmount["value"] >= $amount) {
                     $payload["offer_amount"] = [
-                        "value"         => (string) $amount,
+                        "value" => (string)$amount,
                         "currency_code" => $currency,
                     ];
                 } else {
@@ -393,13 +410,14 @@ class PayPalAPI {
      * Acknowledge that the customer has returned an item for a dispute.
      *
      * @param string $dispute_id The ID of the dispute.
-     * @param string $note       Merchant-provided note (max 2000 characters).
-     * @param array  $evidences  List of supporting evidence (max 100 items).
+     * @param string $note Merchant-provided note (max 2000 characters).
+     * @param array $evidences List of supporting evidence (max 100 items).
      *
      * @return array Response from PayPal API.
      * @throws Exception If invalid data is provided or the dispute type is not eligible.
      */
-    public function acknowledgeReturnedItem(string $dispute_id, string $note, array $evidences = []): array {
+    public function acknowledgeReturnedItem(string $dispute_id, string $note, array $evidences = []): array
+    {
         if (empty($dispute_id)) {
             throw new Exception("Dispute ID are required.");
         }
@@ -435,7 +453,7 @@ class PayPalAPI {
                 }
                 $formattedEvidences[] = [
                     "evidence_type" => $evidence['evidence_type'],
-                    "documents"     => $documents,
+                    "documents" => $documents,
                 ];
             }
             $payload["evidences"] = $formattedEvidences;
@@ -448,10 +466,11 @@ class PayPalAPI {
     /**
      * @throws Exception
      */
-    public function escalate($dispute_id, $note = ''): array {
+    public function escalate($dispute_id, $note = ''): array
+    {
         $payload = [
             'dispute_id' => $dispute_id,
-            'note'       => $note,
+            'note' => $note,
         ];
         return $this->makeRequest("POST", "/v1/customer/disputes/{$dispute_id}/escalate", $payload);
     }
@@ -463,7 +482,8 @@ class PayPalAPI {
      * @return array
      * @throws Exception
      */
-    public function acceptClaim($dispute_id, string $note): array {
+    public function acceptClaim($dispute_id, string $note): array
+    {
         $payload = [
             'note' => $note,
         ];
