@@ -34,7 +34,9 @@ class Paygate extends BaseController
      */
     public function show(int|string $id): View
     {
-        return view('paygate.show');
+        return view('paygate.show', [
+            'paygate' => PaygateModel::findOrFail($id),
+        ]);
     }
 
     /**
@@ -158,5 +160,37 @@ class Paygate extends BaseController
         } catch (\Exception $e) {
             return redirect()->route('app.paygate.index')->with('error', 'Error deleting Paygate: '.$e->getMessage());
         }
+    }
+
+    /**
+     * Action `changeStatus`.
+     *
+     * Change the status of the paygate to active or inactive.
+     *
+     * @param int|string $id Paygate ID
+     * @param Request $request Illuminate request object
+     */
+    public function changeStatus(Request $request, int|string $id): RedirectResponse
+    {
+        try {
+            $paygate = PaygateModel::findOrFail($id);
+
+            if ($paygate->status == PaygateModel::STATUS_ACTIVE) {
+                $paygate->update([
+                    'status' => PaygateModel::STATUS_INACTIVE,
+                ]);
+            } else {
+                $paygate->update([
+                    'status' => PaygateModel::STATUS_ACTIVE,
+                ]);
+            }
+            flash()->success('Change successfully.');
+        } catch (\Exception $e) {
+            flash()->error('Had an error while updating the status of the paygate.');
+
+            return redirect()->route('app.paygate.index');
+        }
+
+        return redirect()->route('app.paygate.index');
     }
 }

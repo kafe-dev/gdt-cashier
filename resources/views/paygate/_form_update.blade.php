@@ -15,22 +15,30 @@
             @error('url')
             <div class="invalid-feedback">{{ $message }}</div>
             @enderror
+
+            <small id="passwordHelp" class="form-text text-muted">Enter your paypalme link, e.g: <code>https://www.paypal.com/paypalme/username</code></small>
+            <br>
+            <small id="passwordHelp" class="form-text text-muted">If you dont have this, enter <code>https://www.paypal.com/</code> instead</small>
         </div>
 
         <div class="mb-3">
             <label class="form-label" for="api-data">Api data <span class="text-danger">*</span></label>
-            <input type="text" class="form-control @error('api_data') is-invalid @enderror" id="api-data" name="api_data" placeholder="Enter api data" value="{{ old('api_data', $paygate->api_data) }}" required>
+            <input type="text" class="form-control @error('api_data') is-invalid @enderror" id="api-data" name="api_data" placeholder="Enter api data" value="{{ old('api_data', str_replace('"{', '{', str_replace('}"', '}', str_replace('\\', '', json_encode($paygate->api_data))))) }}" required>
             @error('api_data')
             <div class="invalid-feedback">{{ $message }}</div>
             @enderror
+
+            <small id="passwordHelp" class="form-text text-muted">Enter your API data, e.g: <code>{"client_key":"your_api_key","secret_key":"your_secret_key"}</code></small>
         </div>
 
         <div class="mb-3">
             <label class="form-label" for="vps-data">Vps data <span class="text-danger">*</span></label>
-            <input type="text" class="form-control @error('vps_data') is-invalid @enderror" id="vps-data" name="vps_data" placeholder="Enter vps data" value="{{ old('vps_data', $paygate->vps_data) }}" required>
+            <input type="text" class="form-control @error('vps_data') is-invalid @enderror" id="vps-data" name="vps_data" placeholder="Enter vps data" value="{{ old('vps_data', str_replace('"{', '{', str_replace('}"', '}', str_replace('\\', '', json_encode($paygate->vps_data))))) }}" required>
             @error('vps_data')
             <div class="invalid-feedback">{{ $message }}</div>
             @enderror
+
+            <small id="passwordHelp" class="form-text text-muted">Enter your VPS data, e.g: <code>{"ips":"vps_ip_address","username":"vps_username","password":"vps_password"}</code></small>
         </div>
 
         <div class="mb-3">

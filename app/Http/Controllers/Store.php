@@ -10,6 +10,7 @@ use App\Services\DataTables\StoreDataTable;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use Automattic\WooCommerce\Client;
 
 /**
  * Class Store.
@@ -173,13 +174,30 @@ class Store extends BaseController
         return redirect()->route('app.store.index');
     }
 
-    public function testConnection(Request $request, int|string $id)
+    public function testConnection(Request $request, int|string $id): RedirectResponse
     {
         $store = $this->getStore($id);
-        if ($store->api_data) {
-            flash()->success("Test connect successful.");
-        } else {
-            flash()->error("Test connect failed.");
+        $storeUrl = $store->url;
+        $api_data= json_decode($store->api_data, true);
+        $consumerKey = $api_data['consume_key'];
+        $consumerSecret = $api_data['consume_secret'];
+
+        try {
+            $woocommerce = new Client(
+                $storeUrl,
+                $consumerKey,
+                $consumerSecret,
+                [
+                    'version' => 'wc/v3',
+                ]
+            );
+
+            $response = $woocommerce->get('system_status');
+
+            flash()->success("Connection successful!");
+
+        } catch (\Exception $e) {
+            flash()->error("Connection failed!");
         }
         return redirect()->route('app.store.index');
     }
