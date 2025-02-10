@@ -220,7 +220,7 @@
                                 <td>{{ \Carbon\Carbon::parse($report['created_at'])->format('Y/m/d') }}</td>
                                 <td>{{ $report['id'] }}</td>
                                 <td><span class="badge badge-soft-secondary">{{ $report['type'] }}</span></td>
-                                <td>${{ $report['revenue'] }}</td>
+                                {{-- <td>${{ $report['revenue'] }}</td> --}}
                                 <td>{{ $report['dispute_rate'] }}%</td>
                                 <td>${{ $report['limit'] }}</td>
                                 <td><span class="badge badge-soft-success">{{ $report['status'] }}</span></td>
