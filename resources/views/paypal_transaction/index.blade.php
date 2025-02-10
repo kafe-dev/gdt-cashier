@@ -5,7 +5,7 @@
 @endpush
 
 @push('breadcrumbs')
-    {{--    {{ Breadcrumbs::render('manage-order-tracking') }}--}}
+    {{ Breadcrumbs::render('manage-paypal-transactions') }}
 @endpush
 
 @section('content')

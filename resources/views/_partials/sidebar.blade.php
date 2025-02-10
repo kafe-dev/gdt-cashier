@@ -106,7 +106,7 @@
                     <a class="nav-link" href="{{ route('app.paypal-transaction.index') }}">
                         <i data-feather="folder" class="align-self-center menu-icon"></i>
                         <span>Paypal Transactions</span>
-                        {{ NotificationWidget::render('App\Models\PaypalTransaction', 'closed_at', (string)null) }}
+                        {{ NotificationWidget::render('App\Models\PaypalTransaction', 'closed_at', null) }}
                     </a>
                 </li>
             @endif

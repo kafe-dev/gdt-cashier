@@ -1,10 +1,13 @@
 <?php
+
 namespace App\Paygate;
 
 use Exception;
+use Illuminate\Http\RedirectResponse;
 use InvalidArgumentException;
 
-class PayPalAPI {
+class PayPalAPI
+{
 
     private $clientId, $clientSecret, $apiUrl, $accessToken;
 
@@ -13,11 +16,12 @@ class PayPalAPI {
      *
      * @throws Exception
      */
-    public function __construct($clientId, $clientSecret, $isSandbox = true) {
-        $this->clientId     = $clientId;
+    public function __construct($clientId, $clientSecret, $isSandbox = true)
+    {
+        $this->clientId = $clientId;
         $this->clientSecret = $clientSecret;
-        $this->apiUrl       = $isSandbox ? "https://api-m.sandbox.paypal.com" : "https://api-m.paypal.com";
-        $this->accessToken  = $this->getAccessToken();
+        $this->apiUrl = $isSandbox ? "https://api-m.sandbox.paypal.com" : "https://api-m.paypal.com";
+        $this->accessToken = $this->getAccessToken();
     }
 
     /**
@@ -26,7 +30,8 @@ class PayPalAPI {
      * @return string
      * @throws Exception
      */
-    private function getAccessToken() {
+    private function getAccessToken()
+    {
         $response = $this->makeRequest("POST", "/v1/oauth2/token", "grant_type=client_credentials", true);
         return $response['access_token'] ?? throw new Exception("Không thể lấy Access Token.");
     }
@@ -34,20 +39,21 @@ class PayPalAPI {
     /**
      * Tạo một thanh toán mới.
      *
-     * @param float  $amount
+     * @param float $amount
      * @param string $currency
      * @param string $returnUrl
      * @param string $cancelUrl
      * @return array
      */
-    public function createPayment($amount, $currency, $returnUrl, $cancelUrl) {
+    public function createPayment($amount, $currency, $returnUrl, $cancelUrl)
+    {
         return $this->makeRequest("POST", "/v1/payments/payment", [
-            "intent"        => "sale",
-            "payer"         => ["payment_method" => "paypal"],
-            "transactions"  => [
+            "intent" => "sale",
+            "payer" => ["payment_method" => "paypal"],
+            "transactions" => [
                 [
                     "amount" => [
-                        "total"    => $amount,
+                        "total" => $amount,
                         "currency" => $currency,
                     ],
                 ],
@@ -65,7 +71,8 @@ class PayPalAPI {
      * @param string $paymentId
      * @return array
      */
-    public function getPaymentDetails($paymentId) {
+    public function getPaymentDetails($paymentId)
+    {
         return $this->makeRequest("GET", "/v1/payments/payment/{$paymentId}");
     }
 
@@ -73,14 +80,15 @@ class PayPalAPI {
      * Hoàn tiền cho một thanh toán.
      *
      * @param string $saleId
-     * @param float  $amount
+     * @param float $amount
      * @param string $currency
      * @return array
      */
-    public function refundPayment($saleId, $amount, $currency) {
+    public function refundPayment($saleId, $amount, $currency)
+    {
         return $this->makeRequest("POST", "/v1/payments/sale/{$saleId}/refund", [
             "amount" => [
-                "total"    => $amount,
+                "total" => $amount,
                 "currency" => $currency,
             ],
         ]);
@@ -89,17 +97,18 @@ class PayPalAPI {
     /**
      * Liệt kê các giao dịch trong khoảng thời gian nhất định.
      *
-     * @param string      $startDate
-     * @param string      $endDate
+     * @param string $startDate
+     * @param string $endDate
      * @param string|null $transactionId
-     * @param string      $fields
+     * @param string $fields
      * @return array
      */
-    public function listTransaction($startDate, $endDate, $transactionId = null, $fields = "all") {
+    public function listTransaction($startDate, $endDate, $transactionId = null, $fields = "all")
+    {
         $query = http_build_query(array_filter([
-            "start_date"     => $startDate,
-            "end_date"       => $endDate,
-            "fields"         => $fields,
+            "start_date" => $startDate,
+            "end_date" => $endDate,
+            "fields" => $fields,
             "transaction_id" => $transactionId,
         ]));
         return $this->makeRequest("GET", "/v1/reporting/transactions?{$query}");
@@ -108,17 +117,18 @@ class PayPalAPI {
     /**
      * Thực hiện yêu cầu HTTP tới PayPal API.
      *
-     * @param string       $method
-     * @param string       $endpoint
+     * @param string $method
+     * @param string $endpoint
      * @param array|string $data
-     * @param bool         $isAuth
+     * @param bool $isAuth
      * @return array
      * @throws Exception
      */
-    private function makeRequest($method, $endpoint, $data = null, $isAuth = false) {
+    private function makeRequest($method, $endpoint, $data = null, $isAuth = false)
+    {
         $headers = ["Content-Type: application/json"];
         if ($isAuth) {
-            $auth      = base64_encode("{$this->clientId}:{$this->clientSecret}");
+            $auth = base64_encode("{$this->clientId}:{$this->clientSecret}");
             $headers[] = "Authorization: Basic {$auth}";
         } else {
             $headers[] = "Authorization: Bearer {$this->accessToken}";
@@ -126,8 +136,8 @@ class PayPalAPI {
         $ch = curl_init($this->apiUrl . $endpoint);
         curl_setopt_array($ch, [
             CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_HTTPHEADER     => $headers,
-            CURLOPT_CUSTOMREQUEST  => $method,
+            CURLOPT_HTTPHEADER => $headers,
+            CURLOPT_CUSTOMREQUEST => $method,
         ]);
         if ($method === "POST") {
             curl_setopt($ch, CURLOPT_POSTFIELDS, is_array($data) ? json_encode($data) : $data);
@@ -137,21 +147,49 @@ class PayPalAPI {
         return json_decode($response, true);
     }
 
+    private function makeRequestReturnCode($method, $endpoint, $data = null, $isAuth = false)
+    {
+        $headers = ["Content-Type: application/json"];
+        if ($isAuth) {
+            $auth = base64_encode("{$this->clientId}:{$this->clientSecret}");
+            $headers[] = "Authorization: Basic {$auth}";
+        } else {
+            $headers[] = "Authorization: Bearer {$this->accessToken}";
+        }
+        $ch = curl_init($this->apiUrl . $endpoint);
+        curl_setopt_array($ch, [
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_HTTPHEADER => $headers,
+            CURLOPT_CUSTOMREQUEST => $method,
+        ]);
+        if ($method === "POST") {
+            curl_setopt($ch, CURLOPT_POSTFIELDS, is_array($data) ? json_encode($data) : $data);
+        }
+        $response = curl_exec($ch);
+
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+        curl_close($ch);
+
+        return $httpCode;
+    }
+
     /**
      * Liệt kê đơn hàng với các tùy chọn phân trang.
      *
-     * @param int    $page
-     * @param int    $page_size
-     * @param bool   $total_required
+     * @param int $page
+     * @param int $page_size
+     * @param bool $total_required
      * @param string $fields
      * @return array
      */
-    public function listOrder($page = 1, $page_size = 20, $total_required = true, $fields = "all") {
+    public function listOrder($page = 1, $page_size = 20, $total_required = true, $fields = "all")
+    {
         $query = http_build_query(array_filter([
-            "page"           => $page,
-            "page_size"      => $page_size,
+            "page" => $page,
+            "page_size" => $page_size,
             'total_required' => $total_required,
-            "fields"         => $fields,
+            "fields" => $fields,
         ]));
         return $this->makeRequest("GET", "/v1/invoicing/invoices?{$query}");
     }
@@ -167,7 +205,8 @@ class PayPalAPI {
      * @return array Danh sách các giao dịch tranh chấp
      * @throws Exception Nếu chọn cả hai tham số start_time và disputed_transaction_id
      */
-    public function listDispute($start_time = null, $disputed_transaction_id = null, $page_size = 20) {
+    public function listDispute($start_time = null, $disputed_transaction_id = null, $page_size = 20)
+    {
         // Kiểm tra điều kiện: Chỉ được chọn start_time hoặc disputed_transaction_id, không được chọn cả hai
         if ($start_time && $disputed_transaction_id) {
             throw new Exception("Chỉ có thể chọn start_time hoặc disputed_transaction_id, không thể chọn cả hai.");
@@ -175,16 +214,17 @@ class PayPalAPI {
 
         // Tạo query string từ các tham số đầu vào
         $query = http_build_query(array_filter([
-            "start_time"              => $start_time,
+            "start_time" => $start_time,
             "disputed_transaction_id" => $disputed_transaction_id,
-            "page_size"               => $page_size,
+            "page_size" => $page_size,
         ]));
 
         // Gửi yêu cầu GET đến PayPal API
         return $this->makeRequest("GET", "/v1/customer/disputes?{$query}");
     }
 
-    public function provideEvidence($dispute_id, $evidences, $return_shipping_address = null): array {
+    public function provideEvidence($dispute_id, $evidences, $return_shipping_address = null): array
+    {
         // Kiểm tra dispute_id hợp lệ
         if (empty($dispute_id)) {
             throw new Exception("Dispute ID is required.");
@@ -277,7 +317,7 @@ class PayPalAPI {
         }
 
         $disputeDetails = $this->getDisputeDetails($dispute_id);
-        $allowedStates  = ["CHARGEBACK", "PRE_ARBITRATION", "ARBITRATION"];
+        $allowedStates = ["CHARGEBACK", "PRE_ARBITRATION", "ARBITRATION"];
 
         if (!in_array($disputeDetails['dispute_life_cycle_stage'], $allowedStates)) {
             throw new Exception("Action not allowed in the current dispute state: " . $disputeDetails['dispute_life_cycle_stage']);
@@ -337,7 +377,7 @@ class PayPalAPI {
 
         $payload = [
             "offer_type" => $offer_type,
-            "note"       => $note,
+            "note" => $note,
         ];
 
         if (!empty($amount) && !empty($currency)) {
@@ -365,7 +405,7 @@ class PayPalAPI {
      *
      * @param string $dispute_id The ID of the dispute.
      * @param string $note Merchant-provided note (max 2000 characters).
-     * @param array  $evidences List of supporting evidence (max 100 items).
+     * @param array $evidences List of supporting evidence (max 100 items).
      * @return array Response from PayPal API.
      * @throws Exception If invalid data is provided or the dispute type is not eligible.
      */
@@ -447,6 +487,38 @@ class PayPalAPI {
         return $this->makeRequest('GET', $url);
     }
 
+    /**
+     * Action to manage tracking info for transaction.
+     *
+     * action: 'add', 'update', 'cancel'
+     *
+     * @throws Exception
+     */
+    public function addTrackingInfo(
+        string $transaction_id,
+        string $status,
+        string $trackingNumber,
+        string $carrier
+    ): int|array|RedirectResponse
+    {
+        $url = "/v1/shipping/trackers";
+
+        if (empty($trackingNumber) || empty($carrier)) {
+            flash()->error("Tracking number or tracking carrier is required.");
+            return redirect()->route("app.tracking.index");
+        }
+        $data = [
+            "trackers" => [[
+                "transaction_id" => $transaction_id,
+                "tracking_number" => $trackingNumber,
+                "status" => $status,
+                "carrier" => "OTHER",
+                "carrier_name_other" => $carrier,
+            ]]
+        ];
+
+        return $this->makeRequestReturnCode('POST', $url, $data);
+    }
 }
 
 

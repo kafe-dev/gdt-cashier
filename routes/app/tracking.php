@@ -17,4 +17,7 @@ Route::controller(Tracking::class)
         Route::post('/delete/{id}', 'delete')->name('delete');
         Route::post('/markclosed/{id}', 'markAsClosed')->name('markclosed');
         Route::post('/export', 'export')->name('export');
+
+        Route::get('/addTrackingInfo/{id}', 'addTrackingInfoView')->name('addTrackingView');
+        Route::post('/addTracking/{id}', 'addTrackingInfo')->name('addTracking');
     });

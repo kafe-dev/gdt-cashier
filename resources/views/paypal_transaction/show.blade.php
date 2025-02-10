@@ -7,7 +7,7 @@
 @endpush
 
 @push('breadcrumbs')
-    {{--    {{ Breadcrumbs::render('show-user', $user) }}--}}
+    {{ Breadcrumbs::render('show-paypal-transaction', $paypalTransaction) }}
 @endpush
 
 @section('content')

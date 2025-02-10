@@ -54,7 +54,10 @@ class OrderTrackingTransformer extends TransformerAbstract
      */
     public function renderActions(OrderTracking $orderTracking): string
     {
+        $addTrackingInfoButton = '<a class="btn btn-sm btn-warning text-white" href="' . route('app.tracking.addTrackingView', ['id' => $orderTracking->id]) . '" title="Add Tracking Info"><i class="fa fa-pen"></i></a>';
+
         return '
+            ' . $addTrackingInfoButton . '
             ' . ActionWidget::renderShowBtn(route('app.tracking.show', ['id' => $orderTracking->id])) . '
             ' . ActionWidget::renderDeleteBtn($orderTracking->id, route('app.tracking.delete', ['id' => $orderTracking->id])) . '
             ' . ActionWidget::renderMarkClosedBtn($orderTracking->id, route('app.tracking.markclosed', ['id' => $orderTracking->id])) . '
