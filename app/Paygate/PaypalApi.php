@@ -438,23 +438,30 @@ class PayPalAPI
      * Acknowledge that the customer has returned an item for a dispute.
      *
      * @param string $dispute_id The ID of the dispute.
-     * @param string $note Merchant-provided note (max 2000 characters).
+     * @param string|null $note Merchant-provided note (max 2000 characters).
      * @param array $evidences List of supporting evidence (max 100 items).
      *
      * @return array Response from PayPal API.
      * @throws Exception If invalid data is provided or the dispute type is not eligible.
      */
-    public function acknowledgeReturnedItem(string $dispute_id, string $note, array $evidences = []): array
+    public function acknowledgeReturnedItem(string $dispute_id, string $note = null, array $evidences = []): array
     {
         if (empty($dispute_id)) {
             throw new Exception("Dispute ID are required.");
         }
+
         $disputeDetails = $this->getDisputeDetails($dispute_id);
         if ($disputeDetails['reason'] !== "MERCHANDISE_OR_SERVICE_NOT_AS_DESCRIBED") {
+            flash()->error('Acknowledging item return is only allowed for disputes with reason "MERCHANDISE_OR_SERVICE_NOT_AS_DESCRIBED".');
             throw new Exception("Acknowledging item return is only allowed for disputes with reason 'MERCHANDISE_OR_SERVICE_NOT_AS_DESCRIBED'.");
         }
+        if ($disputeDetails['dispute_state'] == "REQUIRED_OTHER_PARTY_ACTION") {
+            flash()->error('You cannot make an offer to resolve a dispute. Need Seller response!');
+            throw new Exception("You cannot make an offer to resolve a dispute. Need Buyer response!");
+        }
+
         if (!empty($note)) {
-            $payload["note"] = substr($note, 0, 2000);
+            $payload["note"] = $note;
         }
         if (!empty($evidences)) {
             $allowedEvidenceTypes = [
@@ -466,22 +473,21 @@ class PayPalAPI
                 "PROOF_OF_ITEM_NOT_RECEIVED",
             ];
             $formattedEvidences = [];
-            foreach (array_slice($evidences, 0, 100) as $evidence) {
-                if (!isset($evidence['evidence_type'], $evidence['documents'])) {
+            foreach ($evidences as $evidence) {
+                if (empty($evidence['evidence_type']) || empty($evidence['documents'])) {
                     throw new Exception("Each evidence entry must include 'evidence_type' and 'documents'.");
                 }
                 if (!in_array($evidence['evidence_type'], $allowedEvidenceTypes, true)) {
                     throw new Exception("Invalid evidence type: {$evidence['evidence_type']}");
                 }
-                $documents = array_slice($evidence['documents'], 0, 100);
-                foreach ($documents as $doc) {
-                    if (!isset($doc['name'], $doc['url'])) {
+                foreach ($evidence['documents'] as $doc) {
+                    if (empty($doc['name']) || empty($doc['url'])) {
                         throw new Exception("Each document must include 'name' and 'url'.");
                     }
                 }
                 $formattedEvidences[] = [
                     "evidence_type" => $evidence['evidence_type'],
-                    "documents" => $documents,
+                    "documents" => $evidence['documents'],
                 ];
             }
             $payload["evidences"] = $formattedEvidences;
@@ -504,17 +510,58 @@ class PayPalAPI
     }
 
     /**
-     * @param        $dispute_id
-     * @param string $note
+     * Accepts a claim for a given dispute ID.
      *
-     * @return array
-     * @throws Exception
+     * @param string $dispute_id The ID of the dispute to accept the claim for.
+     * @param string $note A note about the claim acceptance.
+     * @param string|null $accept_claim_reason The reason for accepting the claim (optional).
+     * @param string|null $accept_claim_type The type of refund proposed by the merchant (optional).
+     * @param array|null $refund_amount The refund amount details if applicable (optional).
+     * @param string|null $invoice_id The invoice ID related to the refund (optional).
+     * @param array|null $return_shipment_info Shipment details if applicable (optional).
+     * @param array|null $return_shipping_address The return address details if applicable (optional).
+     *
+     * @return array The response from PayPal API.
+     * @throws Exception If the request fails.
      */
-    public function acceptClaim($dispute_id, string $note): array
+    public function acceptClaim(
+        string  $dispute_id,
+        string  $note,
+        ?string $accept_claim_reason = null,
+        ?string $accept_claim_type = null,
+        ?array  $refund_amount = null,
+        ?string $invoice_id = null,
+        ?array  $return_shipment_info = null,
+        ?array  $return_shipping_address = null
+    ): array
     {
-        $payload = [
+        if (!empty($refund_amount)) {
+            $disputeDetails = $this->getDisputeDetails($dispute_id);
+            $disputeAmount = $disputeDetails['dispute_amount'];
+            if ($refund_amount['value'] <= 0) {
+                flash()->error('Enter invalid refund amount.');
+                throw new Exception("Enter invalid refund amount.");
+            }
+            if ($disputeAmount["currency_code"] === $refund_amount['currency_code']) {
+                if ($disputeAmount["value"] < $refund_amount['value']) {
+                    flash()->error("The refund amount cannot exceed the transaction amount.");
+                    throw new Exception("The refund amount cannot exceed the transaction amount.");
+                }
+            } else {
+                flash()->error("The currency code does not match the dispute currency.");
+                throw new Exception("Use the correct type of currency for this transaction.");
+            }
+        }
+        $payload = array_filter([
             'note' => $note,
-        ];
+            'accept_claim_reason' => $accept_claim_reason,
+            'accept_claim_type' => $accept_claim_type,
+            'refund_amount' => $refund_amount,
+            'invoice_id' => $invoice_id,
+            'return_shipment_info' => $return_shipment_info,
+            'return_shipping_address' => $return_shipping_address,
+        ]);
+
         return $this->makeRequest("POST", "/v1/customer/disputes/{$dispute_id}/accept-claim", $payload);
     }
 

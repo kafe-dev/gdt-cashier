@@ -57,7 +57,7 @@
                             <div class="mb-3">
                                 <label class="form-label">Country Code <span class="text-danger">*</span></label>
                                 <input type="text" name="country_code" maxlength="2" class="form-control mb-2"
-                                       placeholder="Country Code">
+                                       placeholder="Country Code" pattern="^([A-Z]{2}|C2)$">
                             </div>
                         </div>
 
