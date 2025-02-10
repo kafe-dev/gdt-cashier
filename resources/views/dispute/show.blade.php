@@ -21,13 +21,13 @@
     $offers = $dispute_arr['offer']['history']??[];
     $links = $dispute_arr['links']??[];
     $actions = array_map(fn($link) => $link['rel'], $links);
-
     $action_dispute = [
-        'accept_claim'=>'<a class="dropdown-item" href="#">Accept claim</a>',
+        'accept_claim'=>'<a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#accept-claim-modal">Accept claim</a>',
         'provide_evidence'=>'<a class="dropdown-item" href="#">Provide evidence</a>',
         'make_offer'=>'<a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#make-offer-dispute-modal">Make offer to resolve dispute</a>',
         'escalate'=>'<a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#escalate-dispute-modal">Escalate dispute to claim</a>',
         'send_message'=>'<a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#send-message-dispute-modal">Send message about dispute to other party</a>',
+        'acknowledge_return_item'=>'<a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#acknowledge-returned-dispute-modal">Acknowledge returned item</a>',
     ];
 @endphp
 
@@ -137,4 +137,11 @@
     @include('dispute._modal-escalate')
     {{--    End Escalate Modal--}}
 
+    {{--    Begin Acknowledge Return Modal--}}
+    @include('dispute._modal-acknowledge-return')
+    {{--    End Acknowledge Return Modal--}}
+
+    {{--    Begin Accept Claim Modal--}}
+    @include('dispute._modal-accept-claim')
+    {{--    End Accept Claim Modal--}}
 @endsection
