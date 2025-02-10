@@ -18,13 +18,14 @@ class NotificationWidget
     /**
      * Renders the notification widget.
      *
-     * @param  string  $class  Fully qualified class name of the model
-     * @param  string  $attribute  Name of the attribute to filter on
-     * @param  string  $value  Value to filter on
+     * @param string $class Fully qualified class name of the model
+     * @param string $attribute Name of the attribute to filter on
+     * @param string|null $value Value to filter on
      *
+     * @return View
      * @throws ReflectionException
      */
-    public static function render(string $class, string $attribute, string $value): View
+    public static function render(string $class, string $attribute, null|string $value): View
     {
         $model = (new ReflectionClass($class))->newInstance();
 

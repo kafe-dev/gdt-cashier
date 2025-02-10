@@ -70,7 +70,7 @@ class OrderTrackingDataTable extends BaseDataTable
     {
         return [
             Column::make(['data' => 'id', 'title' => 'ID'])->addClass('x-id'),
-            Column::make('order_id')->searchPanes()->addClass('x-searchable'),
+            Column::make('transaction_id')->searchPanes()->addClass('x-searchable'),
             Column::make('tracking_number')->searchPanes()->addClass('x-searchable'),
             Column::make('courier_code')->searchPanes()->addClass('x-searchable'),
             Column::make('tracking_status')->searchPanes(),
@@ -119,12 +119,12 @@ class OrderTrackingDataTable extends BaseDataTable
                 $(node).click(() => {
                     var form = document.createElement('form');
                     form.method = 'POST';
-                    form.action = '".route('app.tracking.export')."';
+                    form.action = '" . route('app.tracking.export') . "';
 
                     var csrfToken = document.createElement('input');
                     csrfToken.type = 'hidden';
                     csrfToken.name = '_token';
-                    csrfToken.value = '".csrf_token()."';
+                    csrfToken.value = '" . csrf_token() . "';
 
                     form.appendChild(csrfToken);
 

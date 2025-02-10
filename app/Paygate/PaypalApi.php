@@ -3,6 +3,7 @@ namespace App\Paygate;
 
 use App\Models\Paygate;
 use Exception;
+use Illuminate\Http\RedirectResponse;
 use InvalidArgumentException;
 
 class PayPalAPI
@@ -157,6 +158,33 @@ class PayPalAPI
         $response = curl_exec($ch);
         curl_close($ch);
         return json_decode($response, true);
+    }
+
+    private function makeRequestReturnCode($method, $endpoint, $data = null, $isAuth = false)
+    {
+        $headers = ["Content-Type: application/json"];
+        if ($isAuth) {
+            $auth = base64_encode("{$this->clientId}:{$this->clientSecret}");
+            $headers[] = "Authorization: Basic {$auth}";
+        } else {
+            $headers[] = "Authorization: Bearer {$this->accessToken}";
+        }
+        $ch = curl_init($this->apiUrl . $endpoint);
+        curl_setopt_array($ch, [
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_HTTPHEADER => $headers,
+            CURLOPT_CUSTOMREQUEST => $method,
+        ]);
+        if ($method === "POST") {
+            curl_setopt($ch, CURLOPT_POSTFIELDS, is_array($data) ? json_encode($data) : $data);
+        }
+        $response = curl_exec($ch);
+
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+        curl_close($ch);
+
+        return $httpCode;
     }
 
     /**
@@ -489,6 +517,64 @@ class PayPalAPI
         ];
         return $this->makeRequest("POST", "/v1/customer/disputes/{$dispute_id}/accept-claim", $payload);
     }
+
+    /**
+     * Get tracking info.
+     *
+     * @param string $transactionId
+     * @param string|null $trackingNumber
+     * @param string|null $accountId
+     * @return array
+     * @throws Exception
+     */
+    public function getTrackingInfo(string $transactionId, ?string $trackingNumber = null, ?string $accountId = null): array
+    {
+        $endpoint = "/v1/shipping/trackers";
+
+        $params = [
+            "transaction_id" => $transactionId,
+            "tracking_number" => $trackingNumber,
+            "account_id" => $accountId
+        ];
+
+        $queryString = http_build_query(array_filter($params, fn($v) => $v !== null));
+        $url = $endpoint . '?' . $queryString;
+
+        return $this->makeRequest('GET', $url);
+    }
+
+    /**
+     * Action to manage tracking info for transaction.
+     *
+     * action: 'add', 'update', 'cancel'
+     *
+     * @throws Exception
+     */
+    public function addTrackingInfo(
+        string $transaction_id,
+        string $status,
+        string $trackingNumber,
+        string $carrier
+    ): int|array|RedirectResponse
+    {
+        $url = "/v1/shipping/trackers";
+
+        if (empty($trackingNumber) || empty($carrier)) {
+            flash()->error("Tracking number or tracking carrier is required.");
+            return redirect()->route("app.tracking.index");
+        }
+        $data = [
+            "trackers" => [[
+                "transaction_id" => $transaction_id,
+                "tracking_number" => $trackingNumber,
+                "status" => $status,
+                "carrier" => "OTHER",
+                "carrier_name_other" => $carrier,
+            ]]
+        ];
+
+        return $this->makeRequestReturnCode('POST', $url, $data);
+    }
 }
 
-?>
+
