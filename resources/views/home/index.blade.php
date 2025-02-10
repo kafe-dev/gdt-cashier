@@ -209,7 +209,7 @@
                                 <th class="border-top-0">Type</th>
                                 <th class="border-top-0">Revenue</th>
                                 <th class="border-top-0">Dispute Rate</th>
-                                <th class="border-top-0">Limit</th>
+                                {{-- <th class="border-top-0">Limit</th> --}}
                                 <th class="border-top-0">Status</th>
                             </tr>
                             </thead>
