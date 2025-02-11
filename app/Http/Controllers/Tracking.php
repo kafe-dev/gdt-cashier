@@ -159,18 +159,7 @@ class Tracking extends BaseController
             $paygates = Paygate::all();
 
             foreach ($paygates as $paygate) {
-                $api_data = $paygate->api_data ?? [];
-
-                if (is_string($api_data)) {
-                    $api_data = json_decode($api_data, true);
-                }
-
-                if (is_array($api_data) && isset($api_data['client_key'], $api_data['secret_key'])) {
-                    $paypalApi = new PayPalAPI($api_data['client_key'], $api_data['secret_key'], true);
-                } else {
-                    flash()->warning('PayPal API Error.');
-                    continue;
-                }
+                $paypalApi = new PayPalAPI($paygate);
 
                 $response = $paypalApi->addTrackingInfo($data['transaction_id'], $data['status'], $data['tracking_number'], $data['carrier']);
 
