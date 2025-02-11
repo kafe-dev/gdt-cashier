@@ -69,8 +69,7 @@ class DisputeCommand extends Command {
     public function fetchv1() {
         $paygates = Paygate::all();
         foreach ($paygates as $paygate) {
-            $api_data  = $paygate->api_data ?? [];
-            $paypalApi = new PayPalAPI($api_data['client_key'], $api_data['secret_key'], true); // true = sandbox mode
+            $paypalApi = new PayPalAPI($paygate); // true = sandbox mode
             $response  = $paypalApi->listDispute('2025-01-01T00:00:00.000Z');
             if (!empty($response['items'])) {
                 foreach ($response['items'] as $item) {
@@ -87,8 +86,7 @@ class DisputeCommand extends Command {
     public function fetchv2() {
         $paygates = Paygate::all();
         foreach ($paygates as $paygate) {
-            $api_data  = $paygate->api_data ?? [];
-            $paypalApi = new PayPalAPI($api_data['client_key'], $api_data['secret_key'], true); // true = sandbox mode
+            $paypalApi = new PayPalAPI($paygate); // true = sandbox mode
             $response  = $paypalApi->getDisputeDetails('PP-R-BYH-10106342');
             echo '<pre>';
             print_r($response);

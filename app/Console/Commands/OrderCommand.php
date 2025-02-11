@@ -118,7 +118,7 @@ class OrderCommand extends Command
         $paygates = Paygate::all();
         foreach ($paygates as $paygate) {
             $api_data = $paygate->api_data??[];
-            $paypalApi = new PayPalAPI($api_data['client_key'],$api_data['secret_key'],true); // true = sandbox mode
+            $paypalApi = new PayPalAPI($paygate); // true = sandbox mode
             $orders = $paypalApi->listOrder();
             echo '<pre>';
             print_r($orders);
