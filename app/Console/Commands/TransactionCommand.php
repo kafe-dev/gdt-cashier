@@ -34,7 +34,7 @@ class TransactionCommand extends Command {
      * @throws \Throwable
      */
     public function handle(): void {
-        $this->fetchv1();
+        $this->fetch();
     }
 
     /**
@@ -43,54 +43,17 @@ class TransactionCommand extends Command {
      * @return void
      * @throws \Throwable
      */
-    public function fetch(): void {
-        $paygates = Paygate::all();
-        foreach ($paygates as $paygate) {
-            echo $paygate->name . PHP_EOL;
-            $api_data = $paygate->api_data ?? [];
-            if (empty($api_data)) {
-                return;
-            }
-            $config   = [
-                'mode'           => 'sandbox',
-                'sandbox'        => [
-                    'client_id'     => $api_data['client_key'] ?? '',
-                    'client_secret' => $api_data['secret_key'] ?? '',
-                    'app_id'        => 'PAYPAL_LIVE_APP_ID',
-                ],
-                'payment_action' => 'Sale',
-                'currency'       => 'USD',
-                'notify_url'     => '#',
-                'locale'         => 'en_US',
-                'validate_ssl'   => true,
-            ];
-            $provider = new PayPalClient($config);
-            $provider->getAccessToken();
-            $now        = new DateTime();
-            $start_date = $now->format('Y-m-d') . 'T00:00:00Z';
-            $end_date   = $now->format('Y-m-d') . 'T23:59:59Z';
-            //            $response = $provider->listInvoices([
-            //                'start_date' => $start_date,
-            //                'end_da   o;  te'   => $end_date,
-            //            ]);
-            $filters  = [
-                'start_date' => '2025-01-01T00:00:00Z',
-                'end_date'   => '2025-01-31T23:59:59Z',
-            ];
-            $response = $provider->listTransactions($filters);
-            if (!empty($response['items'])) {
-                foreach ($response['items'] as $item) {
-                    $this->newDispute($item, $paygate->id);
-                }
-            }
-        }
-    }
-
-    public function fetchv1() {
+    /**
+     * @throws \Exception
+     */
+    public function fetch() {
         $paygates = Paygate::all();
         foreach ($paygates as $paygate) {
             $paypalApi = new PayPalAPI($paygate); // true = sandbox mode
-            $response  = $paypalApi->listTransaction('2025-01-01T00:00:00.000Z', '2025-01-31T00:00:00.000Z');
+            $now        = new DateTime();
+            $start_date = $now->format('Y-m-d') . 'T00:00:00Z';
+            $end_date   = $now->format('Y-m-d') . 'T23:59:59Z';
+            $response  = $paypalApi->listTransaction($start_date, $end_date);
             if (!empty($response['transaction_details'])) {
                 foreach ($response['transaction_details'] as $item) {
                     try {
