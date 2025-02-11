@@ -342,4 +342,11 @@ class Dispute extends BaseController
 
         return $data;
     }
+
+    public function provideEvidence(Request $request) {
+        $input = $request->all();
+        echo '<pre>';
+        print_r($input);
+        die;
+    }
 }
