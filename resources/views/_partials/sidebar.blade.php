@@ -90,6 +90,7 @@
                     </a>
                 </li>
             @endif
+            {{--
             @if(PermissionHelper::hasAccess('app.order.index'))
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('app.order.index') }}">
@@ -99,6 +100,7 @@
                     </a>
                 </li>
             @endif
+            --}}
             @if(PermissionHelper::hasAccess('app.paypal-transaction.index'))
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('app.paypal-transaction.index') }}">
