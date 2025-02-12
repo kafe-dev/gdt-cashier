@@ -35,6 +35,8 @@ class OrderTrackingDataTableExport implements FromCollection, WithHeadings
         return $this->records->map(function ($record) {
             return [
                 'ID' => $record->id,
+                'Paygate Name' => $record->paygate_name,
+                'Invoice Number' => $record->invoice_number,
                 'Transaction ID' => $record->transaction_id,
                 'Tracking Number' => $record->tracking_number,
                 'Courier Code' => $record->courier_code,
@@ -57,7 +59,7 @@ class OrderTrackingDataTableExport implements FromCollection, WithHeadings
     public function headings(): array
     {
         return [
-            'ID', 'Order ID', 'Tracking Number', 'Courier Code', 'Tracking Status',
+            'ID', 'Paygate Name', 'Invoice Number', 'Transaction ID', 'Tracking Number', 'Courier Code', 'Tracking Status',
             'Type', 'Closed At', 'Last Checked At', 'Exported At', 'Created At', 'Updated At'
         ];
     }

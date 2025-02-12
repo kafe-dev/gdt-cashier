@@ -573,7 +573,7 @@ class PayPalAPI
      * @return array
      * @throws Exception
      */
-    public function getTrackingInfo(string $transactionId, ?string $trackingNumber = null, ?string $accountId = null): array
+    public function getTrackingInfo(string $transactionId, ?string $trackingNumber = null, ?string $accountId = null): array|null
     {
         $endpoint = "/v1/shipping/trackers";
 

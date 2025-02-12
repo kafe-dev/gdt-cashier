@@ -20,6 +20,14 @@ class PaypalTransactionTransformer extends TransformerAbstract
      */
     public function transform(PaypalTransaction $paypalTransaction): array
     {
+        $status = match ($paypalTransaction->status) {
+            'D' => '<span class="badge badge-soft-danger">Denied</span>',
+            'P' => '<span class="badge badge-soft-info">Pending</span>',
+            'S' => '<span class="badge badge-soft-success">Completed</span>',
+            'V' => '<span class="badge badge-soft-purple">Refunded</span>',
+            default => '<span class="badge badge-soft-primary">Unknown</span>',
+        };
+
         return [
             'id' => '<span class="fw-bold float-start">' . $paypalTransaction->id . '</span>',
             'date' => $paypalTransaction->date,
@@ -27,7 +35,7 @@ class PaypalTransactionTransformer extends TransformerAbstract
             'timezone' => $paypalTransaction->timezone,
             'name' => $paypalTransaction->name,
             'type' => $paypalTransaction->type,
-            'status' => $paypalTransaction->status,
+            'status' => $status,
             'currency' => $paypalTransaction->currency,
             'gross' => $paypalTransaction->gross,
             'fee' => $paypalTransaction->fee,

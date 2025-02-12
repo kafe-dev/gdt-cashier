@@ -34,6 +34,8 @@ class OrderTrackingTransformer extends TransformerAbstract
 
         return [
             'id' => '<span class="fw-bold float-start">' . $orderTracking->id . '</span>',
+            'paygate_name' => $orderTracking->paygate_name ?? '',
+            'invoice_number' => $orderTracking->invoice_number ?? '',
             'transaction_id' => $orderTracking->transaction_id ?? '',
             'tracking_number' => $orderTracking->tracking_number ?? '',
             'courier_code' => $orderTracking->courier_code ?? '',
