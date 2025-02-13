@@ -220,8 +220,7 @@ class PayPalAPI
      * @return array Danh sách các giao dịch tranh chấp
      * @throws Exception Nếu chọn cả hai tham số start_time và disputed_transaction_id
      */
-    public function listDispute($start_time = null, $disputed_transaction_id = null, $page_size = 20)
-    {
+    public function listDispute($start_time = null, $disputed_transaction_id = null, $page_size = 20): array {
         // Kiểm tra điều kiện: Chỉ được chọn start_time hoặc disputed_transaction_id, không được chọn cả hai
         if ($start_time && $disputed_transaction_id) {
             throw new Exception("Chỉ có thể chọn start_time hoặc disputed_transaction_id, không thể chọn cả hai.");

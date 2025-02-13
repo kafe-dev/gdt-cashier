@@ -22,13 +22,14 @@
     $links = $dispute_arr['links']??[];
     $actions = array_map(fn($link) => $link['rel'], $links);
     $action_dispute = [
-        'accept_claim'=>'<a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#accept-claim-modal">Accept claim</a>',
-        'provide_evidence'=>'<a class="dropdown-item" href="#">Provide evidence</a>',
-        'make_offer'=>'<a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#make-offer-dispute-modal">Make offer to resolve dispute</a>',
-        'escalate'=>'<a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#escalate-dispute-modal">Escalate dispute to claim</a>',
-        'send_message'=>'<a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#send-message-dispute-modal">Send message about dispute to other party</a>',
-        'acknowledge_return_item'=>'<a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#acknowledge-returned-dispute-modal">Acknowledge returned item</a>',
-    ];
+    'accept_claim' => '<a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#accept-claim-modal"><i class="fas fa-angle-right fa-xs me-2"></i> Accept claim</a>',
+    'provide_evidence' => '<a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#provide-evidence-modal"><i class="fas fa-angle-right fa-xs me-2"></i> Provide evidence</a>',
+    'make_offer' => '<a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#make-offer-dispute-modal"><i class="fas fa-angle-right fa-xs me-2"></i> Make offer to resolve dispute</a>',
+    'escalate' => '<a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#escalate-dispute-modal"><i class="fas fa-angle-right fa-xs me-2"></i> Escalate dispute to claim</a>',
+    'send_message' => '<a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#send-message-dispute-modal"><i class="fas fa-angle-right fa-xs me-2"></i> Send message about dispute to other party</a>',
+    'acknowledge_return_item' => '<a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#acknowledge-returned-dispute-modal"><i class="fas fa-angle-right fa-xs me-2"></i> Acknowledge returned item</a>',
+];
+
 @endphp
 
 @section('content')
@@ -144,4 +145,8 @@
     {{--    Begin Accept Claim Modal--}}
     @include('dispute._modal-accept-claim')
     {{--    End Accept Claim Modal--}}
+
+    {{--    Begin Provide Evidence Modal--}}
+    @include('dispute._modal-provide-evidence',compact('dispute','dispute_arr'))
+    {{--    End Provide Evidence Modal--}}
 @endsection
