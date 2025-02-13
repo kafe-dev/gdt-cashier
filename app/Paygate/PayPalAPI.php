@@ -235,16 +235,13 @@ class PayPalAPI
         return $this->makeRequest("GET", "/v1/customer/disputes?{$query}");
     }
 
-    public function provideEvidence($dispute_id, $evidences, $return_shipping_address = null): array
+    public function provideEvidence($dispute_id, $payload, $return_shipping_address = null): array
     {
         // Kiểm tra dispute_id hợp lệ
         if (empty($dispute_id)) {
             throw new Exception("Dispute ID is required.");
         }
-        // Tạo payload JSON theo tài liệu PayPal
-        $payload = [
-            'evidences' => $evidences,
-        ];
+
         // Nếu có địa chỉ trả hàng, thêm vào payload
         if (!empty($return_shipping_address)) {
             $payload['return_shipping_address'] = $return_shipping_address;
