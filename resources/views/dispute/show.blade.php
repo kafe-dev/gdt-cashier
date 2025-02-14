@@ -44,6 +44,8 @@
                     <ul class="list-group">
                         @foreach ([
                             'Case ID' => $dispute_arr['dispute_id'] ?? 'N/A',
+                            'Status' => $dispute_arr['status'] ?? 'N/A',
+                            'reason' => $dispute_arr['reason'] ?? 'N/A',
                             'Disputed amount' => "$" . ($dispute_arr['dispute_amount']['value'] ?? 0) . " " . ($dispute_arr['dispute_amount']['currency_code'] ?? 'USD'),
                             'Buyer info' => $buyer_name . '<br>' . ($transaction_arr['transaction_details'][0]['payer_info']['email_address'] ?? ''),
                             'Shipping address' => ($shipping_address['line1'] ?? '') . ', ' . ($shipping_address['line2'] ?? '') . '<br>' . ($shipping_address['city'] ?? '') . '<br>' . ($shipping_address['postal_code'] ?? ''),
