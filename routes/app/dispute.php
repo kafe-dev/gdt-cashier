@@ -17,4 +17,5 @@ Route::controller(Dispute::class)
         Route::post('/{id}/makeOffer', 'makeOffer')->name('makeOffer');
         Route::post('/{id}/acknowledgeReturned', 'acknowledgeReturned')->name('acknowledgeReturned');
         Route::post('/{id}/acceptClaim', 'acceptClaim')->name('acceptClaim');
+        Route::post('/{id}/provideEvidence', 'provideEvidence')->name('provideEvidence');
     });

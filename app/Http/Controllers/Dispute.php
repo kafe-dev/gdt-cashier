@@ -247,24 +247,29 @@ class Dispute extends BaseController
         ]);
         // Kiểm tra đầu vào
         if (empty($input['paygate_id']) || empty($input['dispute_id'])) {
-            return redirect()->back()->with('error', 'Thiếu thông tin cần thiết để thực hiện thao tác.');
+            flash()->error('Thiếu thông tin cần thiết để thực hiện thao tác.');
+            return redirect()->back();
         }
         // Tìm Paygate
         $paygate = \App\Models\Paygate::find($input['paygate_id']);
         if (!$paygate) {
-            return redirect()->back()->with('error', 'Không tìm thấy cổng thanh toán.');
+            flash()->error('Không tìm thấy cổng thanh toán.');
+            return redirect()->back();
         }
         // Gọi API PayPal
         try {
             $paypalApi = new PayPalAPI($paygate);
             $result = $paypalApi->escalate($input['dispute_id'], $input['note']);
             if (!$result) {
-                return redirect()->back()->with('error', 'Không thể nâng cấp tranh chấp. Vui lòng thử lại sau.');
+                flash()->error('Không thể nâng cấp tranh chấp. Vui lòng thử lại sau.');
+                return redirect()->back();
             }
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Lỗi khi gọi API: ' . $e->getMessage());
+            flash()->error('Lỗi khi gọi API: ' . $e->getMessage());
+            return redirect()->back();
         }
-        return redirect()->route('app.dispute.show', ['id' => $input['dispute_id']])->with('success', 'Tranh chấp đã được nâng cấp thành công.');
+        flash()->success('Tranh chấp đã được nâng cấp thành công.');
+        return redirect()->route('app.dispute.show', ['id' => $input['dispute_id']]);
     }
 
     /**
@@ -341,5 +346,48 @@ class Dispute extends BaseController
         $data['return_shipment_info'] = ($acceptClaimType === 'REFUND_WITH_RETURN_SHIPMENT_LABEL' ? $data['return_shipment_info'] : null);
 
         return $data;
+    }
+
+    /**
+     * Provide evidence for a dispute.
+     *
+     * @param Request $request The request containing tracking info.
+     * @param int     $id      The ID of the dispute to be processed.
+     *
+     * @return RedirectResponse Redirects back to the dispute details page with a success or error message.
+     * @throws \Exception
+     */
+    public function provideEvidence(Request $request, $id): RedirectResponse {
+        $input = $request->validate([
+            'carrier_name' => 'required|string|max:2000',
+            'tracking_number' => 'required|string|max:2000',
+        ]);
+
+        $dispute = \App\Models\Dispute::findOrFail($id);
+        $paypalApi = $this->getPaypalApiByDisputeId($id);
+
+        $result_code = $paypalApi->provideEvidence($dispute->dispute_id, [
+            'evidences' => [
+                [
+                    'evidence_type' => 'PROOF_OF_FULFILLMENT',
+                    'evidence_info' => [
+                        'tracking_info' => [
+                            [
+                                'carrier_name' => $input['carrier_name'],
+                                'tracking_number' => $input['tracking_number'],
+                            ],
+                        ],
+                    ],
+                    'notes' => 'Thông tin giao hàng được cung cấp.',
+                ],
+            ],
+        ]);
+
+        if($result_code == 200){
+            flash()->success('Bằng chứng đã được cung cấp cho tranh chấp trên.');
+        }else{
+            flash()->error('Xảy ra lỗi trong quá trình cung cấp bằng chứng cho tranh cấp.');
+        }
+        return redirect()->route('app.dispute.show', ['id' => $id]);
     }
 }

@@ -71,7 +71,7 @@ class DisputeCommand extends Command {
     public function fetchv1() {
         $paygates = Paygate::all();
         foreach ($paygates as $paygate) {
-            $paypalApi = new PayPalAPI($paygate); // true = sandbox mode
+            $paypalApi = new PayPalAPI($paygate);
             $response  = $paypalApi->listDispute(TimeHelper::getStartOfDayISO());
             if (!empty($response['items'])) {
                 foreach ($response['items'] as $item) {
