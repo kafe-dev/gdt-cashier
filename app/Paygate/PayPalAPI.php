@@ -609,6 +609,59 @@ class PayPalAPI {
             'privateKey' => 'YOUR_PRIVATE_KEY'
         ]);
     }
+
+    public function uploadEvidenceFile($disputeId, $filePath) {
+        $ch = curl_init($this->apiUrl."/v1/customer/disputes/$disputeId/files");
+
+        $file = new \CURLFile("$filePath", mime_content_type($filePath), basename($filePath));
+
+        $postFields = ['file' => '@' . realpath($filePath)];
+
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            "Authorization: Bearer {$this->accessToken}",
+            "Content-Type: multipart/form-data"
+        ]);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $postFields);
+
+        $response = curl_exec($ch);
+        var_dump($response);die;
+
+        curl_close($ch);
+
+        $data = json_decode($response, true);
+        echo '<pre>start-debug'.PHP_EOL;
+        print_r($data).PHP_EOL;
+        die('--end--');
+
+        return $data['file_id'] ?? null;
+    }
+
+    public function test($filePath,$dispute_id)
+    {
+        $file = new \CURLFile($filePath);
+
+        $ch = curl_init("{$this->apiUrl}/v1/customer/disputes/{$dispute_id}/files");
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            "Authorization: Bearer {$this->accessToken}",
+            "Content-Type: multipart/form-data"
+        ]);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, ["file" => $file]);
+        curl_setopt($ch, CURLOPT_VERBOSE, true);
+        curl_setopt($ch, CURLOPT_HEADER, true);
+
+        $response = curl_exec($ch);
+
+        if (curl_errno($ch)) {
+            echo 'cURL error: ' . curl_error($ch);
+        }
+
+        curl_close($ch);
+        var_dump($response);die;
+
+
+    }
 }
-
-

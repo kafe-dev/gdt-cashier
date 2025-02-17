@@ -149,6 +149,15 @@
     {{--    End Accept Claim Modal--}}
 
     {{--    Begin Provide Evidence Modal--}}
-    @include('dispute._modal-provide-evidence',compact('dispute','dispute_arr'))
+
+    @if($dispute_arr['reason'] == 'MERCHANDISE_OR_SERVICE_NOT_RECEIVED')
+        @include('dispute.form_provider_evidence._modal-not-received',compact('dispute','dispute_arr'))
+    @elseif($dispute_arr['reason'] == 'MERCHANDISE_OR_SERVICE_NOT_AS_DESCRIBED')
+        @include('dispute.form_provider_evidence._modal-not-described',compact('dispute','dispute_arr'))
+    @endif
+
+
+
+
     {{--    End Provide Evidence Modal--}}
 @endsection
