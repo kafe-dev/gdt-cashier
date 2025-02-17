@@ -30,49 +30,80 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Dispute extends Model {
 
-	use HasFactory;
+    use HasFactory;
 
-    public final const string STATUS_DENIED = 'DENIED';
-    public final const string STATUS_CLOSED = 'CLOSED';
-    public final const string STATUS_EXPIRED = 'EXPIRED';
-    public final const string STATUS_RESOLVED = 'RESOLVED';
-    public final const string STATUS_WAITING_FOR_BUYER_RESPONSE = 'WAITING_FOR_BUYER_RESPONSE';
-    public final const string STATUS_WAITING_FOR_SELLER_RESPONSE = 'WAITING_FOR_SELLER_RESPONSE';
-    public final const string STATUS_UNDER_REVIEW = 'UNDER_REVIEW';
-    public final const string STATUS_OPEN = 'OPEN';
+    public final const string STATUS_DENIED                                  = 'DENIED';
 
-    public final const array STATUSES = [
-        self::STATUS_DENIED => 'DENIED',
-        self::STATUS_CLOSED => 'CLOSED',
-        self::STATUS_EXPIRED => 'EXPIRED',
-        self::STATUS_RESOLVED => 'RESOLVED',
-        self::STATUS_WAITING_FOR_BUYER_RESPONSE => 'WAITING_FOR_BUYER_RESPONSE',
+    public final const string STATUS_CLOSED                                  = 'CLOSED';
+
+    public final const string STATUS_EXPIRED                                 = 'EXPIRED';
+
+    public final const string STATUS_RESOLVED                                = 'RESOLVED';
+
+    public final const string STATUS_WAITING_FOR_BUYER_RESPONSE              = 'WAITING_FOR_BUYER_RESPONSE';
+
+    public final const string STATUS_WAITING_FOR_SELLER_RESPONSE             = 'WAITING_FOR_SELLER_RESPONSE';
+
+    public final const string STATUS_UNDER_REVIEW                            = 'UNDER_REVIEW';
+
+    public final const string STATUS_OPEN                                    = 'OPEN';
+
+    public final const array  STATUSES                                       = [
+        self::STATUS_DENIED                      => 'DENIED',
+        self::STATUS_CLOSED                      => 'CLOSED',
+        self::STATUS_EXPIRED                     => 'EXPIRED',
+        self::STATUS_RESOLVED                    => 'RESOLVED',
+        self::STATUS_WAITING_FOR_BUYER_RESPONSE  => 'WAITING_FOR_BUYER_RESPONSE',
         self::STATUS_WAITING_FOR_SELLER_RESPONSE => 'WAITING_FOR_SELLER_RESPONSE',
-        self::STATUS_UNDER_REVIEW => 'UNDER_REVIEW',
-        self::STATUS_OPEN => 'OPEN',
+        self::STATUS_UNDER_REVIEW                => 'UNDER_REVIEW',
+        self::STATUS_OPEN                        => 'OPEN',
     ];
 
-	protected $fillable = [
-		'dispute_id',
-		'create_time',
-		'update_time',
-		'buyer_transaction_id',
-		'merchant_id',
-		'reason',
-		'status',
-		'dispute_state',
-		'dispute_amount_currency',
-		'dispute_amount_value',
-		'dispute_life_cycle_stage',
-		'dispute_channel',
-		'seller_response_due_date',
-		'link',
-        'paygate_id'
-	];
+    const                     REASON_MERCHANDISE_OR_SERVICE_NOT_RECEIVED     = 'MERCHANDISE_OR_SERVICE_NOT_RECEIVED';
 
-	protected $casts    = [
-		'create_time'              => 'datetime',
-		'update_time'              => 'datetime',
-		'seller_response_due_date' => 'datetime',
-	];
+    const                     REASON_MERCHANDISE_OR_SERVICE_NOT_AS_DESCRIBED = 'MERCHANDISE_OR_SERVICE_NOT_AS_DESCRIBED';
+
+    const                     REASON_UNAUTHORISED                            = 'UNAUTHORISED';
+
+    const                     REASON                                         = [
+        self::REASON_MERCHANDISE_OR_SERVICE_NOT_RECEIVED     => 'MERCHANDISE_OR_SERVICE_NOT_RECEIVED',
+        self::REASON_MERCHANDISE_OR_SERVICE_NOT_AS_DESCRIBED => 'MERCHANDISE_OR_SERVICE_NOT_AS_DESCRIBED',
+        self::REASON_UNAUTHORISED                            => 'UNAUTHORISED',
+    ];
+
+    const                     EVIDENCE_TYPE_PROOF_OF_FULFILLMENT             = 'PROOF_OF_FULFILLMENT';
+
+    const                     EVIDENCE_TYPE_PROOF_OF_REFUND                  = 'PROOF_OF_REFUND';
+
+    const                     EVIDENCE_TYPE_OTHER                            = 'OTHER';
+
+    const                     EVIDENCE_TYPE                                  = [
+        self::EVIDENCE_TYPE_PROOF_OF_FULFILLMENT => 'PROOF_OF_FULFILLMENT',
+        self::EVIDENCE_TYPE_PROOF_OF_REFUND      => 'PROOF_OF_REFUND',
+        self::EVIDENCE_TYPE_OTHER                => 'OTHER',
+    ];
+
+    protected $fillable = [
+        'dispute_id',
+        'create_time',
+        'update_time',
+        'buyer_transaction_id',
+        'merchant_id',
+        'reason',
+        'status',
+        'dispute_state',
+        'dispute_amount_currency',
+        'dispute_amount_value',
+        'dispute_life_cycle_stage',
+        'dispute_channel',
+        'seller_response_due_date',
+        'link',
+        'paygate_id',
+    ];
+
+    protected $casts    = [
+        'create_time'              => 'datetime',
+        'update_time'              => 'datetime',
+        'seller_response_due_date' => 'datetime',
+    ];
 }
