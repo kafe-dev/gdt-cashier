@@ -381,7 +381,7 @@ class Dispute extends BaseController {
                                 'tracking_number' => $validated['tracking_number'] ?? '',
                             ]],
                         ],
-                        'notes' => 'Thông tin giao hàng được cung cấp.',
+                        //'notes' => 'Thông tin giao hàng được cung cấp.',
                     ]],
                 ]];
                 break;
@@ -409,7 +409,7 @@ class Dispute extends BaseController {
         }
 
         if (!empty($params)) {
-            $paypalApi->provideEvidence($dispute->dispute_id, $params);
+            $result = $paypalApi->provideEvidence($dispute->dispute_id, $params);
         } else {
             echo 'Lỗi nhé.';die;
         }

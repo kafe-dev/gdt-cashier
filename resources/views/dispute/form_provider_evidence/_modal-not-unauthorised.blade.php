@@ -1,7 +1,8 @@
 @php
     $evidence_type = [
         'PROOF_OF_FULFILLMENT',
-        'PROOF_OF_REFUND'
+        'PROOF_OF_REFUND',
+        'OTHER',
     ];
 @endphp
 
@@ -53,6 +54,14 @@
                         <div class="mb-3">
                             <label for="refund_id" class="form-label">Refund ID(<span class="text-danger">*</span>)</label>
                             <input type="text" class="form-control" id="refund_id" name="refund_id"
+                                   value="" placeholder="Enter refund id">
+                        </div>
+                    </div>
+
+                    <div id="refund_fields">
+                        <div class="mb-3">
+                            <label for="note" class="form-label">Notes(<span class="text-danger">*</span>)</label>
+                            <input type="text" class="form-control" id="note" name="note"
                                    value="" placeholder="Enter refund id">
                         </div>
                     </div>

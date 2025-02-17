@@ -24,7 +24,7 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="evidence_type" class="form-label">Evidence Type</label>
+                        <label for="evidence_type" class="form-label">Evidence Type(<span class="text-danger">*</span>)</label>
                         <select class="form-control" id="evidence_type" name="evidence_type" required>
                             <option value="">Select Evidence Type</option>
                             @foreach($evidence_type as $type)
@@ -36,7 +36,7 @@
                     <!-- Note (Chỉ hiển thị khi chọn OTHER) -->
                     <div id="note_field">
                         <div class="mb-3">
-                            <label for="note" class="form-label">Note</label>
+                            <label for="note" class="form-label">Note(<span class="text-danger">*</span>)</label>
                             <input type="text" class="form-control" id="note" name="note"
                                    value="" placeholder="Enter Note">
                         </div>
@@ -45,9 +45,9 @@
                     <!-- Refund ID (Chỉ hiển thị khi chọn PROOF_OF_REFUND) -->
                     <div id="refund_fields">
                         <div class="mb-3">
-                            <label for="refund_id" class="form-label">Refund ID</label>
+                            <label for="refund_id" class="form-label">Refund ID(<span class="text-danger">*</span>)</label>
                             <input type="text" class="form-control" id="refund_id" name="refund_id"
-                                   value="" placeholder="Enter refund id">
+                                   value="" placeholder="Enter refund id" required>
                         </div>
                     </div>
 

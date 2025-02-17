@@ -73,6 +73,7 @@ class DisputeCommand extends Command {
         foreach ($paygates as $paygate) {
             $paypalApi = new PayPalAPI($paygate);
             $response  = $paypalApi->listDispute(TimeHelper::getStartOfDayISO());
+            $dispute_update_status = [];
             if (!empty($response['items'])) {
                 foreach ($response['items'] as $item) {
                     try {
