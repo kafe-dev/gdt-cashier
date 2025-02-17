@@ -21,6 +21,7 @@
     $offers = $dispute_arr['offer']['history']??[];
     $links = $dispute_arr['links']??[];
     $actions = array_map(fn($link) => $link['rel'], $links);
+    $evidences = $dispute_arr['evidences'];
     $action_dispute = [
     'accept_claim' => '<a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#accept-claim-modal"><i class="fas fa-angle-right fa-xs me-2"></i> Accept claim</a>',
     'provide_evidence' => '<a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#provide-evidence-modal"><i class="fas fa-angle-right fa-xs me-2"></i> Provide evidence</a>',
@@ -46,6 +47,7 @@
                             'Case ID' => $dispute_arr['dispute_id'] ?? 'N/A',
                             'Status' => $dispute_arr['status'] ?? 'N/A',
                             'reason' => $dispute_arr['reason'] ?? 'N/A',
+                            'dispute_life_cycle_stage'=>$dispute_arr['dispute_life_cycle_stage']??'N/A',
                             'Disputed amount' => "$" . ($dispute_arr['dispute_amount']['value'] ?? 0) . " " . ($dispute_arr['dispute_amount']['currency_code'] ?? 'USD'),
                             'Buyer info' => $buyer_name . '<br>' . ($transaction_arr['transaction_details'][0]['payer_info']['email_address'] ?? ''),
                             'Shipping address' => ($shipping_address['line1'] ?? '') . ', ' . ($shipping_address['line2'] ?? '') . '<br>' . ($shipping_address['city'] ?? '') . '<br>' . ($shipping_address['postal_code'] ?? ''),
@@ -59,6 +61,28 @@
                                 <span class="text-right">{!! $value !!}</span>
                             </li>
                         @endforeach
+
+                        @if(!empty($evidences))
+                            @foreach($evidences as $label => $value)
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <span class="text-muted">Evidences: {!! $value['evidence_type'] !!}</span>
+                                    <span class="text-right">
+                                        @isset($value['notes'])
+                                            Note: {{ $value['notes'] }}<br>
+                                        @endisset
+                                        @if(!empty($value['evidence_info']['tracking_info']))
+                                            @php $tracking_info = $value['evidence_info']['tracking_info'][0]; @endphp
+                                            Carrier Name: {{ $tracking_info['carrier_name'] }}<br>
+                                            Tracking Number: {{ $tracking_info['tracking_number'] }}<br>
+                                        @endif
+                                        @isset($value['source'])
+                                            Source: {{ $value['source'] }}<br>
+                                        @endisset
+                                    </span>
+                                </li>
+                            @endforeach
+                        @endif
+
                     </ul>
                     <hr>
                     <h4 class="card-title mb-3">Your conversation with {{$buyer_name}}</h4>
@@ -125,7 +149,8 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-6 col-12"></div>
+        <div class="col-md-6 col-12">
+        </div>
     </div>
 
     {{--    Begin Send Message Modal --}}
@@ -154,10 +179,11 @@
         @include('dispute.form_provider_evidence._modal-not-received',compact('dispute','dispute_arr'))
     @elseif($dispute_arr['reason'] == 'MERCHANDISE_OR_SERVICE_NOT_AS_DESCRIBED')
         @include('dispute.form_provider_evidence._modal-not-described',compact('dispute','dispute_arr'))
+    @elseif($dispute_arr['reason'] == \App\Models\Dispute::REASON_UNAUTHORISED)
+        @include('dispute.form_provider_evidence._modal-not-unauthorised',compact('dispute','dispute_arr'))
     @endif
 
 
-
-
+ư
     {{--    End Provide Evidence Modal--}}
 @endsection
