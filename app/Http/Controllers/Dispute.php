@@ -342,4 +342,55 @@ class Dispute extends BaseController
 
         return $data;
     }
+
+    public function provideEvidence(Request $request, $id): RedirectResponse
+    {
+        try {
+            $evidenceType = strtoupper($request->validate([
+                'evidence_type' => 'required|string|in:PROOF_OF_DELIVERY,PROOF_OF_REFUND,OTHER'
+            ])['evidence_type']);
+
+            $data = $this->getValidatedEvidenceData($request, $evidenceType);
+
+            $payPalApi = $this->getPaypalApiByDisputeId($id);
+            $dispute = Dispute::findOrFail($id);
+
+            $response = $payPalApi->provideEvidence(
+                $dispute->dispute_id,
+                $data['evidence_type'],
+                $data['tracking_number'] ?? null,
+                $data['carrier_name'] ?? null,
+                $data['refund_id'] ?? null,
+                $data['notes'] ?? null,
+                $data['document_path'] ?? null
+            );
+
+            flash()->success('Evidence provided successfully!');
+        } catch (ValidationException $e) {
+            flash()->error($e->getMessage());
+            return redirect()->route('app.dispute.show', ['id' => $id]);
+        } catch (\Exception $e) {
+            flash()->error('An error occurred while providing evidence.');
+            return redirect()->route('app.dispute.show', ['id' => $id]);
+        }
+
+        return redirect()->route('app.dispute.show', ['id' => $id]);
+    }
+
+    private function getValidatedEvidenceData(Request $request, $evidenceType): array
+    {
+        $data = $request->validate([
+            'tracking_number' => [$evidenceType === 'PROOF_OF_DELIVERY' ? 'required' : 'nullable', 'string', 'max:50'],
+            'carrier_name' => [$evidenceType === 'PROOF_OF_DELIVERY' ? 'required' : 'nullable', 'string', 'max:100'],
+            'refund_id' => [$evidenceType === 'PROOF_OF_REFUND' ? 'required' : 'nullable', 'string', 'max:50'],
+            'notes' => [$evidenceType === 'OTHER' ? 'required' : 'nullable', 'string', 'max:2000'],
+            'document' => 'nullable|file|mimes:pdf,jpg,png,jpeg|max:2048',
+        ]);
+
+        if ($request->hasFile('document')) {
+            $data['document_path'] = $request->file('document')->store('evidence_documents');
+        }
+
+        return $data;
+    }
 }

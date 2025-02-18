@@ -23,7 +23,7 @@
     $actions = array_map(fn($link) => $link['rel'], $links);
     $action_dispute = [
         'accept_claim'=>'<a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#accept-claim-modal">Accept claim</a>',
-        'provide_evidence'=>'<a class="dropdown-item" href="#">Provide evidence</a>',
+        'provide_evidence'=>'<a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#provide-evidence-dispute-modal">Provide evidence</a>',
         'make_offer'=>'<a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#make-offer-dispute-modal">Make offer to resolve dispute</a>',
         'escalate'=>'<a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#escalate-dispute-modal">Escalate dispute to claim</a>',
         'send_message'=>'<a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#send-message-dispute-modal">Send message about dispute to other party</a>',
@@ -144,4 +144,8 @@
     {{--    Begin Accept Claim Modal--}}
     @include('dispute._modal-accept-claim')
     {{--    End Accept Claim Modal--}}
+
+    {{--    Begin Provide Evidence Modal--}}
+    @include('dispute._modal-provide-evidence')
+    {{--    End Provide Evidence Modal--}}
 @endsection
