@@ -89,7 +89,8 @@
                     @if($dispute_arr['status'] ==='WAITING_FOR_SELLER_RESPONSE')
                         <div class="alert alert-warning alert-dismissible fade show" role="alert">
                             <i class="fas fa-exclamation-circle"></i>
-                            <strong>Warning!</strong> You have a message from {{$buyer_name}}. Respond as soon as possible.
+                            <strong>Warning!</strong> You have a message from {{$buyer_name}}. Respond as soon as
+                            possible.
                         </div>
                     @endif
 
@@ -100,7 +101,9 @@
                                 <li>
                                     <div class="row mb-3">
                                         <div class="col-auto">
-                                            <img src="https://ui-avatars.com/api/?name={{$buyer_name}}&background=random" alt="" class="thumb-md rounded-circle">
+                                            <img
+                                                src="https://ui-avatars.com/api/?name={{$buyer_name}}&background=random"
+                                                alt="" class="thumb-md rounded-circle">
                                         </div>
                                         <div class="col">
                                             <div class="bg-light rounded p-3">
@@ -111,7 +114,9 @@
                                                 <p>{{$message['content']}}</p>
                                                 @foreach($offers as $offer)
                                                     @if($offer['actor'] == 'BUYER' && $offer['offer_time'] === $message['time_posted'])
-                                                        <span class="@if($offer['event_type'] == "DENIED") text-danger @else text-success @endif" style="font-size: larger">Offer: {{ $offer['event_type'] }}</span>
+                                                        <span
+                                                            class="@if($offer['event_type'] == "DENIED") text-danger @else text-success @endif"
+                                                            style="font-size: larger">Offer: {{ $offer['event_type'] }}</span>
                                                     @endif
                                                 @endforeach
                                             </div>
@@ -130,7 +135,8 @@
                                         </div>
                                     </div>
                                     <div class="col-auto">
-                                        <img src="https://ui-avatars.com/api/?name=Seller&amp;background=random" alt="" class="thumb-md rounded-circle">
+                                        <img src="https://ui-avatars.com/api/?name=Seller&amp;background=random" alt=""
+                                             class="thumb-md rounded-circle">
                                     </div>
                                 </div>
                             @endif
@@ -139,7 +145,8 @@
                 </div>
                 <div class="card-footer">
                     {{ ActionWidget::renderGoBackBtn('Go Back', 'btn btn-danger') }}
-                    <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">Action
+                    <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown"
+                            aria-expanded="false">Action
                         <i class="las la-angle-right ms-1"></i></button>
                     <div class="dropdown-menu" style="">
                         @foreach($actions as $action)
@@ -174,16 +181,12 @@
     {{--    End Accept Claim Modal--}}
 
     {{--    Begin Provide Evidence Modal--}}
-
-    @if($dispute_arr['reason'] == 'MERCHANDISE_OR_SERVICE_NOT_RECEIVED')
+    @if($dispute_arr['reason'] == \App\Models\Dispute::REASON_MERCHANDISE_OR_SERVICE_NOT_RECEIVED)
         @include('dispute.form_provider_evidence._modal-not-received',compact('dispute','dispute_arr'))
-    @elseif($dispute_arr['reason'] == 'MERCHANDISE_OR_SERVICE_NOT_AS_DESCRIBED')
+    @elseif($dispute_arr['reason'] == \App\Models\Dispute::REASON_MERCHANDISE_OR_SERVICE_NOT_AS_DESCRIBED)
         @include('dispute.form_provider_evidence._modal-not-described',compact('dispute','dispute_arr'))
     @elseif($dispute_arr['reason'] == \App\Models\Dispute::REASON_UNAUTHORISED)
         @include('dispute.form_provider_evidence._modal-not-unauthorised',compact('dispute','dispute_arr'))
     @endif
-
-
-ư
     {{--    End Provide Evidence Modal--}}
 @endsection
