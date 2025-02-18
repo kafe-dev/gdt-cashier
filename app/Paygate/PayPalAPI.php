@@ -153,7 +153,7 @@ class PayPalAPI {
         return json_decode($response, true);
     }
 
-    private function makeHttpRequest($method, $endpoint, $data = null, $isAuth = false) {
+    private function makeHttpRequest($method, $endpoint, $data = null, $isAuth = false): array {
         $headers = ["Content-Type: application/json"];
         if ($isAuth) {
             $auth      = base64_encode("{$this->clientId}:{$this->clientSecret}");
@@ -168,7 +168,7 @@ class PayPalAPI {
             CURLOPT_CUSTOMREQUEST  => $method,
         ]);
         if ($method === "POST") {
-            curl_setopt($ch, CURLOPT_POSTFIELDS, is_array($data) ? json_encode($data) : $data);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, is_array($data) ? json_encode($data, JSON_THROW_ON_ERROR) : $data);
         }
         $response = curl_exec($ch);
         $statusCode = curl_getinfo($ch, CURLINFO_HTTP_CODE); // Lấy mã trạng thái HTTP
@@ -251,7 +251,19 @@ class PayPalAPI {
         return $this->makeRequest("GET", "/v1/customer/disputes?{$query}");
     }
 
-    public function provideEvidence($dispute_id, $payload, $return_shipping_address = null) {
+    /**
+     * Provide evidence for a dispute.
+     * The payload should contain evidence information.
+     * If return shipping address is provided, it will be added to the payload.
+     *
+     * @param string $dispute_id              The dispute ID
+     * @param array  $payload                 The payload containing evidence information
+     * @param array  $return_shipping_address The return shipping address (optional)
+     *
+     * @return array The response from PayPal API
+     * @throws Exception If the dispute_id is empty
+     */
+    public function provideEvidence($dispute_id, $payload, $return_shipping_address = null): array {
         // Kiểm tra dispute_id hợp lệ
         if (empty($dispute_id)) {
             throw new Exception("Dispute ID is required.");
