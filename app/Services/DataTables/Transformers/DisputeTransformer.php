@@ -46,11 +46,10 @@ class DisputeTransformer extends TransformerAbstract {
     /**
      * Render action columns.
      */
-    private function renderActions(Dispute $dispute) {
+    private function renderActions(Dispute $dispute)
+    {
         $paygate = \App\Models\Paygate::find($dispute->paygate_id);
-        $data_vps = $paygate? json_encode($paygate->vps_data) : '';
-        $btnView           = '<a href="' . route('app.dispute.show', ['id' => $dispute->id]) . '" class="btn btn-sm btn-info m-1" title="View"><i class="fa fa-eye"></i></a>';
-        $btnRedirectPaypal = '<a href="#" class="btn btn-sm btn-primary m-1" title="View" target="_blank" data-bs-toggle="modal" data-bs-target="#dispute-info-paypal" data-vps="' . htmlspecialchars($data_vps). '" data-link="' . htmlspecialchars($dispute->link) . '"><i class="fab fa-paypal"></i></a>';
-        return $btnView . ' ' . $btnRedirectPaypal;
+        $btnView = '<a href="' . route('app.dispute.show', ['id' => $dispute->id]) . '" class="btn btn-sm btn-info m-1" title="View"><i class="fa fa-eye"></i></a>';
+        return $btnView;
     }
 }

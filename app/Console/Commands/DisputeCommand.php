@@ -77,13 +77,36 @@ class DisputeCommand extends Command {
                 foreach ($response['items'] as $item) {
                     try {
                         $this->newDispute($item, $paygate->id);
+                        echo $item['dispute_id'] . '=>CREATED' . PHP_EOL;
                     } catch (\Exception $exception) {
-                        echo $exception->getMessage() . PHP_EOL;
+                        //Dispute đã tồn tại trên HT. Sẽ cập nhập trạng thái Dispute.
+                        $this->updateStatus($item['dispute_id'], $item['status']);
+                        echo $item['dispute_id'] . '=>' . $item['status'] . PHP_EOL;
                     }
                 }
             } else {
                 echo 'Today is not dispute' . PHP_EOL;
             }
+        }
+    }
+
+    /**
+     * Update status of dispute
+     *
+     * @param string $dispute_id
+     * @param string $status
+     *
+     * @return void
+     * @throws \Exception
+     */
+    public function updateStatus(string $dispute_id, string $status): void {
+        $dispute = \App\Models\Dispute::where('dispute_id', $dispute_id)->first();
+        if (!$dispute) {
+            return;
+        }
+        $dispute->status = $status;
+        if (!$dispute->save()) {
+            return;
         }
     }
 }
