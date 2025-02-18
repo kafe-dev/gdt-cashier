@@ -35,7 +35,7 @@ class PayPalAPI {
      */
     private function getAccessToken() {
         $response = $this->makeRequest("POST", "/v1/oauth2/token", "grant_type=client_credentials", true);
-        return $response['response']['access_token'] ?? throw new Exception("Không thể lấy Access Token.");
+        return $response['access_token'] ?? throw new Exception("Không thể lấy Access Token.");
     }
 
     /**
@@ -149,6 +149,28 @@ class PayPalAPI {
             curl_setopt($ch, CURLOPT_POSTFIELDS, is_array($data) ? json_encode($data) : $data);
         }
         $response = curl_exec($ch);
+        curl_close($ch);
+        return json_decode($response, true);
+    }
+
+    private function makeHttpRequest($method, $endpoint, $data = null, $isAuth = false) {
+        $headers = ["Content-Type: application/json"];
+        if ($isAuth) {
+            $auth      = base64_encode("{$this->clientId}:{$this->clientSecret}");
+            $headers[] = "Authorization: Basic {$auth}";
+        } else {
+            $headers[] = "Authorization: Bearer {$this->accessToken}";
+        }
+        $ch = curl_init($this->apiUrl . $endpoint);
+        curl_setopt_array($ch, [
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_HTTPHEADER     => $headers,
+            CURLOPT_CUSTOMREQUEST  => $method,
+        ]);
+        if ($method === "POST") {
+            curl_setopt($ch, CURLOPT_POSTFIELDS, is_array($data) ? json_encode($data) : $data);
+        }
+        $response = curl_exec($ch);
         $statusCode = curl_getinfo($ch, CURLINFO_HTTP_CODE); // Lấy mã trạng thái HTTP
         curl_close($ch);
 
@@ -239,7 +261,7 @@ class PayPalAPI {
             $payload['return_shipping_address'] = $return_shipping_address;
         }
         // Gửi yêu cầu POST tới PayPal API
-        return $this->makeRequest("POST", "/v1/customer/disputes/{$dispute_id}/provide-evidence", $payload);
+        return $this->makeHttpRequest("POST", "/v1/customer/disputes/{$dispute_id}/provide-evidence", $payload);
     }
 
     /**
