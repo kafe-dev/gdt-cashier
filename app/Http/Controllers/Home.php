@@ -94,10 +94,9 @@ class Home extends BaseController
     private function getPaygateReports($startDate, $endDate): array
     {
         $allPaygatesReports = [];
-        $paygateReports = [];
 
         $allPaygates = PaygateModel::query()
-            ->whereBetween('created_at', [$startDate, $endDate])
+            ->where('created_at', "<=", $startDate)
             ->orderBy('created_at', 'desc')
             ->get();
 
@@ -123,20 +122,28 @@ class Home extends BaseController
             ->pluck('revenue', 'paygate_id')
             ->toArray();
 
-        if (!empty($allPaygates)) {
-            foreach ($allPaygates as $paygate) {
-                $paygateReports['revenue'] = $revenue[$paygate->id] ?? 0;
-                $paygateReports['dispute_rate'] = ($transactionCount === 0 ? 0 :
-                    round(($disputeCounts[$paygate->id] / $transactionCount[$paygate->id]) * 100, 2));
-                $paygateReports['id'] = $paygate->id;
-                $paygateReports['limit'] = $paygate->limitation;
-                $paygateReports['type'] = PaygateModel::TYPE[$paygate->type];
-                $paygateReports['status'] = PaygateModel::STATUS[$paygate->status];
-                $paygateReports['created_at'] = $paygate->created_at;
-                $paygateReports['total_disputes'] = $disputeCounts[$paygate->id] ?? 0;
-                $allPaygatesReports[] = $paygateReports;
-            }
+        foreach ($allPaygates as $paygate) {
+            $paygateId = $paygate->id;
+
+            $totalTransactions = array_key_exists($paygateId, $transactionCount) ? $transactionCount[$paygateId] : 0;
+            $totalDisputes = array_key_exists($paygateId, $disputeCounts) ? $disputeCounts[$paygateId] : 0;
+            $paygateRevenue = array_key_exists($paygateId, $revenue) ? $revenue[$paygateId] : 0;
+
+            $paygateReports = [
+                'id' => $paygateId,
+                'revenue' => $paygateRevenue,
+                'dispute_rate' => $totalTransactions > 0 ? round(($totalDisputes / $totalTransactions) * 100, 2) : 0,
+                'total_disputes' => $totalDisputes,
+                'total_transactions' => $totalTransactions,
+                'limit' => $paygate->limitation,
+                'type' => PaygateModel::TYPE[$paygate->type] ?? 'Unknown',
+                'status' => PaygateModel::STATUS[$paygate->status] ?? 'Unknown',
+                'created_at' => $paygate->created_at,
+            ];
+
+            $allPaygatesReports[] = $paygateReports;
         }
+
         return $allPaygatesReports;
     }
 
