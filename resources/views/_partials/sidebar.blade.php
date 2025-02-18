@@ -133,7 +133,7 @@
                 <a href="{{ route('app.help-center.faq') }}"><i data-feather="help-circle"
                                                                 class="align-self-center menu-icon"></i><span>FAQ</span></a>
                 --}}
-                <a href="mailto:m397.dev@gmail.com"><i data-feather="alert-triangle"
+                <a href="mailto:quangquynhgroup@gmail.com"><i data-feather="alert-triangle"
                                                        class="align-self-center menu-icon"></i><span>Bug Report</span></a>
             </li>
 

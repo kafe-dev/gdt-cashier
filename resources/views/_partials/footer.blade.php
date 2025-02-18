@@ -4,6 +4,6 @@
     <span class="text-muted d-none d-sm-inline-block float-end">
         Crafted with
         <i class="mdi mdi-heart text-danger"></i>
-        by <a href="mailto:m397.dev@gmail.com" class="text-primary">Kafe Dev</a>
+        by <a href="mailto:quangquynhgroup@gmail.com" class="text-primary">Kafe Dev</a>
     </span>
 </footer>
