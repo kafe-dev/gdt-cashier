@@ -50,6 +50,7 @@ class Dispute extends BaseController
         $paygate = \App\Models\Paygate::findOrFail($dispute->paygate_id);
         $paypalApi = new PayPalAPI($paygate);
         $dispute_arr = $paypalApi->getDisputeDetails($dispute->dispute_id);
+
         $transactionData = $dispute_arr['disputed_transactions'][0] ?? null;
         if (!$transactionData) {
             abort(404, 'No transaction data found');
