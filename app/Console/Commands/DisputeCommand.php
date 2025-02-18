@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Helpers\Logs;
+use App\Helpers\TimeHelper;
 use App\Models\Paygate;
 use App\Paygate\PayPalAPI;
 use DateTime;
@@ -30,7 +31,7 @@ class DisputeCommand extends Command {
      * @throws \Throwable
      */
     public function handle(): void {
-        $this->fetchv2();
+        $this->fetchv1();
     }
 
     /**
@@ -64,14 +65,14 @@ class DisputeCommand extends Command {
     }
 
     /**
-   $  * @throws \JsonException
+     * $  * @throws \JsonException
+     * @throws \Exception
      */
     public function fetchv1() {
         $paygates = Paygate::all();
         foreach ($paygates as $paygate) {
-            $api_data  = $paygate->api_data ?? [];
-            $paypalApi = new PayPalAPI($api_data['client_key'], $api_data['secret_key'], true); // true = sandbox mode
-            $response  = $paypalApi->listDispute('2025-01-01T00:00:00.000Z');
+            $paypalApi = new PayPalAPI($paygate);
+            $response  = $paypalApi->listDispute(TimeHelper::getStartOfDayISO());
             if (!empty($response['items'])) {
                 foreach ($response['items'] as $item) {
                     try {
@@ -80,21 +81,9 @@ class DisputeCommand extends Command {
                         echo $exception->getMessage() . PHP_EOL;
                     }
                 }
+            } else {
+                echo 'Today is not dispute' . PHP_EOL;
             }
         }
     }
-
-    public function fetchv2() {
-        $paygates = Paygate::all();
-        foreach ($paygates as $paygate) {
-            $api_data  = $paygate->api_data ?? [];
-            $paypalApi = new PayPalAPI($api_data['client_key'], $api_data['secret_key'], true); // true = sandbox mode
-            $response  = $paypalApi->getDisputeDetails('PP-R-BYH-10106342');
-            echo '<pre>';
-            print_r($response);
-            die;
-
-        }
-    }
-
 }

@@ -56,18 +56,7 @@ class PaypalTransactionCommand extends Command
         $paygates = Paygate::all();
 
         foreach ($paygates as $paygate) {
-            $api_data = $paygate->api_data ?? [];
-
-            if (is_string($api_data)) {
-                $api_data = json_decode($api_data, true);
-            }
-
-            if (is_array($api_data) && isset($api_data['client_key'], $api_data['secret_key'])) {
-                $paypalApi = new PayPalAPI($api_data['client_key'], $api_data['secret_key'], true);
-            } else {
-                Log::error('Invalid API data for Paygate', ['api_data' => $api_data]);
-                continue;
-            }
+            $paypalApi = new PayPalAPI($paygate);
 
             $currentStart = Carbon::parse($startDate);
             $currentEnd = clone $currentStart ?? $startDate;
@@ -126,13 +115,7 @@ class PaypalTransactionCommand extends Command
                                     'timezone' => optional($dateTime->getTimezone())->getName(),
                                     'name' => data_get($transaction, 'payer_info.payer_name.alternate_full_name'),
                                     'type' => null,
-                                    'status' => match (data_get($transaction, 'transaction_info.transaction_status')) {
-                                        'D' => 'Denied',
-                                        'P' => 'Pending',
-                                        'S' => 'Completed',
-                                        'V' => 'Refunded',
-                                        default => null,
-                                    },
+                                    'status' => data_get($transaction, 'transaction_info.transaction_status'),
                                     'currency' => data_get($transaction, 'transaction_info.transaction_amount.currency_code'),
                                     'gross' => data_get($transaction, 'transaction_info.transaction_amount.value'),
                                     'fee' => data_get($transaction, 'transaction_info.fee_amount.value'),
@@ -179,13 +162,27 @@ class PaypalTransactionCommand extends Command
                                 $trackingInfo = data_get($response, 'trackers', []);
 
                                 if (!empty($trackingInfo)) {
-                                    OrderTracking::create([
-                                        'transaction_id' => $transaction_id,
-                                        'tracking_number' => data_get($trackingInfo, 'tracking_number'),
-                                        'courier_code' => data_get($trackingInfo, 'carrier'),
-                                    ]);
+                                    foreach ($trackingInfo as $tracking) {
+                                        if (!empty($tracking)) {
+                                            OrderTracking::create([
+                                                'paygate_name' => $paygate->name ?? null,
+                                                'invoice_number' => data_get($transaction, 'transaction_info.invoice_id'),
+                                                'transaction_id' => $transaction_id,
+                                                'tracking_number' => data_get($tracking, 'tracking_number'),
+                                                'courier_code' => data_get($tracking, 'carrier_name_other'),
+                                            ]);
+                                        } else {
+                                            OrderTracking::create([
+                                                'paygate_name' => $paygate->name ?? null,
+                                                'invoice_number' => data_get($transaction, 'transaction_info.invoice_id'),
+                                                'transaction_id' => $transaction_id,
+                                            ]);
+                                        }
+                                    }
                                 } else {
                                     OrderTracking::create([
+                                        'paygate_name' => $paygate->name ?? null,
+                                        'invoice_number' => data_get($transaction, 'transaction_info.invoice_id'),
                                         'transaction_id' => $transaction_id,
                                     ]);
                                 }

@@ -59,6 +59,10 @@ table.dataTable tbody tr.selected > * {
     color: inherit !important;
 }
 
+.dt-search {
+    display: none !important;
+}
+
 /** Flasher */
 .fl-wrapper {
     z-index: 99999 !important;

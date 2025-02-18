@@ -4,6 +4,7 @@ namespace App\Helpers;
 
 use Carbon\Carbon;
 use DateTime;
+use DateTimeZone;
 
 class TimeHelper {
 
@@ -75,5 +76,27 @@ class TimeHelper {
         } else {
             return floor($diff / 86400) . " days ago";
         }
+    }
+
+    /**
+     * Tính toán và trả về chuỗi thể hiện ngày bắt đầu của ngày $date (hoặc ngày hiện tại) trong múi giờ $timezone.
+     * Chuỗi trả về được định dạng theo ISO 8601
+     *
+     * Ví dụ: $date = 2025-01-16T12:59:53.247Z, $timezone = 'Asia/Ho_Chi_Minh'
+     *        trả về 2025-01-16T00:00:00.000Z
+     *
+     * @param string $date
+     * @param string $timezone
+     *
+     * @return string
+     * @throws \DateMalformedStringException
+     * @throws \DateInvalidTimeZoneException
+     */
+    public static function getStartOfDayISO($date = 'now', $timezone = 'Asia/Ho_Chi_Minh'): string {
+        $dateTime = new DateTime($date, new DateTimeZone($timezone));
+        $dateTime->setTime(0, 0, 0, 0); // Đặt thời gian về 00:00:00.000
+        $dateTime->setTimezone(new DateTimeZone('UTC')); // Chuyển về UTC
+
+        return $dateTime->format('Y-m-d\TH:i:s.v\Z');
     }
 }

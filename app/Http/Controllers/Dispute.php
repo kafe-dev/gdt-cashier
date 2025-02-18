@@ -247,24 +247,29 @@ class Dispute extends BaseController
         ]);
         // Kiểm tra đầu vào
         if (empty($input['paygate_id']) || empty($input['dispute_id'])) {
-            return redirect()->back()->with('error', 'Thiếu thông tin cần thiết để thực hiện thao tác.');
+            flash()->error('Thiếu thông tin cần thiết để thực hiện thao tác.');
+            return redirect()->back();
         }
         // Tìm Paygate
         $paygate = \App\Models\Paygate::find($input['paygate_id']);
         if (!$paygate) {
-            return redirect()->back()->with('error', 'Không tìm thấy cổng thanh toán.');
+            flash()->error('Không tìm thấy cổng thanh toán.');
+            return redirect()->back();
         }
         // Gọi API PayPal
         try {
             $paypalApi = new PayPalAPI($paygate);
             $result = $paypalApi->escalate($input['dispute_id'], $input['note']);
             if (!$result) {
-                return redirect()->back()->with('error', 'Không thể nâng cấp tranh chấp. Vui lòng thử lại sau.');
+                flash()->error('Không thể nâng cấp tranh chấp. Vui lòng thử lại sau.');
+                return redirect()->back();
             }
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Lỗi khi gọi API: ' . $e->getMessage());
+            flash()->error('Lỗi khi gọi API: ' . $e->getMessage());
+            return redirect()->back();
         }
-        return redirect()->route('app.dispute.show', ['id' => $input['dispute_id']])->with('success', 'Tranh chấp đã được nâng cấp thành công.');
+        flash()->success('Tranh chấp đã được nâng cấp thành công.');
+        return redirect()->route('app.dispute.show', ['id' => $input['dispute_id']]);
     }
 
     /**
@@ -343,54 +348,46 @@ class Dispute extends BaseController
         return $data;
     }
 
-    public function provideEvidence(Request $request, $id): RedirectResponse
-    {
-        try {
-            $evidenceType = strtoupper($request->validate([
-                'evidence_type' => 'required|string|in:PROOF_OF_DELIVERY,PROOF_OF_REFUND,OTHER'
-            ])['evidence_type']);
-
-            $data = $this->getValidatedEvidenceData($request, $evidenceType);
-
-            $payPalApi = $this->getPaypalApiByDisputeId($id);
-            $dispute = Dispute::findOrFail($id);
-
-            $response = $payPalApi->provideEvidence(
-                $dispute->dispute_id,
-                $data['evidence_type'],
-                $data['tracking_number'] ?? null,
-                $data['carrier_name'] ?? null,
-                $data['refund_id'] ?? null,
-                $data['notes'] ?? null,
-                $data['document_path'] ?? null
-            );
-
-            flash()->success('Evidence provided successfully!');
-        } catch (ValidationException $e) {
-            flash()->error($e->getMessage());
-            return redirect()->route('app.dispute.show', ['id' => $id]);
-        } catch (\Exception $e) {
-            flash()->error('An error occurred while providing evidence.');
-            return redirect()->route('app.dispute.show', ['id' => $id]);
-        }
-
-        return redirect()->route('app.dispute.show', ['id' => $id]);
-    }
-
-    private function getValidatedEvidenceData(Request $request, $evidenceType): array
-    {
-        $data = $request->validate([
-            'tracking_number' => [$evidenceType === 'PROOF_OF_DELIVERY' ? 'required' : 'nullable', 'string', 'max:50'],
-            'carrier_name' => [$evidenceType === 'PROOF_OF_DELIVERY' ? 'required' : 'nullable', 'string', 'max:100'],
-            'refund_id' => [$evidenceType === 'PROOF_OF_REFUND' ? 'required' : 'nullable', 'string', 'max:50'],
-            'notes' => [$evidenceType === 'OTHER' ? 'required' : 'nullable', 'string', 'max:2000'],
-            'document' => 'nullable|file|mimes:pdf,jpg,png,jpeg|max:2048',
+    /**
+     * Provide evidence for a dispute.
+     *
+     * @param Request $request The request containing tracking info.
+     * @param int     $id      The ID of the dispute to be processed.
+     *
+     * @return RedirectResponse Redirects back to the dispute details page with a success or error message.
+     * @throws \Exception
+     */
+    public function provideEvidence(Request $request, $id): RedirectResponse {
+        $input = $request->validate([
+            'carrier_name' => 'required|string|max:2000',
+            'tracking_number' => 'required|string|max:2000',
         ]);
 
-        if ($request->hasFile('document')) {
-            $data['document_path'] = $request->file('document')->store('evidence_documents');
-        }
+        $dispute = \App\Models\Dispute::findOrFail($id);
+        $paypalApi = $this->getPaypalApiByDisputeId($id);
 
-        return $data;
+        $result_code = $paypalApi->provideEvidence($dispute->dispute_id, [
+            'evidences' => [
+                [
+                    'evidence_type' => 'PROOF_OF_FULFILLMENT',
+                    'evidence_info' => [
+                        'tracking_info' => [
+                            [
+                                'carrier_name' => $input['carrier_name'],
+                                'tracking_number' => $input['tracking_number'],
+                            ],
+                        ],
+                    ],
+                    'notes' => 'Thông tin giao hàng được cung cấp.',
+                ],
+            ],
+        ]);
+
+        if($result_code == 200){
+            flash()->success('Bằng chứng đã được cung cấp cho tranh chấp trên.');
+        }else{
+            flash()->error('Xảy ra lỗi trong quá trình cung cấp bằng chứng cho tranh cấp.');
+        }
+        return redirect()->route('app.dispute.show', ['id' => $id]);
     }
 }

@@ -90,6 +90,7 @@
                     </a>
                 </li>
             @endif
+            {{--
             @if(PermissionHelper::hasAccess('app.order.index'))
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('app.order.index') }}">
@@ -99,6 +100,7 @@
                     </a>
                 </li>
             @endif
+            --}}
             @if(PermissionHelper::hasAccess('app.paypal-transaction.index'))
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('app.paypal-transaction.index') }}">
@@ -127,8 +129,10 @@
             <hr class="hr-dashed hr-menu">
             <li class="menu-label my-2">Help Center</li>
             <li>
+                {{--
                 <a href="{{ route('app.help-center.faq') }}"><i data-feather="help-circle"
                                                                 class="align-self-center menu-icon"></i><span>FAQ</span></a>
+                --}}
                 <a href="mailto:m397.dev@gmail.com"><i data-feather="alert-triangle"
                                                        class="align-self-center menu-icon"></i><span>Bug Report</span></a>
             </li>

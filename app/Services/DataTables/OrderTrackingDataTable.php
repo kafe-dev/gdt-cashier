@@ -70,6 +70,8 @@ class OrderTrackingDataTable extends BaseDataTable
     {
         return [
             Column::make(['data' => 'id', 'title' => 'ID'])->addClass('x-id'),
+            Column::make('paygate_name')->searchPanes()->addClass('x-searchable'),
+            Column::make('invoice_number')->searchPanes()->addClass('x-searchable'),
             Column::make('transaction_id')->searchPanes()->addClass('x-searchable'),
             Column::make('tracking_number')->searchPanes()->addClass('x-searchable'),
             Column::make('courier_code')->searchPanes()->addClass('x-searchable'),
