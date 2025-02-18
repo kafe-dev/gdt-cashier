@@ -35,7 +35,7 @@ class PayPalAPI {
      */
     private function getAccessToken() {
         $response = $this->makeRequest("POST", "/v1/oauth2/token", "grant_type=client_credentials", true);
-        return $response['access_token'] ?? throw new Exception("Không thể lấy Access Token.");
+        return $response['response']['access_token'] ?? throw new Exception("Không thể lấy Access Token.");
     }
 
     /**
@@ -149,9 +149,15 @@ class PayPalAPI {
             curl_setopt($ch, CURLOPT_POSTFIELDS, is_array($data) ? json_encode($data) : $data);
         }
         $response = curl_exec($ch);
+        $statusCode = curl_getinfo($ch, CURLINFO_HTTP_CODE); // Lấy mã trạng thái HTTP
         curl_close($ch);
-        return json_decode($response, true);
+
+        return [
+            'statusCode' => $statusCode, // Trả về status code
+            'response'   => json_decode($response, true) // Trả về phản hồi đã giải mã
+        ];
     }
+
 
     private function makeRequestReturnCode($method, $endpoint, $data = null, $isAuth = false) {
         $headers = ["Content-Type: application/json"];

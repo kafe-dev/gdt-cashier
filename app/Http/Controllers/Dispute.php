@@ -19,12 +19,14 @@ use Illuminate\Support\Facades\Storage;
  *
  * This controller is responsible for managing dispute-related operations.
  */
-class Dispute extends BaseController {
+class Dispute extends BaseController
+{
 
     /**
      * Action `index`.
      */
-    public function index(DisputeDataTable $dataTable) {
+    public function index(DisputeDataTable $dataTable)
+    {
         $this->filterDateRange($dataTable);
         return $dataTable->render('dispute.index');
         //        $clientId     = 'AfGFZ63l-30heXk1Xf2iNiO0SnhhIKeaEq9uIsqQt4kPenxBk_ZNwFhLTDDRDsX1bdV8_uVTMPnBgLnK';
@@ -42,17 +44,18 @@ class Dispute extends BaseController {
      *
      * @throws \Exception
      */
-    public function show(int|string $id): View {
-        $dispute         = \App\Models\Dispute::findOrFail($id);
-        $paygate         = \App\Models\Paygate::findOrFail($dispute->paygate_id);
-        $paypalApi       = new PayPalAPI($paygate);
-        $dispute_arr     = $paypalApi->getDisputeDetails($dispute->dispute_id);
+    public function show(int|string $id): View
+    {
+        $dispute = \App\Models\Dispute::findOrFail($id);
+        $paygate = \App\Models\Paygate::findOrFail($dispute->paygate_id);
+        $paypalApi = new PayPalAPI($paygate);
+        $dispute_arr = $paypalApi->getDisputeDetails($dispute->dispute_id);
         $transactionData = $dispute_arr['disputed_transactions'][0] ?? null;
         if (!$transactionData) {
             abort(404, 'No transaction data found');
         }
         $seller_transaction_id = $transactionData['seller_transaction_id'] ?? null;
-        $create_time           = $transactionData['create_time'] ?? null;
+        $create_time = $transactionData['create_time'] ?? null;
         if (!$seller_transaction_id || !$create_time) {
             abort(500, 'Invalid dispute transaction data');
         }
@@ -70,8 +73,9 @@ class Dispute extends BaseController {
      * @return RedirectResponse
      * @throws \Exception
      */
-    public function sendMessage(Request $request): RedirectResponse {
-        $input   = $request->only([
+    public function sendMessage(Request $request): RedirectResponse
+    {
+        $input = $request->only([
             'paygate_id',
             'dispute_id',
             'dispute_code',
@@ -82,7 +86,7 @@ class Dispute extends BaseController {
             return redirect()->back()->with('error', 'Paygate không tồn tại.');
         }
         $paypalApi = new PayPalAPI($paygate);
-        $result    = $paypalApi->sendDisputeMessage($input['dispute_code'] ?? '', $input['message'] ?? '');
+        $result = $paypalApi->sendDisputeMessage($input['dispute_code'] ?? '', $input['message'] ?? '');
         if (!$result) {
             return redirect()->back()->with('error', 'Không thể gửi tin nhắn dispute.');
         }
@@ -92,30 +96,31 @@ class Dispute extends BaseController {
     /**
      * Make an offer to resolve a PayPal dispute.
      *
-     * @param Request    $request The HTTP request object containing offer details.
-     * @param int|string $id      The dispute ID from the database.
+     * @param Request $request The HTTP request object containing offer details.
+     * @param int|string $id The dispute ID from the database.
      *
      * @return RedirectResponse Redirects to the dispute details page.
      */
-    public function makeOffer(Request $request, int|string $id): RedirectResponse {
+    public function makeOffer(Request $request, int|string $id): RedirectResponse
+    {
         try {
-            $dispute       = \App\Models\Dispute::findOrFail($id);
-            $offerType     = strtoupper($request->validate(['offer_type' => 'required|string'])['offer_type']);
-            $data          = $this->getValidatedMakeOfferData($request, $offerType);
-            $amount        = $data['amount'] ?? null;
-            $currency      = $data['currency'] ?? 'USD';
-            $note          = $data['note'];
-            $invoiceId     = $data['invoice_id'] ?? null;
+            $dispute = \App\Models\Dispute::findOrFail($id);
+            $offerType = strtoupper($request->validate(['offer_type' => 'required|string'])['offer_type']);
+            $data = $this->getValidatedMakeOfferData($request, $offerType);
+            $amount = $data['amount'] ?? null;
+            $currency = $data['currency'] ?? 'USD';
+            $note = $data['note'];
+            $invoiceId = $data['invoice_id'] ?? null;
             $returnAddress = [];
             if (!empty($data['address']) && !empty($data['country_code'])) {
                 $returnAddress[] = [
                     'address_line_1' => $data['address'],
-                    'country_code'   => $data['country_code'],
+                    'country_code' => $data['country_code'],
                 ];
             }
             $PaypalApi = $this->getPaypalApiByDisputeId($id);
-            $response  = $PaypalApi->getDisputeDetails($dispute->dispute_id);
-            $response  = $PaypalApi->makeOfferToResolveDispute($dispute->dispute_id, $offerType, $note, (float) $amount, $currency, $invoiceId, $returnAddress);
+            $response = $PaypalApi->getDisputeDetails($dispute->dispute_id);
+            $response = $PaypalApi->makeOfferToResolveDispute($dispute->dispute_id, $offerType, $note, (float)$amount, $currency, $invoiceId, $returnAddress);
             flash()->success('Make offer successful!');
         } catch (ValidationException $e) {
             flash()->error($e->getMessage());
@@ -129,21 +134,22 @@ class Dispute extends BaseController {
     /**
      * Acknowledges that the customer has returned an item for a dispute.
      *
-     * @param Request    $request The incoming request containing item status, note, and evidence.
-     * @param int|string $id      The ID of the dispute record in the database.
+     * @param Request $request The incoming request containing item status, note, and evidence.
+     * @param int|string $id The ID of the dispute record in the database.
      *
      * @return RedirectResponse Redirects back to the dispute details page.
      */
-    public function acknowledgeReturned(Request $request, int|string $id): RedirectResponse {
+    public function acknowledgeReturned(Request $request, int|string $id): RedirectResponse
+    {
         try {
-            $status    = $request->validate(['item_status' => 'required|in:NORMAL,ISSUE'])['item_status'];
-            $data      = $request->validate([
-                'note'          => 'nullable|string|max:2000',
+            $status = $request->validate(['item_status' => 'required|in:NORMAL,ISSUE'])['item_status'];
+            $data = $request->validate([
+                'note' => 'nullable|string|max:2000',
                 'evidence_type' => [
                     ($status === "ISSUE" ? 'required' : 'nullable'),
                     'in:PROOF_OF_DAMAGE,THIRDPARTY_PROOF_FOR_DAMAGE_OR_SIGNIFICANT_DIFFERENCE,DECLARATION,PROOF_OF_MISSING_ITEMS,PROOF_OF_EMPTY_PACKAGE_OR_DIFFERENT_ITEM,PROOF_OF_ITEM_NOT_RECEIVED',
                 ],
-                'documents.*'   => [
+                'documents.*' => [
                     ($status === "ISSUE" ? 'required' : 'nullable'),
                     'mimes:jpg,jpeg,png,pdf|max:50MB',
                 ],
@@ -153,27 +159,27 @@ class Dispute extends BaseController {
                 foreach ($request->file('documents') as $file) {
                     //app/public/uploads
                     $filename = time() . '_' . $file->getClientOriginalName();
-                    $path     = 'uploads/' . $filename;
+                    $path = 'uploads/' . $filename;
                     $file->move(public_path('uploads'), $filename);
                     $documents[] = [
                         'name' => $file->getClientOriginalName(),
-                        'url'  => asset($path),
+                        'url' => asset($path),
                     ];
                 }
             }
             // this form only post 1 evidences
             $allEvidences = [];
-            $evidences    = [];
+            $evidences = [];
             if ($status === "ISSUE") {
                 $evidences = [
                     'evidence_type' => $data['evidence_type'] ?? null,
-                    'documents'     => $documents ?? null,
+                    'documents' => $documents ?? null,
                 ];
             }
             $allEvidences[] = $evidences;
-            $dispute        = \App\Models\Dispute::findOrFail($id);
-            $PaypalApi      = $this->getPaypalApiByDisputeId($id);
-            $response       = $PaypalApi->acknowledgeReturnedItem($dispute->dispute_id, $data['note'], $allEvidences);
+            $dispute = \App\Models\Dispute::findOrFail($id);
+            $PaypalApi = $this->getPaypalApiByDisputeId($id);
+            $response = $PaypalApi->acknowledgeReturnedItem($dispute->dispute_id, $data['note'], $allEvidences);
             flash()->success('Acknowledge Returned successful!');
         } catch (ValidationException $e) {
             flash()->error($e->getMessage());
@@ -192,7 +198,8 @@ class Dispute extends BaseController {
      * @return PayPalAPI
      * @throws \Exception
      */
-    private function getPaypalApiByDisputeId(int|string $id): PayPalAPI {
+    private function getPaypalApiByDisputeId(int|string $id): PayPalAPI
+    {
         $dispute = \App\Models\Dispute::findOrFail($id);
         $paygate = \App\Models\Paygate::findOrFail($dispute->paygate_id);
         return new PayPalAPI($paygate);
@@ -206,20 +213,21 @@ class Dispute extends BaseController {
      *
      * @return array
      */
-    private function getValidatedMakeOfferData(Request $request, $offerType): array {
+    private function getValidatedMakeOfferData(Request $request, $offerType): array
+    {
         return $request->validate([
-            'amount'       => [
+            'amount' => [
                 'numeric',
                 ($offerType !== "REPLACEMENT_WITHOUT_REFUND" ? 'required' : 'nullable'),
             ],
-            'currency'     => [
+            'currency' => [
                 ($offerType !== "REPLACEMENT_WITHOUT_REFUND" ? 'required' : 'nullable'),
                 'string',
                 'size:3',
             ],
-            'note'         => 'required|string|max:2000',
-            'invoice_id'   => 'nullable|string|max:127',
-            'address'      => [
+            'note' => 'required|string|max:2000',
+            'invoice_id' => 'nullable|string|max:127',
+            'address' => [
                 'string',
                 'max:300',
                 ($offerType === "REFUND_WITH_RETURN" ? 'required' : 'nullable'),
@@ -233,7 +241,8 @@ class Dispute extends BaseController {
         ]);
     }
 
-    public function escalate(Request $request): RedirectResponse {
+    public function escalate(Request $request): RedirectResponse
+    {
         $input = $request->only([
             'paygate_id',
             'dispute_id',
@@ -254,7 +263,7 @@ class Dispute extends BaseController {
         // Gọi API PayPal
         try {
             $paypalApi = new PayPalAPI($paygate);
-            $result    = $paypalApi->escalate($input['dispute_id'], $input['note']);
+            $result = $paypalApi->escalate($input['dispute_id'], $input['note']);
             if (!$result) {
                 flash()->error('Không thể nâng cấp tranh chấp. Vui lòng thử lại sau.');
                 return redirect()->back();
@@ -271,18 +280,19 @@ class Dispute extends BaseController {
      * Accepts a claim for a given dispute and processes the corresponding refund action.
      *
      * @param Request $request The HTTP request containing claim acceptance details.
-     * @param int     $id      The ID of the dispute to be processed.
+     * @param int $id The ID of the dispute to be processed.
      *
      * @return RedirectResponse Redirects back to the dispute details page with a success or error message.
      *
      */
-    public function acceptClaim(Request $request, $id): RedirectResponse {
+    public function acceptClaim(Request $request, $id): RedirectResponse
+    {
         try {
             $acceptClaimType = strtoupper($request->validate(['accept_claim_type' => 'required|string|in:REFUND,REFUND_WITH_RETURN,PARTIAL_REFUND,REFUND_WITH_RETURN_SHIPMENT_LABEL'])['accept_claim_type']);
-            $data            = $this->getValidatedAcceptClaimData($request, $acceptClaimType);
-            $payPalApi       = $this->getPaypalApiByDisputeId($id);
-            $dispute         = \App\Models\Dispute::findOrFail($id);
-            $response        = $payPalApi->acceptClaim($dispute->dispute_id, $data['note'], $data['accept_claim_reason'], $acceptClaimType, $data['refund_amount'], $data['invoice_id'], $data['return_shipment_info'], $data['return_shipping_address']);
+            $data = $this->getValidatedAcceptClaimData($request, $acceptClaimType);
+            $payPalApi = $this->getPaypalApiByDisputeId($id);
+            $dispute = \App\Models\Dispute::findOrFail($id);
+            $response = $payPalApi->acceptClaim($dispute->dispute_id, $data['note'], $data['accept_claim_reason'], $acceptClaimType, $data['refund_amount'], $data['invoice_id'], $data['return_shipment_info'], $data['return_shipping_address']);
             flash()->success('Claim accepted successfully!');
         } catch (ValidationException $e) {
             flash()->error($e->getMessage());
@@ -301,27 +311,28 @@ class Dispute extends BaseController {
      *
      * @return array
      */
-    private function getValidatedAcceptClaimData(Request $request, $acceptClaimType): array {
-        $data                            = $request->validate([
-            'note'                 => 'required|string|max:2000',
-            'accept_claim_reason'  => 'nullable|string|in:DID_NOT_SHIP_ITEM,TOO_TIME_CONSUMING,LOST_IN_MAIL,NOT_ABLE_TO_WIN,COMPANY_POLICY,REASON_NOT_SET',
-            'currency_code'        => [
+    private function getValidatedAcceptClaimData(Request $request, $acceptClaimType): array
+    {
+        $data = $request->validate([
+            'note' => 'required|string|max:2000',
+            'accept_claim_reason' => 'nullable|string|in:DID_NOT_SHIP_ITEM,TOO_TIME_CONSUMING,LOST_IN_MAIL,NOT_ABLE_TO_WIN,COMPANY_POLICY,REASON_NOT_SET',
+            'currency_code' => [
                 ($acceptClaimType === "PARTIAL_REFUND" ? 'required' : 'nullable'),
                 'string',
                 'size:3',
             ],
-            'value'                => [
+            'value' => [
                 ($acceptClaimType === "PARTIAL_REFUND" ? 'required' : 'nullable'),
                 'numeric',
                 'min:0',
             ],
-            'invoice_id'           => 'nullable|string|max:127',
-            'address'              => [
+            'invoice_id' => 'nullable|string|max:127',
+            'address' => [
                 ($acceptClaimType === "REFUND_WITH_RETURN" || $acceptClaimType === "REFUND_WITH_RETURN_SHIPMENT_LABEL" ? 'required' : 'nullable'),
                 'string',
                 'max:300',
             ],
-            'country_code'         => [
+            'country_code' => [
                 ($acceptClaimType === "REFUND_WITH_RETURN" || $acceptClaimType === "REFUND_WITH_RETURN_SHIPMENT_LABEL" ? 'required' : 'nullable'),
                 'string',
                 'size:2',
@@ -329,18 +340,18 @@ class Dispute extends BaseController {
             ],
             'return_shipment_info' => 'nullable|array',
         ]);
-        $data['refund_amount']           = ($acceptClaimType === 'PARTIAL_REFUND' ? [
+        $data['refund_amount'] = ($acceptClaimType === 'PARTIAL_REFUND' ? [
             'currency_code' => $data['currency_code'],
-            'value'         => $data['value'],
+            'value' => $data['value'],
         ] : null);
         $data['return_shipping_address'] = (in_array($acceptClaimType, [
             'REFUND_WITH_RETURN',
             'REFUND_WITH_RETURN_SHIPMENT_LABEL',
         ]) ? [
             'address_line_1' => $data['address'],
-            'country_code'   => $data['country_code'],
+            'country_code' => $data['country_code'],
         ] : null);
-        $data['return_shipment_info']    = ($acceptClaimType === 'REFUND_WITH_RETURN_SHIPMENT_LABEL' ? $data['return_shipment_info'] : null);
+        $data['return_shipment_info'] = ($acceptClaimType === 'REFUND_WITH_RETURN_SHIPMENT_LABEL' ? $data['return_shipment_info'] : null);
         return $data;
     }
 
@@ -348,14 +359,13 @@ class Dispute extends BaseController {
      * Provide evidence for a dispute.
      *
      * @param Request $request The request containing tracking info.
-     * @param int     $id      The ID of the dispute to be processed.
+     * @param int $id The ID of the dispute to be processed.
      *
      * @return RedirectResponse Redirects back to the dispute details page with a success or error message.
      * @throws \Exception
      */
-    public function provideEvidence(Request $request, $id): RedirectResponse {
-
-
+    public function provideEvidence(Request $request, $id): RedirectResponse
+    {
         $validated = $request->validate([
             'evidence_type' => 'required|string|max:2000',
             'tracking_number' => 'nullable|string|max:2000',
@@ -372,46 +382,66 @@ class Dispute extends BaseController {
 
         switch ($evidenceType) {
             case \App\Models\Dispute::EVIDENCE_TYPE_PROOF_OF_FULFILLMENT:
-                $params = [[
-                    'evidences' => [[
+//                $params = [
+//                    'evidences' => [
+//                        'evidence_type' => $evidenceType,
+//                        'evidence_info' => [
+//                            'tracking_info' => [
+//                                'carrier_name' => $validated['carrier_name'] ?? '',
+//                                'tracking_number' => $validated['tracking_number'] ?? '',
+//                            ],
+//                        ],
+//                    ],
+//                ];
+                $params =[
+                    'evidences'=>[
                         'evidence_type' => $evidenceType,
                         'evidence_info' => [
-                            'tracking_info' => [[
-                                'carrier_name' => $validated['carrier_name'] ?? '',
-                                'tracking_number' => $validated['tracking_number'] ?? '',
-                            ]],
+                            'tracking_info' => [
+                                [
+                                    'carrier_name'    => $validated['carrier_name'],
+                                    'tracking_number' => $validated['tracking_number'],
+                                ],
+                            ],
                         ],
-                        //'notes' => 'Thông tin giao hàng được cung cấp.',
-                    ]],
-                ]];
+                    ]
+                ];
                 break;
 
             case \App\Models\Dispute::EVIDENCE_TYPE_PROOF_OF_REFUND:
-                $params = [[
-                    'evidences' => [[
+                $params = [
+                    'evidences' => [
                         'evidence_type' => $evidenceType,
                         'evidence_info' => [
                             'refund_ids' => [$validated['refund_ids']],
                         ],
                         'notes' => $validated['note'] ?? '',
-                    ]],
-                ]];
+                    ],
+                ];
                 break;
 
             case \App\Models\Dispute::EVIDENCE_TYPE_OTHER:
-                $params = [[
-                    'evidences' => [[
+                $params = [
+                    'evidences' => [
                         'evidence_type' => $evidenceType,
                         'notes' => $validated['note'] ?? '',
-                    ]],
-                ]];
+                    ],
+                ];
                 break;
         }
 
         if (!empty($params)) {
+
             $result = $paypalApi->provideEvidence($dispute->dispute_id, $params);
+
+
+            echo '<pre>start-debug' . PHP_EOL;
+            print_r($result) . PHP_EOL;
+            die('--end--');
+
         } else {
-            echo 'Lỗi nhé.';die;
+            echo 'Lỗi nhé.';
+            die;
         }
 
         return redirect()->route('app.dispute.show', ['id' => $id]);
