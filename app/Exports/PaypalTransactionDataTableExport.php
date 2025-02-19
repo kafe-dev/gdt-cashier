@@ -9,6 +9,7 @@
 
 namespace App\Exports;
 
+use App\Models\Paygate;
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
@@ -40,8 +41,10 @@ class PaypalTransactionDataTableExport implements FromCollection, WithHeadings
                 'Date' => $record->date,
                 'Time' => $record->time,
                 'Timezone' => $record->timezone,
+                'Paygate' => Paygate::findOrFail($record->paygate_id)->name ?? "",
                 'Name' => $record->name,
                 'Type' => $record->type,
+                'Event Code' => $record->event_code,
                 'Status' => $record->status,
                 'Currency' => $record->currency,
                 'Gross' => $record->gross,
@@ -62,6 +65,7 @@ class PaypalTransactionDataTableExport implements FromCollection, WithHeadings
                 'Option 2 Name' => $record->option_2_name,
                 'Option 2 Value' => $record->option_2_value,
                 'Reference Transaction ID' => $record->reference_txn_id,
+//                'Invoice ID' => $record->invoice_id,
                 'Invoice Number' => $record->invoice_number,
                 'Custom Number' => $record->custom_number,
                 'Quantity' => $record->quantity,
@@ -90,16 +94,56 @@ class PaypalTransactionDataTableExport implements FromCollection, WithHeadings
     public function headings(): array
     {
         return [
-            'ID', 'Date', 'Time', 'Timezone', 'Name', 'Type', 'Status', 'Currency',
-            'Gross', 'Fee', 'Net', 'From Email', 'To Email', 'Transaction ID',
-            'Shipping Address', 'Address Status', 'Item Title', 'Item ID',
-            'Shipping & Handling', 'Insurance Amount', 'Sales Tax', 'Option 1 Name',
-            'Option 1 Value', 'Option 2 Name', 'Option 2 Value', 'Reference Transaction ID',
-            'Invoice Number', 'Custom Number', 'Quantity', 'Receipt ID', 'Balance',
-            'Address Line 1', 'Address Line 2', 'Town/City', 'State/Province',
-            'ZIP/Postal Code', 'Country', 'Contact Phone', 'Subject', 'Note',
-            'Country Code', 'Balance Impact', 'Closed At', 'Last Checked At',
-            'Exported At', 'Created At', 'Updated At'
+            'ID',
+            'Date',
+            'Time',
+            'Timezone',
+            'Paygate',
+            'Name',
+            'Type',
+            'Event Code',
+            'Status',
+            'Currency',
+            'Gross',
+            'Fee',
+            'Net',
+            'From Email',
+            'To Email',
+            'Transaction ID',
+            'Shipping Address',
+            'Address Status',
+            'Item Title',
+            'Item ID',
+            'Shipping & Handling',
+            'Insurance Amount',
+            'Sales Tax',
+            'Option 1 Name',
+            'Option 1 Value',
+            'Option 2 Name',
+            'Option 2 Value',
+            'Reference Transaction ID',
+//            'Invoice ID',
+            'Invoice Number',
+            'Custom Number',
+            'Quantity',
+            'Receipt ID',
+            'Balance',
+            'Address Line 1',
+            'Address Line 2',
+            'Town/City',
+            'State/Province',
+            'ZIP/Postal Code',
+            'Country',
+            'Contact Phone',
+            'Subject',
+            'Note',
+            'Country Code',
+            'Balance Impact',
+            'Closed At',
+            'Last Checked At',
+            'Exported At',
+            'Created At',
+            'Updated At'
         ];
     }
 }

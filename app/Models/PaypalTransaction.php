@@ -19,8 +19,10 @@ use Illuminate\Database\Eloquent\Model;
  * @property string|null $date
  * @property string|null $time
  * @property string|null $timezone
+ * @property string|null $paygate_id
  * @property string|null $name
  * @property string|null $type
+ * @property string|null $event_code
  * @property string|null $status
  * @property string|null $currency
  * @property string|null $gross
@@ -41,6 +43,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string|null $option_2_name
  * @property string|null $option_2_value
  * @property string|null $reference_txn_id
+// * @property string|null $invoice_id
  * @property string|null $invoice_number
  * @property string|null $custom_number
  * @property string|null $quantity
@@ -75,8 +78,10 @@ class PaypalTransaction extends Model
         'date',
         'time',
         'timezone',
+        'paygate_id',
         'name',
         'type',
+        'event_code',
         'status',
         'currency',
         'gross',
@@ -97,6 +102,7 @@ class PaypalTransaction extends Model
         'option_2_name',
         'option_2_value',
         'reference_txn_id',
+//        'invoice_id',
         'invoice_number',
         'custom_number',
         'quantity',

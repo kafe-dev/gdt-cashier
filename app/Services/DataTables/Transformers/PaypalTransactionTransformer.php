@@ -9,6 +9,7 @@
 
 namespace App\Services\DataTables\Transformers;
 
+use App\Models\Paygate;
 use App\Models\PaypalTransaction;
 use App\Utils\ActionWidget;
 use League\Fractal\TransformerAbstract;
@@ -33,8 +34,10 @@ class PaypalTransactionTransformer extends TransformerAbstract
             'date' => $paypalTransaction->date,
             'time' => $paypalTransaction->time,
             'timezone' => $paypalTransaction->timezone,
+            'paygate_id' => Paygate::findOrFail($paypalTransaction->paygate_id)->name ?? "",
             'name' => $paypalTransaction->name,
             'type' => $paypalTransaction->type,
+            'event_code' => $paypalTransaction->event_code,
             'status' => $status,
             'currency' => $paypalTransaction->currency,
             'gross' => $paypalTransaction->gross,
@@ -55,6 +58,7 @@ class PaypalTransactionTransformer extends TransformerAbstract
             'option_2_name' => $paypalTransaction->option_2_name,
             'option_2_value' => $paypalTransaction->option_2_value,
             'reference_txn_id' => $paypalTransaction->reference_txn_id,
+//            'invoice_id' => $paypalTransaction->invoice_id,
             'invoice_number' => $paypalTransaction->invoice_number,
             'custom_number' => $paypalTransaction->custom_number,
             'quantity' => $paypalTransaction->quantity,
@@ -71,11 +75,21 @@ class PaypalTransactionTransformer extends TransformerAbstract
             'note' => $paypalTransaction->note,
             'country_code' => $paypalTransaction->country_code,
             'balance_impact' => $paypalTransaction->balance_impact,
-            'closed_at' => !empty($paypalTransaction->closed_at) ? '<span class="x-has-time-converter">' . $paypalTransaction->closed_at->format(config('app.date_format')) . '</span>' : '-',
-            'last_checked_at' => !empty($paypalTransaction->last_checked_at) ? '<span class="x-has-time-converter">' . $paypalTransaction->last_checked_at->format(config('app.date_format')) . '</span>' : '-',
-            'exported_at' => !empty($paypalTransaction->exported_at) ? '<span class="x-has-time-converter">' . $paypalTransaction->exported_at->format(config('app.date_format')) . '</span>' : '-',
-            'created_at' => !empty($paypalTransaction->created_at) ? '<span class="x-has-time-converter">' . $paypalTransaction->created_at->format(config('app.date_format')) . '</span>' : '-',
-            'updated_at' => !empty($paypalTransaction->updated_at) ? '<span class="x-has-time-converter">' . $paypalTransaction->updated_at->format(config('app.date_format')) . '</span>' : '-',
+            'closed_at' => !empty($paypalTransaction->closed_at) ? '<span class="x-has-time-converter">' . $paypalTransaction->closed_at->format(
+                    config('app.date_format')
+                ) . '</span>' : '-',
+            'last_checked_at' => !empty($paypalTransaction->last_checked_at) ? '<span class="x-has-time-converter">' . $paypalTransaction->last_checked_at->format(
+                    config('app.date_format')
+                ) . '</span>' : '-',
+            'exported_at' => !empty($paypalTransaction->exported_at) ? '<span class="x-has-time-converter">' . $paypalTransaction->exported_at->format(
+                    config('app.date_format')
+                ) . '</span>' : '-',
+            'created_at' => !empty($paypalTransaction->created_at) ? '<span class="x-has-time-converter">' . $paypalTransaction->created_at->format(
+                    config('app.date_format')
+                ) . '</span>' : '-',
+            'updated_at' => !empty($paypalTransaction->updated_at) ? '<span class="x-has-time-converter">' . $paypalTransaction->updated_at->format(
+                    config('app.date_format')
+                ) . '</span>' : '-',
             'action' => $this->renderActions($paypalTransaction),
         ];
     }
@@ -87,7 +101,10 @@ class PaypalTransactionTransformer extends TransformerAbstract
     {
         return '
             ' . ActionWidget::renderShowBtn(route('app.paypal-transaction.show', ['id' => $paypalTransaction->id])) . '
-            ' . ActionWidget::renderMarkClosedBtn($paypalTransaction->id, route('app.paypal-transaction.markclosed', ['id' => $paypalTransaction->id])) . '
+            ' . ActionWidget::renderMarkClosedBtn(
+                $paypalTransaction->id,
+                route('app.paypal-transaction.markclosed', ['id' => $paypalTransaction->id])
+            ) . '
         ';
     }
 }
