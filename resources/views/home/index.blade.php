@@ -58,8 +58,20 @@
                         <div class="card-body">
                             <div class="row align-items-center">
                                 <div class="col text-center">
-                                    <span class="h4">{{ $live_stores }}</span>
-                                    <h6 class="text-uppercase text-muted mt-2 m-0">Live Stores</h6>
+                                    <span class="h4">{{ $total_disputes }}</span>
+                                    <h6 class="text-uppercase text-muted mt-2 m-0">Total Disputes</h6>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-lg-6 col-xl">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row align-items-center">
+                                <div class="col text-center">
+                                    <span class="h4">{{ $main_dispute_rate }}%</span>
+                                    <h6 class="text-uppercase text-muted mt-2 m-0">Dispute Rate</h6>
                                 </div>
                             </div>
                         </div>
@@ -72,18 +84,6 @@
                                 <div class="col text-center">
                                     <span class="h4">{{ $success_orders }}</span>
                                     <h6 class="text-uppercase text-muted mt-2 m-0">Success Orders</h6>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-12 col-lg-6 col-xl">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="row align-items-center">
-                                <div class="col text-center">
-                                    <span class="h4">2.8%</span>
-                                    <h6 class="text-uppercase text-muted mt-2 m-0">Dispute Rate</h6>
                                 </div>
                             </div>
                         </div>
@@ -148,14 +148,18 @@
             <div class="card">
                 <div class="card-header">
                     <div class="row align-items-center">
-                        <div class="col">
+                        <div class="col" style="display: grid;  grid-template-columns: auto 150px;">
                             <h4 class="card-title">Dispute Reports</h4>
+                            <div style="float: right">
+                                <input type="text" id="disputeSearch" class="form-control" placeholder="Search" />
+                            </div>
                         </div>
                     </div>
                 </div>
                 <div class="card-body">
+
                     <div class="table-responsive" style="max-height: 300px; overflow-y: auto;">
-                        <table class="table mb-0">
+                        <table class="table mb-0" id="dispute_report_table">
                             <thead class="table-light" style="position: sticky; top: 0; z-index: 2">
                             <tr>
                                 <th class="border-top-0">Date</th>
@@ -174,14 +178,14 @@
                             @foreach($dispute_reports as $date => $report)
                                 <tr>
                                     <td>{{ \Carbon\Carbon::parse($date)->format('d/m/Y') }}</td>
-                                    <td>{{ $report['under_review'] }}</td>
-                                    <td>{{ $report['waiting_for_buyer'] }}</td>
-                                    <td>{{ $report['waiting_for_seller'] }}</td>
-                                    <td class="text-primary">{{ $report['open'] }}</td>
-                                    <td class="text-success">{{ $report['resolved'] }}</td>
-                                    <td class="text-danger">{{ $report['denied'] }}</td>
-                                    <td class="text-secondary">{{ $report['closed'] }}</td>
-                                    <td class="text-warning">{{ $report['expired'] }}</td>
+                                    <td style="color: #8E24AA">{{ $report['under_review'] }}</td>
+                                    <td style="color: #FBC02D">{{ $report['waiting_for_buyer'] }}</td>
+                                    <td style="color: #FB8C00">{{ $report['waiting_for_seller'] }}</td>
+                                    <td style="color: #1E88E5">{{ $report['open'] }}</td>
+                                    <td style="color: #4CAF50">{{ $report['resolved'] }}</td>
+                                    <td style="color: #E53935">{{ $report['denied'] }}</td>
+                                    <td style="color: #424242">{{ $report['closed'] }}</td>
+                                    <td style="color: #9E9E9E">{{ $report['expired'] }}</td>
                                 </tr>
                             @endforeach
                             </tbody>
@@ -194,15 +198,18 @@
             <div class="card">
                 <div class="card-header">
                     <div class="row align-items-center">
-                        <div class="col">
+                        <div class="col" style="display: grid;  grid-template-columns: auto 200px;">
                             <h4 class="card-title">Paygate Reports</h4>
+                            <div style="float: right">
+                                <input type="text" id="paygateSearch" class="form-control" placeholder="Search" />
+                            </div>
                         </div>
                     </div>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table class="table mb-0">
-                            <thead class="table-light">
+                        <table class="table mb-0" id="paygate-report-table">
+                            <thead class="table-light" >
                             <tr>
                                 <th class="border-top-0">Created At</th>
                                 <th class="border-top-0">Paygate ID</th>
@@ -211,6 +218,7 @@
                                 <th class="border-top-0">Dispute Rate</th>
                                 {{-- <th class="border-top-0">Limit</th> --}}
                                 <th class="border-top-0">Status</th>
+                                <th class="border-top-0">Total Dispute</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -220,10 +228,11 @@
                                 <td>{{ \Carbon\Carbon::parse($report['created_at'])->format('Y/m/d') }}</td>
                                 <td>{{ $report['id'] }}</td>
                                 <td><span class="badge badge-soft-secondary">{{ $report['type'] }}</span></td>
-                                {{-- <td>${{ $report['revenue'] }}</td> --}}
+                                <td>${{ $report['revenue'] }}</td>
                                 <td>{{ $report['dispute_rate'] }}%</td>
-                                <td>${{ $report['limit'] }}</td>
+{{--                                <td>${{ $report['limit'] }}</td>--}}
                                 <td><span class="badge badge-soft-success">{{ $report['status'] }}</span></td>
+                                <td>{{ $report['total_disputes'] }}</td>
                             </tr>
                             @endforeach
                             </tbody>
@@ -376,7 +385,7 @@
                         }
                     }
                 },
-                colors: ['#28a745', '#ffc107', '#dc3545', '#6f42c1', '#007bff', '#ffc107', '#fd7e14','#795548'],
+                colors: ['#4CAF50', '#9E9E9E', '#424242', '#E53935', '#1E88E5', '#FB8C00', '#FBC02D','#8E24AA'],
                 plotOptions: {
                     pie: {
                         donut: {
@@ -389,6 +398,54 @@
 
             var disputeChart = new ApexCharts(document.querySelector("#dispute_chart"), options);
             disputeChart.render();
+        });
+    </script>
+
+    <script>
+        // Dispute search
+        document.getElementById('disputeSearch').addEventListener('input', function() {
+            var searchTerm = this.value.toLowerCase();
+            var rows = document.querySelectorAll('#dispute_report_table tbody tr');
+
+            rows.forEach(function(row) {
+                var columns = row.querySelectorAll('td');
+                var matchFound = false;
+
+                for (var i = 1; i < columns.length; i++) {
+                    if (columns[i].textContent.toLowerCase().includes(searchTerm)) {
+                        matchFound = true;
+                        break; // Nếu tìm thấy, không cần kiểm tra các cột còn lại
+                    }
+                }
+
+                if (matchFound) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+
+        // Paygate search
+        document.getElementById('paygateSearch').addEventListener('input', function() {
+            var searchTerm = this.value.toLowerCase();
+            var rows = document.querySelectorAll('#paygate-report-table tbody tr'); // Chỉ tìm kiếm trong bảng "Paygate Reports"
+
+            rows.forEach(function(row) {
+                var columns = row.querySelectorAll('td');
+                var matchFound = false;
+
+                // Bỏ qua cột "Created At" (cột đầu tiên), chỉ tìm kiếm trong các cột còn lại
+                for (var i = 1; i < columns.length; i++) {
+                    if (columns[i].textContent.toLowerCase().includes(searchTerm)) {
+                        matchFound = true;
+                        break; // Nếu tìm thấy, không cần kiểm tra các cột còn lại
+                    }
+                }
+
+                // Hiển thị hoặc ẩn hàng dựa trên việc có tìm thấy kết quả hay không
+                row.style.display = matchFound ? '' : 'none';
+            });
         });
     </script>
 @endpush

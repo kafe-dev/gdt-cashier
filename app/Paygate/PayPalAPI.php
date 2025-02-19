@@ -153,6 +153,34 @@ class PayPalAPI {
         return json_decode($response, true);
     }
 
+    private function makeHttpRequest($method, $endpoint, $data = null, $isAuth = false): array {
+        $headers = ["Content-Type: application/json"];
+        if ($isAuth) {
+            $auth      = base64_encode("{$this->clientId}:{$this->clientSecret}");
+            $headers[] = "Authorization: Basic {$auth}";
+        } else {
+            $headers[] = "Authorization: Bearer {$this->accessToken}";
+        }
+        $ch = curl_init($this->apiUrl . $endpoint);
+        curl_setopt_array($ch, [
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_HTTPHEADER     => $headers,
+            CURLOPT_CUSTOMREQUEST  => $method,
+        ]);
+        if ($method === "POST") {
+            curl_setopt($ch, CURLOPT_POSTFIELDS, is_array($data) ? json_encode($data, JSON_THROW_ON_ERROR) : $data);
+        }
+        $response = curl_exec($ch);
+        $statusCode = curl_getinfo($ch, CURLINFO_HTTP_CODE); // Lấy mã trạng thái HTTP
+        curl_close($ch);
+
+        return [
+            'statusCode' => $statusCode, // Trả về status code
+            'response'   => json_decode($response, true) // Trả về phản hồi đã giải mã
+        ];
+    }
+
+
     private function makeRequestReturnCode($method, $endpoint, $data = null, $isAuth = false) {
         $headers = ["Content-Type: application/json"];
         if ($isAuth) {
@@ -223,7 +251,19 @@ class PayPalAPI {
         return $this->makeRequest("GET", "/v1/customer/disputes?{$query}");
     }
 
-    public function provideEvidence($dispute_id, $payload, $return_shipping_address = null) {
+    /**
+     * Provide evidence for a dispute.
+     * The payload should contain evidence information.
+     * If return shipping address is provided, it will be added to the payload.
+     *
+     * @param string $dispute_id              The dispute ID
+     * @param array  $payload                 The payload containing evidence information
+     * @param array  $return_shipping_address The return shipping address (optional)
+     *
+     * @return array The response from PayPal API
+     * @throws Exception If the dispute_id is empty
+     */
+    public function provideEvidence($dispute_id, $payload, $return_shipping_address = null): array {
         // Kiểm tra dispute_id hợp lệ
         if (empty($dispute_id)) {
             throw new Exception("Dispute ID is required.");
@@ -233,7 +273,7 @@ class PayPalAPI {
             $payload['return_shipping_address'] = $return_shipping_address;
         }
         // Gửi yêu cầu POST tới PayPal API
-        return $this->makeRequest("POST", "/v1/customer/disputes/{$dispute_id}/provide-evidence", $payload);
+        return $this->makeHttpRequest("POST", "/v1/customer/disputes/{$dispute_id}/provide-evidence", $payload);
     }
 
     /**
@@ -609,6 +649,59 @@ class PayPalAPI {
             'privateKey' => 'YOUR_PRIVATE_KEY'
         ]);
     }
+
+    public function uploadEvidenceFile($disputeId, $filePath) {
+        $ch = curl_init($this->apiUrl."/v1/customer/disputes/$disputeId/files");
+
+        $file = new \CURLFile("$filePath", mime_content_type($filePath), basename($filePath));
+
+        $postFields = ['file' => '@' . realpath($filePath)];
+
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            "Authorization: Bearer {$this->accessToken}",
+            "Content-Type: multipart/form-data"
+        ]);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $postFields);
+
+        $response = curl_exec($ch);
+        var_dump($response);die;
+
+        curl_close($ch);
+
+        $data = json_decode($response, true);
+        echo '<pre>start-debug'.PHP_EOL;
+        print_r($data).PHP_EOL;
+        die('--end--');
+
+        return $data['file_id'] ?? null;
+    }
+
+    public function test($filePath,$dispute_id)
+    {
+        $file = new \CURLFile($filePath);
+
+        $ch = curl_init("{$this->apiUrl}/v1/customer/disputes/{$dispute_id}/files");
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            "Authorization: Bearer {$this->accessToken}",
+            "Content-Type: multipart/form-data"
+        ]);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, ["file" => $file]);
+        curl_setopt($ch, CURLOPT_VERBOSE, true);
+        curl_setopt($ch, CURLOPT_HEADER, true);
+
+        $response = curl_exec($ch);
+
+        if (curl_errno($ch)) {
+            echo 'cURL error: ' . curl_error($ch);
+        }
+
+        curl_close($ch);
+        var_dump($response);die;
+
+
+    }
 }
-
-

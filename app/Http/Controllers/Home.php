@@ -7,7 +7,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 use App\Models\Paygate as PaygateModel;
-use App\Models\Store as StoreModel;
+use App\Models\Transaction as TransactionModel;
 use App\Models\Order as OrderModel;
 use App\Models\Dispute as DisputeModel;
 use Carbon\Carbon;
@@ -29,26 +29,31 @@ class Home extends BaseController
         $startDate = $request->query('start_date', now()->subMonth()->format('Y-m-d'));
         $endDate = $request->query('end_date', now()->format('Y-m-d'));
 
-        $openPaygate = count(PaygateModel::query()->whereBetween('created_at', [$startDate, $endDate])
-            ->where('status', PaygateModel::STATUS_ACTIVE)
-            ->get());
-        $liveStores = count(StoreModel::query()->whereBetween('created_at', [$startDate, $endDate])
-            ->where('status', StoreModel::STATUS_ACTIVE)
-            ->get());
-        $successOrders = count(OrderModel::query()->whereBetween('created_at', [$startDate, $endDate])
-            ->where('status', OrderModel::STATUS_PAID)
-            ->get());
+        $openPaygate = count(
+            PaygateModel::query()->whereBetween('created_at', [$startDate, $endDate])
+                ->where('status', PaygateModel::STATUS_ACTIVE)
+                ->get()
+        );
+        $totalDisputes = count(
+            DisputeModel::query()->whereBetween('created_at', [$startDate, $endDate])
+                ->get()
+        );
+        $successOrders = count(
+            OrderModel::query()->whereBetween('created_at', [$startDate, $endDate])
+                ->where('status', OrderModel::STATUS_PAID)
+                ->get()
+        );
         $totalRevenues = OrderModel::query()->whereBetween('created_at', [$startDate, $endDate])
             ->where('status', OrderModel::STATUS_PAID)
             ->sum('paid_amount');
 
-        $disputeRate = $this->getDisputeRate();
-
-        return view('home.index',
+        return view(
+            'home.index',
             [
                 'open_paygates' => $openPaygate,
-                'live_stores' => $liveStores,
+                'total_disputes' => $totalDisputes,
                 'success_orders' => $successOrders,
+                'main_dispute_rate' => $this->getDisputeRate($startDate, $endDate),
                 'start_date' => $startDate,
                 'end_date' => $endDate,
                 'chartData' => $this->getRevenueChartData($startDate, $endDate),
@@ -56,12 +61,27 @@ class Home extends BaseController
                 'chartDataDispute' => $this->getChartDataDispute($startDate, $endDate),
                 'dispute_reports' => $this->getDisputeReports($startDate, $endDate),
                 'paygate_reports' => $this->getPaygateReports($startDate, $endDate),
-            ]);
+            ]
+        );
     }
 
-    private function getDisputeRate(): float
+    /**
+     * Get dispute rate of all paygate
+     *
+     * @param $startDate
+     * @param $endDate
+     * @return float
+     */
+    private function getDisputeRate($startDate, $endDate): float
     {
-        return $disputes = DisputeModel::query()->count();
+        $transactionCount = count(TransactionModel::query()->whereBetween('created_at', [$startDate, $endDate])->get());
+        $disputeCounts = count(DisputeModel::query()->whereBetween('created_at', [$startDate, $endDate])->get());
+
+        if ($transactionCount === 0) {
+            return 0.0;
+        }
+
+        return round(($disputeCounts / $transactionCount) * 100, 2);
     }
 
     /**
@@ -74,25 +94,56 @@ class Home extends BaseController
     private function getPaygateReports($startDate, $endDate): array
     {
         $allPaygatesReports = [];
-        $paygateReports = [];
 
         $allPaygates = PaygateModel::query()
-            ->whereBetween('created_at', [$startDate, $endDate])
+            ->where('created_at', "<=", $startDate)
             ->orderBy('created_at', 'desc')
             ->get();
 
-        if (!empty($allPaygates)) {
-            foreach ($allPaygates as $paygate) {
-                $paygateReports['revenue'] = 9000;
-                $paygateReports['dispute_rate'] = 1.5;
-                $paygateReports['id'] = $paygate->id;
-                $paygateReports['limit'] = $paygate->limitation;
-                $paygateReports['type'] = PaygateModel::TYPE[$paygate->type];
-                $paygateReports['status'] = PaygateModel::STATUS[$paygate->status];
-                $paygateReports['created_at'] = $paygate->created_at;
-                $allPaygatesReports[] = $paygateReports;
-            }
+        $disputeCounts = DisputeModel::query()
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->groupBy('paygate_id')
+            ->selectRaw('paygate_id, COUNT(*) as dispute_count')
+            ->pluck('dispute_count', 'paygate_id')
+            ->toArray();
+
+        $transactionCount = TransactionModel::query()
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->groupBy('paygate_id')
+            ->selectRaw('paygate_id, COUNT(*) as transaction_count')
+            ->pluck('transaction_count', 'paygate_id')
+            ->toArray();
+
+        $revenue = OrderModel::query()
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->where('status', OrderModel::STATUS_PAID)
+            ->groupBy('paygate_id')
+            ->selectRaw('paygate_id, SUM(paid_amount) as revenue')
+            ->pluck('revenue', 'paygate_id')
+            ->toArray();
+
+        foreach ($allPaygates as $paygate) {
+            $paygateId = $paygate->id;
+
+            $totalTransactions = array_key_exists($paygateId, $transactionCount) ? $transactionCount[$paygateId] : 0;
+            $totalDisputes = array_key_exists($paygateId, $disputeCounts) ? $disputeCounts[$paygateId] : 0;
+            $paygateRevenue = array_key_exists($paygateId, $revenue) ? $revenue[$paygateId] : 0;
+
+            $paygateReports = [
+                'id' => $paygateId,
+                'revenue' => $paygateRevenue,
+                'dispute_rate' => $totalTransactions > 0 ? round(($totalDisputes / $totalTransactions) * 100, 2) : 0,
+                'total_disputes' => $totalDisputes,
+                'total_transactions' => $totalTransactions,
+                'limit' => $paygate->limitation,
+                'type' => PaygateModel::TYPE[$paygate->type] ?? 'Unknown',
+                'status' => PaygateModel::STATUS[$paygate->status] ?? 'Unknown',
+                'created_at' => $paygate->created_at,
+            ];
+
+            $allPaygatesReports[] = $paygateReports;
         }
+
         return $allPaygatesReports;
     }
 
@@ -127,7 +178,6 @@ class Home extends BaseController
                 'closed' => 0,
                 'expired' => 0,
             ];
-
         }
 
         $allStatuses = [
@@ -176,16 +226,49 @@ class Home extends BaseController
 
 
         return [
-            'labels' => ['Resolved', 'Expired', 'Closed', 'Denied', 'Open', 'Waiting for seller response', 'Waiting for buyer response', 'Under review'],
+            'labels' => [
+                'Resolved',
+                'Expired',
+                'Closed',
+                'Denied',
+                'Open',
+                'Waiting for seller response',
+                'Waiting for buyer response',
+                'Under review'
+            ],
             'data' => [
-                !empty($disputeCounts[DisputeModel::STATUS_RESOLVED]) ? round(($disputeCounts[DisputeModel::STATUS_RESOLVED] / $totalDisputes) * 100, 2) : 0,
-                !empty($disputeCounts[DisputeModel::STATUS_EXPIRED]) ? round(($disputeCounts[DisputeModel::STATUS_EXPIRED] / $totalDisputes) * 100, 2) : 0,
-                !empty($disputeCounts[DisputeModel::STATUS_CLOSED]) ? round(($disputeCounts[DisputeModel::STATUS_CLOSED] / $totalDisputes) * 100, 2) : 0,
-                !empty($disputeCounts[DisputeModel::STATUS_DENIED]) ? round(($disputeCounts[DisputeModel::STATUS_DENIED] / $totalDisputes) * 100, 2) : 0,
-                !empty($disputeCounts[DisputeModel::STATUS_OPEN]) ? round(($disputeCounts[DisputeModel::STATUS_OPEN] / $totalDisputes) * 100, 2) : 0,
-                !empty($disputeCounts[DisputeModel::STATUS_WAITING_FOR_SELLER_RESPONSE]) ? round(($disputeCounts[DisputeModel::STATUS_WAITING_FOR_SELLER_RESPONSE] / $totalDisputes) * 100, 2) : 0,
-                !empty($disputeCounts[DisputeModel::STATUS_WAITING_FOR_BUYER_RESPONSE]) ? round(($disputeCounts[DisputeModel::STATUS_WAITING_FOR_BUYER_RESPONSE] / $totalDisputes) * 100, 2) : 0,
-                !empty($disputeCounts[DisputeModel::STATUS_UNDER_REVIEW]) ? round(($disputeCounts[DisputeModel::STATUS_UNDER_REVIEW] / $totalDisputes) * 100, 2) : 0,
+                !empty($disputeCounts[DisputeModel::STATUS_RESOLVED]) ? round(
+                    ($disputeCounts[DisputeModel::STATUS_RESOLVED] / $totalDisputes) * 100,
+                    2
+                ) : 0,
+                !empty($disputeCounts[DisputeModel::STATUS_EXPIRED]) ? round(
+                    ($disputeCounts[DisputeModel::STATUS_EXPIRED] / $totalDisputes) * 100,
+                    2
+                ) : 0,
+                !empty($disputeCounts[DisputeModel::STATUS_CLOSED]) ? round(
+                    ($disputeCounts[DisputeModel::STATUS_CLOSED] / $totalDisputes) * 100,
+                    2
+                ) : 0,
+                !empty($disputeCounts[DisputeModel::STATUS_DENIED]) ? round(
+                    ($disputeCounts[DisputeModel::STATUS_DENIED] / $totalDisputes) * 100,
+                    2
+                ) : 0,
+                !empty($disputeCounts[DisputeModel::STATUS_OPEN]) ? round(
+                    ($disputeCounts[DisputeModel::STATUS_OPEN] / $totalDisputes) * 100,
+                    2
+                ) : 0,
+                !empty($disputeCounts[DisputeModel::STATUS_WAITING_FOR_SELLER_RESPONSE]) ? round(
+                    ($disputeCounts[DisputeModel::STATUS_WAITING_FOR_SELLER_RESPONSE] / $totalDisputes) * 100,
+                    2
+                ) : 0,
+                !empty($disputeCounts[DisputeModel::STATUS_WAITING_FOR_BUYER_RESPONSE]) ? round(
+                    ($disputeCounts[DisputeModel::STATUS_WAITING_FOR_BUYER_RESPONSE] / $totalDisputes) * 100,
+                    2
+                ) : 0,
+                !empty($disputeCounts[DisputeModel::STATUS_UNDER_REVIEW]) ? round(
+                    ($disputeCounts[DisputeModel::STATUS_UNDER_REVIEW] / $totalDisputes) * 100,
+                    2
+                ) : 0,
             ],
         ];
     }

@@ -64,7 +64,7 @@ class PaygateDataTable extends BaseDataTable
             Column::make([
                 'data' => 'id',
                 'title' => 'ID',
-            ])->addClass('x-id'),
+            ])->searchPanes(false)->addClass('x-id'),
             Column::make('name')->searchPanes()->addClass('x-searchable'),
             Column::make('url')->searchPanes()->addClass('x-searchable'),
             // Column::make('api_data')->addClass('x-searchable'),

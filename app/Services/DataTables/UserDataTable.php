@@ -72,7 +72,7 @@ class UserDataTable extends BaseDataTable
             Column::make('username')->searchPanes()->addClass('x-searchable'),
             Column::make('email')->searchPanes()->addClass('x-searchable'),
             Column::make('role')->searchPanes()->addClass('x-searchable'),
-            Column::make('registration_ip')->addClass('x-searchable'),
+            Column::make('registration_ip')->searchPanes()->addClass('x-searchable'),
             Column::make('status')->searchPanes(),
             Column::make('last_login_at')->searchPanes()->addClass('x-has-date-filter')->orderable(false),
             Column::make('blocked_at')->searchPanes()->addClass('x-has-date-filter')->orderable(false),
