@@ -1,0 +1,2109 @@
+[
+    {
+        "subCategory": "Authorizations",
+        "code": "T1300",
+        "description": "General Authorizations",
+        "credit_or_debit": "CR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Authorizations",
+        "code": "T1300",
+        "description": "General Authorizations",
+        "credit_or_debit": "DR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Authorizations",
+        "code": "T1302",
+        "description": "Void of Authorizations",
+        "credit_or_debit": "CR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Authorizations",
+        "code": "T1302",
+        "description": "Void of Authorizations",
+        "credit_or_debit": "DR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "ReAuthorization",
+        "code": "T1301",
+        "description": "ReAuthorization",
+        "credit_or_debit": "CR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "ReAuthorization",
+        "code": "T1301",
+        "description": "ReAuthorization",
+        "credit_or_debit": "DR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Chargeback Activity",
+        "code": "T1201",
+        "description": "Chargeback",
+        "credit_or_debit": "CR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Chargeback Activity",
+        "code": "T1201",
+        "description": "Chargeback",
+        "credit_or_debit": "DR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Chargeback Activity",
+        "code": "T1202",
+        "description": "Chargeback Reversal",
+        "credit_or_debit": "CR",
+        "additional_information": "Reversals (Chargebacks won, where the merchant receives a reimbursement for the Chargeback amount)."
+    },
+    {
+        "subCategory": "Chargeback Activity",
+        "code": "T1202",
+        "description": "Chargeback Reversal",
+        "credit_or_debit": "DR",
+        "additional_information": "Reversals (Chargebacks won, where the merchant receives a reimbursement for the Chargeback amount)."
+    },
+    {
+        "subCategory": "Chargeback Activity",
+        "code": "T1208",
+        "description": "PACMAN Buyer cancellation",
+        "credit_or_debit": "CR",
+        "additional_information": "Adjustment to PayPal Account for Reversal of chargeback reversal based on cancellation of a chargeback in PayPal."
+    },
+    {
+        "subCategory": "Chargeback Activity",
+        "code": "T1208",
+        "description": "PACMAN Buyer cancellation",
+        "credit_or_debit": "DR",
+        "additional_information": "Adjustment to PayPal Account for Reversal of chargeback reversal based on cancellation of a chargeback in PayPal."
+    },
+    {
+        "subCategory": "Chargeback Activity",
+        "code": "T1207",
+        "description": "PACMAN Represenment Rejected",
+        "credit_or_debit": "CR",
+        "additional_information": "Adjustment to PayPal Account for Reversal of payment based on rejection of the representment for a chargeback in PayPal."
+    },
+    {
+        "subCategory": "Chargeback Activity",
+        "code": "T1207",
+        "description": "PACMAN Represenment Rejected",
+        "credit_or_debit": "DR",
+        "additional_information": "Adjustment to PayPal Account for Reversal of payment based on rejection of the representment for a chargeback in PayPal."
+    },
+    {
+        "subCategory": "Chargeback Activity",
+        "code": "T1106",
+        "description": "Payment Reversal",
+        "credit_or_debit": "CR",
+        "additional_information": "Initiated by PayPal."
+    },
+    {
+        "subCategory": "Chargeback Activity",
+        "code": "T1106",
+        "description": "Payment Reversal",
+        "credit_or_debit": "DR",
+        "additional_information": "Initiated by PayPal."
+    },
+    {
+        "subCategory": "Chargeback Activity",
+        "code": "T1205",
+        "description": "Reimbursement of Chargeback",
+        "credit_or_debit": "CR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Chargeback Activity",
+        "code": "T1205",
+        "description": "Reimbursement of Chargeback",
+        "credit_or_debit": "DR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Chargeback Adjustments",
+        "code": "T1201",
+        "description": "Chargeback",
+        "credit_or_debit": "DR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Chargeback Adjustments",
+        "code": "T1202",
+        "description": "Chargeback Reversal",
+        "credit_or_debit": "DR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Chargeback Adjustments",
+        "code": "T1208",
+        "description": "PACMAN Buyer cancellation",
+        "credit_or_debit": "DR",
+        "additional_information": "Adjustment to PayPal Account for Reversal of chargeback reversal based on cancellation of a chargeback in the PayPal system."
+    },
+    {
+        "subCategory": "Chargeback Adjustments",
+        "code": "T1207",
+        "description": "PACMAN Represenment Rejected",
+        "credit_or_debit": "DR",
+        "additional_information": "Adjustment to PayPal Account for Reversal of payment based on rejection of the representment for a chargeback in PayPal."
+    },
+    {
+        "subCategory": "Chargeback Adjustments",
+        "code": "T1205",
+        "description": "Reimbursement of Chargeback",
+        "credit_or_debit": "DR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Chargeback Hold",
+        "code": "T1111",
+        "description": "Cancellation of Hold for Dispute Resolution",
+        "credit_or_debit": "DR",
+        "additional_information": "Cancellation of temporary hold to cover possible chargeback."
+    },
+    {
+        "subCategory": "Chargeback Hold",
+        "code": "T1110",
+        "description": "Hold on Balance for Dispute Investigation",
+        "credit_or_debit": "DR",
+        "additional_information": "Hold to cover possible chargeback."
+    },
+    {
+        "subCategory": "Chargeback Releases",
+        "code": "T1111",
+        "description": "Cancellation of Hold for Dispute Resolution",
+        "credit_or_debit": "CR",
+        "additional_information": "Cancellation of temporary hold to cover possible chargeback."
+    },
+    {
+        "subCategory": "Chargeback Releases",
+        "code": "T1110",
+        "description": "Hold on Balance for Dispute Investigation",
+        "credit_or_debit": "CR",
+        "additional_information": "Hold to cover possible chargeback."
+    },
+    {
+        "subCategory": "Chargeback Reversals",
+        "code": "T1106",
+        "description": "Payment Reversal",
+        "credit_or_debit": "CR",
+        "additional_information": "Initiated by PayPal."
+    },
+    {
+        "subCategory": "Account Transfer",
+        "code": "T2000",
+        "description": "General intraaccount transfer",
+        "credit_or_debit": "CR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Account Transfer",
+        "code": "T2002",
+        "description": "Withdraw funds to Partner Account",
+        "credit_or_debit": "DR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Account Transfer",
+        "code": "T2003",
+        "description": "Transfer To External GL Entity",
+        "credit_or_debit": "CR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Account Transfer",
+        "code": "T2004",
+        "description": "Receivables financing",
+        "credit_or_debit": "CR",
+        "additional_information": "Applicable only in Brazil."
+    },
+    {
+        "subCategory": "Adjustments",
+        "code": "T1203",
+        "description": "Charge-off Adjustment",
+        "credit_or_debit": "CR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Adjustments",
+        "code": "T1200",
+        "description": "General Account Adjustment",
+        "credit_or_debit": "CR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Adjustments",
+        "code": "T1204",
+        "description": "Incentive Adjustment",
+        "credit_or_debit": "CR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Balance Manager Account Bonus",
+        "code": "T0803",
+        "description": "Balance Manager Account Bonus",
+        "credit_or_debit": "CR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "BillPay transaction",
+        "code": "1000",
+        "description": "BillPay transaction",
+        "credit_or_debit": "CR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "BML Credit -Transfer from BML",
+        "code": "T1601",
+        "description": "BML Credit - Transfer from BML",
+        "credit_or_debit": "CR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "BML WithdrawalTransfer to BML",
+        "code": "T1801",
+        "description": "BML Withdrawal - Transfer to BML",
+        "credit_or_debit": "CR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "BML WithdrawalTransfer to BML",
+        "code": "T1603",
+        "description": "Buyer Credit Payment Withdrawal - Transfer To BML",
+        "credit_or_debit": "CR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Bonus for Bank Funding Program",
+        "code": "T0806",
+        "description": "Bonus for First ACH Use",
+        "credit_or_debit": "CR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Correction Adjustment",
+        "code": "T1900",
+        "description": "General Account Correction",
+        "credit_or_debit": "CR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Coupon applied",
+        "code": "T0903",
+        "description": "Coupon Redemption",
+        "credit_or_debit": "CR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Credit Card Cash Back Bonus",
+        "code": "T0808",
+        "description": "Credit Card Cash Back Bonus",
+        "credit_or_debit": "CR",
+        "additional_information": "The monthly cash back accrued based on PayPal Extras Card signatures transactions for cash back program enrollees."
+    },
+    {
+        "subCategory": "Credit Card Deposit",
+        "code": "T0701",
+        "description": "Credit Card Deposit for Negative PayPal Account Balance",
+        "credit_or_debit": "CR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Credit Card Security Credit",
+        "code": "T0807",
+        "description": "CC Security Charge Refund",
+        "credit_or_debit": "CR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Debit Card Cash Back Bonus",
+        "code": "T0801",
+        "description": "Debit Card Cash Back Bonus",
+        "credit_or_debit": "CR",
+        "additional_information": "Requires a PayPal debit card associated with the PayPal account. The monthly cash back accrued based on Merchant Debit Card signatures transactions for cash back program enrollees."
+    },
+    {
+        "subCategory": "Debit card purchase",
+        "code": "T0503",
+        "description": "Hidden Virtual PayPal Debit Card Transaction",
+        "credit_or_debit": "CR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Debit Card Reversal",
+        "code": "T1102",
+        "description": "Reversal of Debit Card Transaction",
+        "credit_or_debit": "CR",
+        "additional_information": "Reversal of a debit card payment. Requires a PayPal debit card."
+    },
+    {
+        "subCategory": "Electronic Funds Transfer",
+        "code": "T0303",
+        "description": "Electronic Funds Transfer Funding",
+        "credit_or_debit": "CR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "General Bonus",
+        "code": "T0800",
+        "description": "General Bonus",
+        "credit_or_debit": "CR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "General Credit Card Deposit",
+        "code": "T0700",
+        "description": "General Credit Card Deposit",
+        "credit_or_debit": "CR",
+        "additional_information": "Purchase with a credit card."
+    },
+    {
+        "subCategory": "General Credit Card Withdrawal",
+        "code": "T0600",
+        "description": "General Credit Card Withdrawal",
+        "credit_or_debit": "CR",
+        "additional_information": "Reversal of purchase with a credit card. Seen only in PayPal account of the credit card owner."
+    },
+    {
+        "subCategory": "General Dividend",
+        "code": "T1400",
+        "description": "General Dividend",
+        "credit_or_debit": "CR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "General Incentive/Certificate Redemption",
+        "code": "T0900",
+        "description": "General Incentive/Certificate Redemption",
+        "credit_or_debit": "CR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "General Reversal",
+        "code": "T1100",
+        "description": "General Reversal",
+        "credit_or_debit": "CR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "General Withdrawal to Non-Bank Institution",
+        "code": "T1700",
+        "description": "General withdrawal to not bank entity",
+        "credit_or_debit": "CR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Generic instrument(PLCC)",
+        "code": "T3000",
+        "description": "General GI/Open wallet Transaction",
+        "credit_or_debit": "CR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Gift Certificate applied",
+        "code": "T0901",
+        "description": "Gift Certificate Redemption",
+        "credit_or_debit": "CR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Instant Payment Review",
+        "code": "T1116",
+        "description": "Instant Payment Review (IPR)reversal",
+        "credit_or_debit": "CR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Merchant Referral Account Bonus",
+        "code": "T0802",
+        "description": "Merchant Referral Account Bonus",
+        "credit_or_debit": "CR",
+        "additional_information": "Must have created a Merchant Referral Bonus link."
+    },
+    {
+        "subCategory": "MSB Redemption",
+        "code": "T0905",
+        "description": "MSB Redemption",
+        "credit_or_debit": "CR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Other debit card activity",
+        "code": "T0500",
+        "description": "General PayPal Debit Card Transaction",
+        "credit_or_debit": "CR",
+        "additional_information": "Requires a PayPal debit card associated with the PayPal account."
+    },
+    {
+        "subCategory": "Other debit card activity",
+        "code": "T0505",
+        "description": "PayPal Debit Authorization",
+        "credit_or_debit": "CR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Other debit card activity",
+        "code": "T0504",
+        "description": "PayPal Debit Card Cash Advance",
+        "credit_or_debit": "CR",
+        "additional_information": "Initiated by PayPal."
+    },
+    {
+        "subCategory": "Other debit card activity",
+        "code": "T0501",
+        "description": "Virtual PayPal Debit Card Transaction",
+        "credit_or_debit": "CR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Payment Refund",
+        "code": "T1115",
+        "description": "Mass Pay Refund",
+        "credit_or_debit": "CR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Payment Refund",
+        "code": "T1107",
+        "description": "Payment Refund",
+        "credit_or_debit": "CR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Payment Reversals",
+        "code": "T1119",
+        "description": "Generic Instrument/Open wallet Reversals (Buyer side)",
+        "credit_or_debit": "CR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Payment Reversals",
+        "code": "T1114",
+        "description": "Mass Pay Reversal",
+        "credit_or_debit": "CR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "PayPal Buyer Warranty Bonus",
+        "code": "T0804",
+        "description": "PayPal Buyer Warranty Bonus",
+        "credit_or_debit": "CR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "PayPal Debit Card Withdrawal to ATM",
+        "code": "T0502",
+        "description": "PayPal Debit Card Withdrawal to ATM",
+        "credit_or_debit": "CR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "PayPal Protection Credit",
+        "code": "T0805",
+        "description": "PayPal Protection Bonus, Payout for PayPal Buyer Protection, Payout for Full Protection with PayPal Buyer Credit",
+        "credit_or_debit": "CR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Points Incentive applied",
+        "code": "T0902",
+        "description": "Points Incentive Redemption",
+        "credit_or_debit": "CR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Reversal of ACH Deposit",
+        "code": "T1104",
+        "description": "Reversal of ACH Deposit",
+        "credit_or_debit": "CR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Reversal of ACH Withdrawal Transaction",
+        "code": "T1101",
+        "description": "Reversal of ACH Withdrawal Transaction",
+        "credit_or_debit": "CR",
+        "additional_information": "Reversal of a withdrawal from PayPal balance to a bank account."
+    },
+    {
+        "subCategory": "Reversal of Points Usage",
+        "code": "T1103",
+        "description": "Reversal of Points Usage",
+        "credit_or_debit": "CR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Reversals",
+        "code": "T1118",
+        "description": "Generic Instrument/Open wallet Reversals (Seller side)",
+        "credit_or_debit": "CR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Reward Voucher applied",
+        "code": "T0904",
+        "description": "Reward Voucher Redemption",
+        "credit_or_debit": "CR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Settlement consolidation",
+        "code": "T2001",
+        "description": "Consolidation Transfer",
+        "credit_or_debit": "CR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Transfer Deposit",
+        "code": "T0302",
+        "description": "ACH funding for Funds Recovery from Account balance",
+        "credit_or_debit": "CR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Transfer Deposit",
+        "code": "T0300",
+        "description": "Bank Deposit to PP Account",
+        "credit_or_debit": "CR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Transfer Deposit",
+        "code": "T0301",
+        "description": "PayPal Balance Manager Funding of PayPal Account",
+        "credit_or_debit": "CR",
+        "additional_information": "PayPal-system generated."
+    },
+    {
+        "subCategory": "Transfer Withdrawal",
+        "code": "T0401",
+        "description": "Auto-sweep",
+        "credit_or_debit": "CR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Transfer Withdrawal",
+        "code": "T0400",
+        "description": "General Withdrawal - Bank Account",
+        "credit_or_debit": "CR",
+        "additional_information": "Settlement Withdrawal."
+    },
+    {
+        "subCategory": "World Link Withdrawal",
+        "code": "T1701",
+        "description": "World Link withdrawal",
+        "credit_or_debit": "CR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Chargeback fee",
+        "code": "T0106",
+        "description": "Chargeback Fee",
+        "credit_or_debit": "CR",
+        "additional_information": "Fees charged to a merchant for a credit card chargeback received."
+    },
+    {
+        "subCategory": "Chargeback fee",
+        "code": "T0106",
+        "description": "Chargeback Fee",
+        "credit_or_debit": "DR",
+        "additional_information": "Fees charged to a merchant for a credit card chargeback received."
+    },
+    {
+        "subCategory": "Fee",
+        "code": "T0100",
+        "description": "General NonPayment Related Fee",
+        "credit_or_debit": "CR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Fee",
+        "code": "T0100",
+        "description": "General NonPayment Related Fee",
+        "credit_or_debit": "DR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Fee Credits",
+        "code": "T1109",
+        "description": "Fee Refund",
+        "credit_or_debit": "CR",
+        "additional_information": "Fees refunded when refunds are issued."
+    },
+    {
+        "subCategory": "Fee Credits",
+        "code": "T1109",
+        "description": "Fee Refund",
+        "credit_or_debit": "DR",
+        "additional_information": "Fees refunded when refunds are issued."
+    },
+    {
+        "subCategory": "Fee Credits",
+        "code": "T1108",
+        "description": "Fee Reversal",
+        "credit_or_debit": "CR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Fee Credits",
+        "code": "T1108",
+        "description": "Fee Reversal",
+        "credit_or_debit": "DR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Payment Fee",
+        "code": "T0104",
+        "description": "Fee for Mass Pay request",
+        "credit_or_debit": "CR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Payment Fee",
+        "code": "T0104",
+        "description": "Fee for Mass Pay request",
+        "credit_or_debit": "DR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Payment Fee",
+        "code": "T0113",
+        "description": "Partner Fee",
+        "credit_or_debit": "CR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Payment Fee",
+        "code": "T0113",
+        "description": "Partner Fee",
+        "credit_or_debit": "DR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Payment Fee",
+        "code": "T0107",
+        "description": "Payment Fee",
+        "credit_or_debit": "CR",
+        "additional_information": "Fees charged for payments received, plus fees charged for sending Mass Payments."
+    },
+    {
+        "subCategory": "Payment Fee",
+        "code": "T0107",
+        "description": "Payment Fee",
+        "credit_or_debit": "DR",
+        "additional_information": "Fees charged for payments received, plus fees charged for sending Mass Payments."
+    },
+    {
+        "subCategory": "Product Fee",
+        "code": "T0101",
+        "description": "Web Site Payment Pro Account Monthly Fee",
+        "credit_or_debit": "CR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Product Fee",
+        "code": "T0101",
+        "description": "Web Site Payment Pro Account Monthly Fee",
+        "credit_or_debit": "DR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Product Fee",
+        "code": "T0102",
+        "description": "Fee for Foreign ACH withdrawal",
+        "credit_or_debit": "CR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Product Fee",
+        "code": "T0102",
+        "description": "Fee for Foreign ACH withdrawal",
+        "credit_or_debit": "DR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Product Fee",
+        "code": "T0103",
+        "description": "Fee for World Link Check withdrawal",
+        "credit_or_debit": "CR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Product Fee",
+        "code": "T0103",
+        "description": "Fee for World Link Check withdrawal",
+        "credit_or_debit": "DR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Service Fee",
+        "code": "T1109",
+        "description": "Fee Refund",
+        "credit_or_debit": "CR",
+        "additional_information": "Fees refunded when refunds are issued."
+    },
+    {
+        "subCategory": "Service Fee",
+        "code": "T1109",
+        "description": "Fee Refund",
+        "credit_or_debit": "DR",
+        "additional_information": "Fees refunded when refunds are issued."
+    },
+    {
+        "subCategory": "Service Fee",
+        "code": "T0112",
+        "description": "Gift Certificate Expiration Fee",
+        "credit_or_debit": "CR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Service Fee",
+        "code": "T0112",
+        "description": "Gift Certificate Expiration Fee",
+        "credit_or_debit": "DR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Service Fee",
+        "code": "T0110",
+        "description": "International CC withdrawal",
+        "credit_or_debit": "CR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Service Fee",
+        "code": "T0110",
+        "description": "International CC withdrawal",
+        "credit_or_debit": "DR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Service Fee",
+        "code": "T0111",
+        "description": "Warranty Fee for warranty purchase",
+        "credit_or_debit": "CR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Service Fee",
+        "code": "T0111",
+        "description": "Warranty Fee for warranty purchase",
+        "credit_or_debit": "DR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Service Fee",
+        "code": "T0108",
+        "description": "ATM withdrawal",
+        "credit_or_debit": "CR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Service Fee",
+        "code": "T0108",
+        "description": "ATM withdrawal",
+        "credit_or_debit": "DR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Service Fee",
+        "code": "T0109",
+        "description": "Auto-sweep from account",
+        "credit_or_debit": "CR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Service Fee",
+        "code": "T0109",
+        "description": "Auto-sweep from account",
+        "credit_or_debit": "DR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Service Fee",
+        "code": "T0105",
+        "description": "Check withdrawal",
+        "credit_or_debit": "CR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Service Fee",
+        "code": "T0105",
+        "description": "Check withdrawal",
+        "credit_or_debit": "DR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Service Fee",
+        "code": "T0114",
+        "description": "Dispute Fee",
+        "credit_or_debit": "CR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Service Fee",
+        "code": "T0114",
+        "description": "Dispute Fee",
+        "credit_or_debit": "DR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Service Fee",
+        "code": "T0115",
+        "description": "Custody Fee",
+        "credit_or_debit": "CR",
+        "additional_information": "Service fee charged as a custody fee if user holds balance beyond allowed threshold during that period."
+    },
+    {
+        "subCategory": "Service Fee",
+        "code": "T0115",
+        "description": "Custody Fee",
+        "credit_or_debit": "DR",
+        "additional_information": "Service fee charged as a custody fee if user holds balance beyond allowed threshold during that period."
+    },
+    {
+        "subCategory": "Service Fee",
+        "code": "T0116",
+        "description": "Bank Return Fee",
+        "credit_or_debit": "CR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Service Fee",
+        "code": "T0116",
+        "description": "Bank Return Fee",
+        "credit_or_debit": "DR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Campaign Fee",
+        "code": "T0117",
+        "description": "Campaign Fee",
+        "credit_or_debit": "CR, DR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Other",
+        "code": "T9900",
+        "description": "Other",
+        "credit_or_debit": "CR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Other",
+        "code": "T9900",
+        "description": "Other",
+        "credit_or_debit": "DR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Other - Non- balance Impacting",
+        "code": "T9800",
+        "description": "Display only transaction row",
+        "credit_or_debit": "CR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Other - Non- balance Impacting",
+        "code": "T9800",
+        "description": "Display only transaction row",
+        "credit_or_debit": "DR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Funds payable",
+        "code": "T9701",
+        "description": "Funds Payable",
+        "credit_or_debit": "CR",
+        "additional_information": "Funds provided by PayPal that need to be paid back."
+    },
+    {
+        "subCategory": "Funds payable",
+        "code": "T9702",
+        "description": "Funds Receivable",
+        "credit_or_debit": "CR",
+        "additional_information": "Funds provided by PayPal that are being paid back."
+    },
+    {
+        "subCategory": "Payables and Receivables",
+        "code": "T9700",
+        "description": "Payables and Receivables",
+        "credit_or_debit": "CR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "3rd Party Auction Payment",
+        "code": "T0010",
+        "description": "3rd Party Auction Payment",
+        "credit_or_debit": "CR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Chained Payment/Refund",
+        "code": "T0017",
+        "description": "Chained Payment/Refund",
+        "credit_or_debit": "CR",
+        "additional_information": "Store to store transfer."
+    },
+    {
+        "subCategory": "Direct Credit Card Payment",
+        "code": "T0005",
+        "description": "Direct Credit Card Payment",
+        "credit_or_debit": "CR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Donation Payment",
+        "code": "T0013",
+        "description": "Donation Payment",
+        "credit_or_debit": "CR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "eBay Auction Payment",
+        "code": "T0004",
+        "description": "eBay Auction Payment",
+        "credit_or_debit": "CR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Express Checkout Payment",
+        "code": "T0006",
+        "description": "Express Checkout Payment",
+        "credit_or_debit": "CR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "General Buyer Credit Payment",
+        "code": "T1602",
+        "description": "Buyer Credit Payment",
+        "credit_or_debit": "CR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "General Buyer Credit Payment",
+        "code": "T1800",
+        "description": "General Buyer Credit Payment",
+        "credit_or_debit": "CR",
+        "additional_information": "Must have signed up for Buyer Credit."
+    },
+    {
+        "subCategory": "General payment",
+        "code": "T0000",
+        "description": "General Payment",
+        "credit_or_debit": "CR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Generic Instrument funded Payment",
+        "code": "T0019",
+        "description": "Generic Instrument funded Payment",
+        "credit_or_debit": "CR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Gift Certificate Purchase",
+        "code": "T0009",
+        "description": "Gift Certificate Payment (Purchase)",
+        "credit_or_debit": "CR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "MAM Reversal",
+        "code": "T1112",
+        "description": "Cancelled Transfer",
+        "credit_or_debit": "CR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Mass Pay payment",
+        "code": "T0001",
+        "description": "Mass Pay Payment",
+        "credit_or_debit": "CR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Mobile Payment",
+        "code": "T0011",
+        "description": "Mobile Payment",
+        "credit_or_debit": "CR",
+        "additional_information": "Payment made via a mobile phone."
+    },
+    {
+        "subCategory": "Payment Bill User Payment",
+        "code": "T0003",
+        "description": "PreApproved Payment Bill User Payment",
+        "credit_or_debit": "CR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Payments received",
+        "code": "T2201",
+        "description": "Digital goods transaction",
+        "credit_or_debit": "CR",
+        "additional_information": "Transfer from a credit card funded restricted balance."
+    },
+    {
+        "subCategory": "Payments received",
+        "code": "T1113",
+        "description": "Non Reference Credit Payment",
+        "credit_or_debit": "CR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "PayPal Buyer Credit Payment Funding",
+        "code": "T1600",
+        "description": "PayPal Buyer Credit Payment Funding",
+        "credit_or_debit": "CR",
+        "additional_information": "Must have signed up for Buyer Credit."
+    },
+    {
+        "subCategory": "PayPal Here Payment",
+        "code": "T0018",
+        "description": "PayPal Here Payment",
+        "credit_or_debit": "CR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Postage Payment",
+        "code": "T0008",
+        "description": "Postage Payment",
+        "credit_or_debit": "CR",
+        "additional_information": "Payment to postage carrier."
+    },
+    {
+        "subCategory": "Rebate Payment/Cash Back",
+        "code": "T0014",
+        "description": "Rebate Payment/Cash Back",
+        "credit_or_debit": "CR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Rebate/Cash back reversal",
+        "code": "T1117",
+        "description": "Rebate/Cashback reversal",
+        "credit_or_debit": "CR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Subscription Payment",
+        "code": "T0002",
+        "description": "Subscription Payment",
+        "credit_or_debit": "CR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Tax collected by Partner",
+        "code": "T0020",
+        "description": "Tax collected by Partner",
+        "credit_or_debit": "CR",
+        "additional_information": "Refund of tax amount collected by Partners or Marketplaces in the event of a refund, reversal, or chargeback of a sale transaction."
+    },
+    {
+        "subCategory": "Third Party Payout",
+        "code": "T0015",
+        "description": "Third Party Payout",
+        "credit_or_debit": "CR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Third Party Recoupment",
+        "code": "T0016",
+        "description": "Third Party Recoupment",
+        "credit_or_debit": "CR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Virtual Terminal Payment",
+        "code": "T0012",
+        "description": "Virtual Terminal Payment",
+        "credit_or_debit": "CR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Website Payment",
+        "code": "T0007",
+        "description": "Website Payment",
+        "credit_or_debit": "CR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Cryptocurrency",
+        "code": "T0021",
+        "description": "Cryptocurrency",
+        "credit_or_debit": "CR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "PayPal Seller Profiles",
+        "code": "T0022",
+        "description": "PayPal Seller Profiles",
+        "credit_or_debit": "CR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "3rd Party Auction Payment",
+        "code": "T0010",
+        "description": "3rd Party Auction Payment",
+        "credit_or_debit": "DR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Chained Payment/Refund",
+        "code": "T0017",
+        "description": "Chained Payment/Refund",
+        "credit_or_debit": "DR",
+        "additional_information": "Store to store transfer."
+    },
+    {
+        "subCategory": "Direct Credit Card Payment",
+        "code": "T0005",
+        "description": "Direct Credit Card Payment",
+        "credit_or_debit": "DR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Donation Payment",
+        "code": "T0013",
+        "description": "Donation Payment",
+        "credit_or_debit": "DR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "eBay Auction Payment",
+        "code": "T0004",
+        "description": "eBay Auction Payment",
+        "credit_or_debit": "DR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Express Checkout Payment",
+        "code": "T0006",
+        "description": "Express Checkout Payment",
+        "credit_or_debit": "DR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "General Buyer Credit Payment",
+        "code": "T1603",
+        "description": "Buyer Credit Payment Withdrawal - Transfer To BML",
+        "credit_or_debit": "DR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "General Buyer Credit Payment",
+        "code": "T1800",
+        "description": "General Buyer Credit Payment",
+        "credit_or_debit": "DR",
+        "additional_information": "Must have signed up for Buyer Credit."
+    },
+    {
+        "subCategory": "General payment",
+        "code": "T0000",
+        "description": "General Payment",
+        "credit_or_debit": "DR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Generic Instrument funded Payment",
+        "code": "T0019",
+        "description": "Generic Instrument funded Payment",
+        "credit_or_debit": "DR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Gift Certificate Purchase",
+        "code": "T0009",
+        "description": "Gift Certificate Payment(Purchase)",
+        "credit_or_debit": "DR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "MAM Reversal",
+        "code": "T1112",
+        "description": "Cancelled Transfer",
+        "credit_or_debit": "DR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Mass Pay payment",
+        "code": "T0001",
+        "description": "Mass Pay Payment",
+        "credit_or_debit": "DR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Mobile Payment",
+        "code": "T0011",
+        "description": "Mobile Payment",
+        "credit_or_debit": "DR",
+        "additional_information": "Payment made via a mobile phone."
+    },
+    {
+        "subCategory": "Payment Bill User Payment",
+        "code": "T0003",
+        "description": "PreApproved Payment Bill User Payment",
+        "credit_or_debit": "DR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Payment Sent",
+        "code": "T2201",
+        "description": "Digital goods transaction",
+        "credit_or_debit": "DR",
+        "additional_information": "Transfer from a credit card funded restricted balance."
+    },
+    {
+        "subCategory": "Payment Sent",
+        "code": "T1113",
+        "description": "Non Reference Credit Payment",
+        "credit_or_debit": "DR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "PayPal Buyer Credit Payment Funding",
+        "code": "T1600",
+        "description": "PayPal Buyer Credit Payment Funding",
+        "credit_or_debit": "DR",
+        "additional_information": "Must have signed up for Buyer Credit."
+    },
+    {
+        "subCategory": "PayPal Here Payment",
+        "code": "T0018",
+        "description": "PayPal Here Payment",
+        "credit_or_debit": "DR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Postage Payment",
+        "code": "T0008",
+        "description": "Postage Payment",
+        "credit_or_debit": "DR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Rebate Payment/Cash Back",
+        "code": "T0014",
+        "description": "Rebate Payment/Cash Back",
+        "credit_or_debit": "DR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Rebate/Cashback reversal",
+        "code": "T1117",
+        "description": "Rebate/Cashback reversal",
+        "credit_or_debit": "DR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Subscription Payment",
+        "code": "T0002",
+        "description": "Subscription Payment",
+        "credit_or_debit": "DR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Tax collected by Partner",
+        "code": "T0020",
+        "description": "Tax collected by Partner",
+        "credit_or_debit": "DR",
+        "additional_information": "Tax collected by Partners or Marketplaces on your sale transactions."
+    },
+    {
+        "subCategory": "Third Party Payout",
+        "code": "T0015",
+        "description": "Third Party Payout",
+        "credit_or_debit": "DR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Third Party Recoupment",
+        "code": "T0016",
+        "description": "Third Party Recoupment",
+        "credit_or_debit": "DR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Virtual Terminal Payment",
+        "code": "T0012",
+        "description": "Virtual Terminal Payment",
+        "credit_or_debit": "DR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Website Payment",
+        "code": "T0007",
+        "description": "Website Payment",
+        "credit_or_debit": "DR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Cryptocurrency",
+        "code": "T0021",
+        "description": "Cryptocurrency",
+        "credit_or_debit": "DR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "PayPal Seller Profiles",
+        "code": "T0022",
+        "description": "PayPal Seller Profiles",
+        "credit_or_debit": "DR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Funds receivable",
+        "code": "T9701",
+        "description": "Funds Payable",
+        "credit_or_debit": "DR",
+        "additional_information": "Funds provided by PayPal that need to be paid back."
+    },
+    {
+        "subCategory": "Funds receivable",
+        "code": "T9702",
+        "description": "Funds Receivable",
+        "credit_or_debit": "DR",
+        "additional_information": "Funds provided by PayPal that are being paid back."
+    },
+    {
+        "subCategory": "Payables and Receivables",
+        "code": "T9700",
+        "description": "Payables and Receivables",
+        "credit_or_debit": "DR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Account Release",
+        "code": "T1502",
+        "description": "Account Hold for ACH deposit",
+        "credit_or_debit": "CR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Account Release",
+        "code": "T2113",
+        "description": "Blocked Payments",
+        "credit_or_debit": "CR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Account Release",
+        "code": "T2111",
+        "description": "External Hold",
+        "credit_or_debit": "CR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Account Release",
+        "code": "T1500",
+        "description": "General Account Hold",
+        "credit_or_debit": "CR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Account Release",
+        "code": "T2101",
+        "description": "General Hold",
+        "credit_or_debit": "CR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Account Release",
+        "code": "T2102",
+        "description": "General Hold Release",
+        "credit_or_debit": "CR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Account Release",
+        "code": "T1503",
+        "description": "Hold on Available Balance",
+        "credit_or_debit": "CR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Gift Card redemption",
+        "code": "T2109",
+        "description": "Gift Certificate Purchase",
+        "credit_or_debit": "CR",
+        "additional_information": "When a gift certificate is purchased by your buyer, then that amount is placed on hold."
+    },
+    {
+        "subCategory": "Gift Certificate Redemption",
+        "code": "T2110",
+        "description": "Gift Certificate Redemption",
+        "credit_or_debit": "CR",
+        "additional_information": "A gift certificate, when redeemed, is available for withdrawal."
+    },
+    {
+        "subCategory": "Open PayPal Authorizations",
+        "code": "T1501",
+        "description": "Account Hold for Open Authorization",
+        "credit_or_debit": "CR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Payment review release",
+        "code": "T2107",
+        "description": "Payment Hold",
+        "credit_or_debit": "CR",
+        "additional_information": "Payment holds are funds that belong to you that we set aside, such as security deposit. This amount is part of your total balance and will not be available for withdrawal."
+    },
+    {
+        "subCategory": "Payment review release",
+        "code": "T2105",
+        "description": "Payment Review Hold",
+        "credit_or_debit": "CR",
+        "additional_information": "A payment review hold is used to protect you against unauthorized fraud loss and for seller protection. While a transaction is on payment review hold, we recommend that you do not ship the item. We are reviewing this transaction for up to 24 hours."
+    },
+    {
+        "subCategory": "Release",
+        "code": "T1105",
+        "description": "Reversal of General Account Hold",
+        "credit_or_debit": "CR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Release on payment review release",
+        "code": "T2108",
+        "description": "Payment Release",
+        "credit_or_debit": "CR",
+        "additional_information": "A payment hold, when released, is now available for withdrawal."
+    },
+    {
+        "subCategory": "Release on payment review release",
+        "code": "T2106",
+        "description": "Payment Review Release",
+        "credit_or_debit": "CR",
+        "additional_information": "A payment review hold, when released, is now available for withdrawal."
+    },
+    {
+        "subCategory": "Release on risk release",
+        "code": "T2112",
+        "description": "External Release",
+        "credit_or_debit": "CR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Tax release",
+        "code": "T2115",
+        "description": "Release on tax hold",
+        "credit_or_debit": "CR",
+        "additional_information": "A tax hold, when released, is now available for withdrawal."
+    },
+    {
+        "subCategory": "Reserve Release",
+        "code": "T2103",
+        "description": "Reserve Hold",
+        "credit_or_debit": "CR",
+        "additional_information": "PayPal is holding x% of funds for y days as a condition for processing for you. This amount is part of your total balance and will not be available for withdrawal."
+    },
+    {
+        "subCategory": "Reserve Release",
+        "code": "T2104",
+        "description": "Reserve Release",
+        "credit_or_debit": "CR",
+        "additional_information": "A reserve, when released, is now available for withdrawal."
+    },
+    {
+        "subCategory": "Reserve Hold",
+        "code": "T2103",
+        "description": "Reserve Hold",
+        "credit_or_debit": "DR",
+        "additional_information": "PayPal is holding x% of funds for y days as a condition for processing for you. This amount is part of your total balance and will not be available for withdrawal."
+    },
+    {
+        "subCategory": "Reserve Hold",
+        "code": "T2104",
+        "description": "Reserve Release",
+        "credit_or_debit": "DR",
+        "additional_information": "A reserve, when released, is now available for withdrawal."
+    },
+    {
+        "subCategory": "Currency Conversion",
+        "code": "T0202",
+        "description": "Conversion to Cover Negative Balance",
+        "credit_or_debit": "CR",
+        "additional_information": "PayPal-system generated."
+    },
+    {
+        "subCategory": "Currency Conversion",
+        "code": "T0202",
+        "description": "Conversion to Cover Negative Balance",
+        "credit_or_debit": "DR",
+        "additional_information": "PayPal-system generated."
+    },
+    {
+        "subCategory": "Currency Conversion",
+        "code": "T0200",
+        "description": "General Currency Conversion",
+        "credit_or_debit": "CR",
+        "additional_information": "Transfer of funds from one currency balance to a different currency balance."
+    },
+    {
+        "subCategory": "Currency Conversion",
+        "code": "T0200",
+        "description": "General Currency Conversion",
+        "credit_or_debit": "DR",
+        "additional_information": "Withdrawal of funds from one currency balance that is covered by funds from a different currency balance."
+    },
+    {
+        "subCategory": "Currency Conversion",
+        "code": "T0201",
+        "description": "User Initiated Currency Conversion",
+        "credit_or_debit": "CR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Currency Conversion",
+        "code": "T0201",
+        "description": "User Initiated Currency Conversion",
+        "credit_or_debit": "DR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Account Transfer",
+        "code": "T2000",
+        "description": "General intraaccount transfer",
+        "credit_or_debit": "DR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Account Transfer",
+        "code": "T2003",
+        "description": "Transfer To External GL Entity",
+        "credit_or_debit": "DR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Account Transfer",
+        "code": "T2004",
+        "description": "Receivables financing",
+        "credit_or_debit": "DR",
+        "additional_information": "Applicable only in Brazil."
+    },
+    {
+        "subCategory": "Adjustments",
+        "code": "T1200",
+        "description": "General Account Adjustment",
+        "credit_or_debit": "DR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Adjustments",
+        "code": "T1204",
+        "description": "Incentive Adjustment",
+        "credit_or_debit": "DR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Balance Manager Account Bonus Reversal",
+        "code": "T0803",
+        "description": "Balance Manager Account Bonus",
+        "credit_or_debit": "DR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "BillPay transaction",
+        "code": "T1000",
+        "description": "BillPay transaction",
+        "credit_or_debit": "DR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "BML Credit - Transfer from BML",
+        "code": "T1601",
+        "description": "BML Credit - Transfer from BML",
+        "credit_or_debit": "DR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "BML WithdrawalTransfer to BML",
+        "code": "T1801",
+        "description": "BML Withdrawal - Transfer to BML",
+        "credit_or_debit": "DR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "BML WithdrawalTransfer to BML",
+        "code": "T1602",
+        "description": "Buyer Credit Payment",
+        "credit_or_debit": "DR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Bonus for First Bank Activity Reversal",
+        "code": "T0806",
+        "description": "Bonus for First ACH Use",
+        "credit_or_debit": "DR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Bonus Reversal",
+        "code": "T0800",
+        "description": "General Bonus",
+        "credit_or_debit": "DR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "CC Security Charge Refund",
+        "code": "T0807",
+        "description": "CC Security Charge Refund",
+        "credit_or_debit": "DR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Charge-off Adjustment",
+        "code": "T1203",
+        "description": "Charge-off Adjustment",
+        "credit_or_debit": "DR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Correction Adjustment",
+        "code": "T1900",
+        "description": "General Account Correction",
+        "credit_or_debit": "DR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Coupon applied",
+        "code": "T0903",
+        "description": "Coupon Redemption",
+        "credit_or_debit": "DR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Credit Card Cash Back Bonus",
+        "code": "T0808",
+        "description": "Credit Card Cash Back Bonus",
+        "credit_or_debit": "DR",
+        "additional_information": "The monthly cash back accrued based on PayPal Extras Card signatures transactions for cash back program enrollees."
+    },
+    {
+        "subCategory": "Credit Card Deposit",
+        "code": "T0701",
+        "description": "Credit Card Deposit for Negative PayPal Account Balance",
+        "credit_or_debit": "DR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Debit Card Authorization",
+        "code": "T0505",
+        "description": "PayPal Debit Authorization",
+        "credit_or_debit": "DR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Debit Card Bonus Reversal",
+        "code": "T0801",
+        "description": "Debit Card Cash Back Bonus",
+        "credit_or_debit": "DR",
+        "additional_information": "Requires a PayPal debit card associated with the PayPal account. The monthly cash back accrued based on Merchant Debit Card signatures transactions for cash back program enrollees."
+    },
+    {
+        "subCategory": "Debit card purchase",
+        "code": "T0500",
+        "description": "General PayPal Debit Card Transaction",
+        "credit_or_debit": "DR",
+        "additional_information": "Requires a PayPal debit card associated with the PayPal account. The monthly cash back accrued based on Merchant Debit Card signatures transactions for cash back program enrollees."
+    },
+    {
+        "subCategory": "Debit card purchase",
+        "code": "T0501",
+        "description": "Virtual PayPal Debit Card Transaction",
+        "credit_or_debit": "DR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Electronic Funds Transfer",
+        "code": "T0303",
+        "description": "Electronic Funds Transfer Funding",
+        "credit_or_debit": "DR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "General Credit Card Deposit",
+        "code": "T0700",
+        "description": "General Credit Card Deposit",
+        "credit_or_debit": "DR",
+        "additional_information": "Purchase with a credit card."
+    },
+    {
+        "subCategory": "General Credit Card Withdrawal",
+        "code": "T0600",
+        "description": "General Credit Card Withdrawal",
+        "credit_or_debit": "DR",
+        "additional_information": "Reversal of purchase with a credit card. Seen only in PayPal account of the credit card owner."
+    },
+    {
+        "subCategory": "General Dividend",
+        "code": "T1400",
+        "description": "General Dividend",
+        "credit_or_debit": "DR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "General Incentive/Certificate Redemption",
+        "code": "T0900",
+        "description": "General Incentive/ Certificate Redemption",
+        "credit_or_debit": "DR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "General Reversal",
+        "code": "T1100",
+        "description": "General Reversal",
+        "credit_or_debit": "DR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "General Withdrawal to Non-Bank Institution",
+        "code": "T1700",
+        "description": "General withdrawal to not bank entity",
+        "credit_or_debit": "DR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Generic instrument (PLCC)",
+        "code": "T3000",
+        "description": "General GI/Open wallet Transaction",
+        "credit_or_debit": "DR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Gift Certificate applied",
+        "code": "T0901",
+        "description": "Gift Certificate Redemption",
+        "credit_or_debit": "DR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Instant Payment Review",
+        "code": "T1116",
+        "description": "Instant Payment Review (IPR)reversal",
+        "credit_or_debit": "DR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Merchant Referral Account Bonus Reversal",
+        "code": "T0802",
+        "description": "Merchant Referral Account Bonus",
+        "credit_or_debit": "DR",
+        "additional_information": "Must have created a Merchant Referral Bonus link."
+    },
+    {
+        "subCategory": "MSB Redemption",
+        "code": "T0905",
+        "description": "MSB Redemption",
+        "credit_or_debit": "DR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Other debit card activity",
+        "code": "T0503",
+        "description": "Hidden Virtual PayPal Debit Card Transaction",
+        "credit_or_debit": "DR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Other debit card activity",
+        "code": "T0502",
+        "description": "PayPal Debit Card Withdrawal to ATM",
+        "credit_or_debit": "DR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Other debit card activity",
+        "code": "T1102",
+        "description": "Reversal of Debit Card Transaction",
+        "credit_or_debit": "DR",
+        "additional_information": "Reversal of a debit card payment. Requires a PayPal debit card."
+    },
+    {
+        "subCategory": "Payment Refund",
+        "code": "T1115",
+        "description": "Mass Pay Refund",
+        "credit_or_debit": "DR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Payment Refund",
+        "code": "T1107",
+        "description": "Payment Refund",
+        "credit_or_debit": "DR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Payment Reversals",
+        "code": "T1119",
+        "description": "Generic Instrument/Open wallet Reversals (Buyer side)",
+        "credit_or_debit": "DR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Payment Reversals",
+        "code": "T1114",
+        "description": "Mass Pay Reversal",
+        "credit_or_debit": "DR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "PayPal Bonus Reversal",
+        "code": "T0805",
+        "description": "PayPal Protection Bonus, Payout for PayPal Buyer Protection, Payout for Full Protection with PayPal Buyer Credit",
+        "credit_or_debit": "DR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "PayPal Buyer Warranty Bonus Reversal",
+        "code": "T0804",
+        "description": "PayPal Buyer Warranty Bonus",
+        "credit_or_debit": "DR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "PayPal Debit Card Cash Advance",
+        "code": "T0504",
+        "description": "PayPal Debit Card Cash Advance",
+        "credit_or_debit": "DR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Points Incentive applied",
+        "code": "T0902",
+        "description": "Points Incentive Redemption",
+        "credit_or_debit": "DR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Reversal of ACH Deposit",
+        "code": "T1104",
+        "description": "Reversal of ACH Deposit",
+        "credit_or_debit": "DR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Reversal of ACH Withdrawal Transaction",
+        "code": "T1101",
+        "description": "Reversal of ACH Withdrawal Transaction",
+        "credit_or_debit": "DR",
+        "additional_information": "Reversal of a withdrawal from PayPal balance to a bank account."
+    },
+    {
+        "subCategory": "Reversal of Points Usage",
+        "code": "T1103",
+        "description": "Reversal of Points Usage",
+        "credit_or_debit": "DR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Reversals",
+        "code": "T1118",
+        "description": "Generic Instrument/Open wallet Reversals (Seller side)",
+        "credit_or_debit": "DR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Reward Voucher applied",
+        "code": "T0904",
+        "description": "Reward Voucher Redemption",
+        "credit_or_debit": "DR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Settlement consolidation",
+        "code": "T2001",
+        "description": "Consolidation Transfer",
+        "credit_or_debit": "DR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Transfer Deposit",
+        "code": "T0302",
+        "description": "ACH funding for Funds Recovery from Account balance",
+        "credit_or_debit": "DR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Transfer Deposit",
+        "code": "T0300",
+        "description": "Bank Deposit to PP Account",
+        "credit_or_debit": "DR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Transfer Deposit",
+        "code": "T0301",
+        "description": "PayPal Balance Manager Funding of PayPal Account",
+        "credit_or_debit": "DR",
+        "additional_information": "PayPal-system generated."
+    },
+    {
+        "subCategory": "Transfer Withdrawal",
+        "code": "T0401",
+        "description": "Auto-sweep",
+        "credit_or_debit": "DR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Transfer Withdrawal",
+        "code": "T0400",
+        "description": "General Withdrawal - Bank Account",
+        "credit_or_debit": "DR",
+        "additional_information": "Settlement Withdrawal."
+    },
+    {
+        "subCategory": "Transfer Withdrawal",
+        "code": "T0402",
+        "description": "Withdrawal to Hyperwallet",
+        "credit_or_debit": "DR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Transfer Withdrawal",
+        "code": "T0403",
+        "description": "Withdrawals initiated by user manually. Not related to automated scheduled withdrawals",
+        "credit_or_debit": "DR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "World Link Withdrawal",
+        "code": "T1701",
+        "description": "World Link withdrawal",
+        "credit_or_debit": "DR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Account Holds",
+        "code": "T1502",
+        "description": "Account Hold for ACH deposit",
+        "credit_or_debit": "DR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Account Holds",
+        "code": "T2111",
+        "description": "External Hold",
+        "credit_or_debit": "DR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Account Holds",
+        "code": "T1500",
+        "description": "General Account Hold",
+        "credit_or_debit": "DR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Account Holds",
+        "code": "T2101",
+        "description": "General Hold",
+        "credit_or_debit": "DR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Account Holds",
+        "code": "T2102",
+        "description": "General Hold Release",
+        "credit_or_debit": "DR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Account Holds",
+        "code": "T1503",
+        "description": "Hold on Available Balance",
+        "credit_or_debit": "DR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Gift Card Purchase",
+        "code": "T2109",
+        "description": "Gift Certificate Purchase",
+        "credit_or_debit": "DR",
+        "additional_information": "When a gift certificate is purchased by your buyer, then that amount is placed on hold."
+    },
+    {
+        "subCategory": "Gift Certificate Redemption",
+        "code": "T2110",
+        "description": "Gift Certificate Redemption",
+        "credit_or_debit": "DR",
+        "additional_information": "A gift certificate, when redeemed, is available for withdrawal."
+    },
+    {
+        "subCategory": "Hold",
+        "code": "T1105",
+        "description": "Reversal of General Account Hold",
+        "credit_or_debit": "DR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Open PayPal Authorizations",
+        "code": "T1501",
+        "description": "Account Hold for Open Authorization",
+        "credit_or_debit": "DR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Payment review hold",
+        "code": "T2107",
+        "description": "Payment Hold",
+        "credit_or_debit": "DR",
+        "additional_information": "Payment holds are funds that belong to you that we set aside, such as security deposit. This amount is part of your total balance and will not be available for withdrawal."
+    },
+    {
+        "subCategory": "Payment review hold",
+        "code": "T2105",
+        "description": "Payment Review Hold",
+        "credit_or_debit": "DR",
+        "additional_information": "A payment review hold is used to protect you against unauthorized fraud loss and for seller protection. While a transaction is on payment review hold, we recommend that you do not ship the item. We are reviewing this transaction for up to 24 hours."
+    },
+    {
+        "subCategory": "Release on compliance hold",
+        "code": "T2113",
+        "description": "Blocked Payments",
+        "credit_or_debit": "DR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Release on payment review hold",
+        "code": "T2108",
+        "description": "Payment Release",
+        "credit_or_debit": "DR",
+        "additional_information": "A payment hold, when released, is now available for withdrawal."
+    },
+    {
+        "subCategory": "Release on payment review hold",
+        "code": "T2106",
+        "description": "Payment Review Release",
+        "credit_or_debit": "DR",
+        "additional_information": "A payment review hold, when released, is now available for withdrawal."
+    },
+    {
+        "subCategory": "Release on risk hold",
+        "code": "T2112",
+        "description": "External Release",
+        "credit_or_debit": "DR",
+        "additional_information": ""
+    },
+    {
+        "subCategory": "Tax hold",
+        "code": "T2114",
+        "description": "Tax hold",
+        "credit_or_debit": "DR",
+        "additional_information": "When a merchant account does not have a TIN and TPV crosses $600, then the gross amount is placed on hold."
+    },
+    {
+        "subCategory": "Tax hold",
+        "code": "T2301",
+        "description": "Tax withholding to IRS",
+        "credit_or_debit": "DR",
+        "additional_information": ""
+    }
+]

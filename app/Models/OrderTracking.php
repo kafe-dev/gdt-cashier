@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Model;
  * OrderTracking model.
  *
  * @property int $id
- * @property string|null $paygate_name
+ * @property string|null $paygate_id
  * @property string|null $invoice_number
  * @property string|null $transaction_id
  * @property string|null $tracking_number
@@ -19,6 +19,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string|null $tracking_status
  * @property string|null $tracking_data
  * @property int $type
+ * @property mixed|null $ordered_at
  * @property mixed|null $closed_at
  * @property mixed|null $last_checked_at
  * @property mixed|null $exported_at
@@ -47,7 +48,7 @@ class OrderTracking extends Model
      * The attributes that are mass assignable.
      */
     protected $fillable = [
-        'paygate_name',
+        'paygate_id',
         'invoice_number',
         'transaction_id',
         'tracking_number',
@@ -55,6 +56,7 @@ class OrderTracking extends Model
         'tracking_status',
         'tracking_data',
         'type',
+        'ordered_at',
         'closed_at',
         'last_checked_at',
         'exported_at',

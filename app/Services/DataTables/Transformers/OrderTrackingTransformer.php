@@ -3,6 +3,7 @@
 namespace App\Services\DataTables\Transformers;
 
 use App\Models\OrderTracking;
+use App\Models\Paygate;
 use App\Utils\ActionWidget;
 use League\Fractal\TransformerAbstract;
 
@@ -34,7 +35,7 @@ class OrderTrackingTransformer extends TransformerAbstract
 
         return [
             'id' => '<span class="fw-bold float-start">' . $orderTracking->id . '</span>',
-            'paygate_name' => $orderTracking->paygate_name ?? '',
+            'paygate_id' => Paygate::findOrFail($orderTracking->paygate_id)->name ?? "",
             'invoice_number' => $orderTracking->invoice_number ?? '',
             'transaction_id' => $orderTracking->transaction_id ?? '',
             'tracking_number' => $orderTracking->tracking_number ?? '',
@@ -42,6 +43,7 @@ class OrderTrackingTransformer extends TransformerAbstract
             'tracking_status' => $status,
             'tracking_data' => '' . ActionWidget::renderShowBtn(route('app.tracking.show', ['id' => $orderTracking->id])) ?? '',
             'type' => $type,
+            'ordered_at' => $orderTracking->ordered_at ?? '-',
             'closed_at' => !empty($orderTracking->closed_at) ? '<span class="x-has-time-converter">' . $orderTracking->closed_at->format(config('app.date_format')) . '</span>' : '-',
             'last_checked_at' => !empty($orderTracking->last_checked_at) ? '<span class="x-has-time-converter">' . $orderTracking->last_checked_at->format(config('app.date_format')) . '</span>' : '-',
             'exported_at' => !empty($orderTracking->exported_at) ? '<span class="x-has-time-converter">' . $orderTracking->exported_at->format(config('app.date_format')) . '</span>' : '-',

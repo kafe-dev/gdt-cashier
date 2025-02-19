@@ -62,7 +62,9 @@ class Tracking extends BaseController
     {
         return view('tracking.show', [
             'orderTracking' => $this->getOrderTracking((int)$id),
-            'json_tracking_data' => json_decode($this->getOrderTracking((int)$id)->tracking_data),
+            'json_tracking_data' => $this->getOrderTracking((int)$id)->tracking_data !== null ? json_decode(
+                $this->getOrderTracking((int)$id)->tracking_data
+            ) : json_decode(''),
         ]);
     }
 
@@ -161,7 +163,12 @@ class Tracking extends BaseController
             foreach ($paygates as $paygate) {
                 $paypalApi = new PayPalAPI($paygate);
 
-                $response = $paypalApi->addTrackingInfo($data['transaction_id'], $data['status'], $data['tracking_number'], $data['carrier']);
+                $response = $paypalApi->addTrackingInfo(
+                    $data['transaction_id'],
+                    $data['status'],
+                    $data['tracking_number'],
+                    $data['carrier']
+                );
 
                 if ($response == '201') {
                     $orderTracking = $this->getOrderTracking((int)$id);

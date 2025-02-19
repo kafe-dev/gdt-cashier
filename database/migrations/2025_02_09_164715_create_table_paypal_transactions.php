@@ -15,8 +15,10 @@ return new class extends Migration {
             $table->string('date')->nullable();
             $table->string('time')->nullable();
             $table->string('timezone')->nullable();
+            $table->string('paygate_id')->nullable();
             $table->string('name')->nullable();
             $table->string('type')->nullable();
+            $table->string('event_code')->nullable();
             $table->string('status')->nullable();
             $table->string('currency')->nullable();
             $table->string('gross')->nullable();
@@ -37,6 +39,7 @@ return new class extends Migration {
             $table->string('option_2_name')->nullable();
             $table->string('option_2_value')->nullable();
             $table->string('reference_txn_id')->nullable();
+//            $table->string('invoice_id')->nullable();
             $table->string('invoice_number')->nullable();
             $table->string('custom_number')->nullable();
             $table->string('quantity')->nullable();

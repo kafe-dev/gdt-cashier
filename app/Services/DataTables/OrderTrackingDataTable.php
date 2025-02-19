@@ -70,7 +70,7 @@ class OrderTrackingDataTable extends BaseDataTable
     {
         return [
             Column::make(['data' => 'id', 'title' => 'ID'])->addClass('x-id'),
-            Column::make('paygate_name')->searchPanes()->addClass('x-searchable'),
+            Column::make('paygate_id')->searchPanes()->addClass('x-searchable'),
             Column::make('invoice_number')->searchPanes()->addClass('x-searchable'),
             Column::make('transaction_id')->searchPanes()->addClass('x-searchable'),
             Column::make('tracking_number')->searchPanes()->addClass('x-searchable'),
@@ -78,6 +78,7 @@ class OrderTrackingDataTable extends BaseDataTable
             Column::make('tracking_status')->searchPanes(),
             //            Column::make('tracking_data')->searchPanes(),
             Column::make('type')->searchPanes(),
+            Column::make('ordered_at')->searchPanes()->addClass('x-has-date-filter')->orderable(false),
             Column::make('closed_at')->searchPanes()->addClass('x-has-date-filter')->orderable(false),
             Column::make('last_checked_at')->searchPanes()->addClass('x-has-date-filter')->orderable(false),
             Column::make('exported_at')->searchPanes()->addClass('x-has-date-filter')->orderable(false),
