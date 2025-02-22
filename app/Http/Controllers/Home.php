@@ -96,7 +96,7 @@ class Home extends BaseController
         $allPaygatesReports = [];
 
         $allPaygates = PaygateModel::query()
-            ->where('created_at', "<=", $startDate)
+            ->where('created_at', "<=", $endDate)
             ->orderBy('created_at', 'desc')
             ->get();
 
