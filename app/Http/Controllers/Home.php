@@ -282,9 +282,9 @@ class Home extends BaseController
      */
     private function getRevenueChartData($startDate, $endDate): array
     {
-        $revenues = OrderModel::query()->whereBetween('created_at', [$startDate, $endDate])
-            ->where('status', OrderModel::STATUS_PAID)
-            ->selectRaw('DATE(created_at) as date, SUM(paid_amount) as total_revenue')
+        $revenues = TransactionModel::query()->whereBetween('transaction_initiation_date', [$startDate, $endDate])
+            ->where('transaction_status', "S")
+            ->selectRaw('DATE(transaction_initiation_date) as date, SUM(transaction_amount_value) as total_revenue')
             ->groupBy('date')
             ->orderBy('date', 'asc')
             ->get();
