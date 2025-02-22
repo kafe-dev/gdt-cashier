@@ -39,8 +39,8 @@ class Home extends BaseController
                 ->get()
         );
         $successOrders = count(
-            OrderModel::query()->whereBetween('created_at', [$startDate, $endDate])
-                ->where('status', OrderModel::STATUS_PAID)
+            TransactionModel::query()->whereBetween('transaction_initiation_date', [$startDate, $endDate])
+                ->where('transaction_status', "S")
                 ->get()
         );
         $totalRevenues = OrderModel::query()->whereBetween('created_at', [$startDate, $endDate])
