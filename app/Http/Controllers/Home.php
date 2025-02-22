@@ -39,13 +39,13 @@ class Home extends BaseController
                 ->get()
         );
         $successOrders = count(
-            OrderModel::query()->whereBetween('created_at', [$startDate, $endDate])
-                ->where('status', OrderModel::STATUS_PAID)
+            TransactionModel::query()->whereBetween('transaction_initiation_date', [$startDate, $endDate])
+                ->where('transaction_status', "S")
                 ->get()
         );
-        $totalRevenues = OrderModel::query()->whereBetween('created_at', [$startDate, $endDate])
-            ->where('status', OrderModel::STATUS_PAID)
-            ->sum('paid_amount');
+        $totalRevenues = TransactionModel::query()->whereBetween('transaction_initiation_date', [$startDate, $endDate])
+            ->where('transaction_status', "S")
+            ->sum('transaction_amount_value');
 
         return view(
             'home.index',
@@ -96,7 +96,7 @@ class Home extends BaseController
         $allPaygatesReports = [];
 
         $allPaygates = PaygateModel::query()
-            ->where('created_at', "<=", $startDate)
+            ->where('created_at', "<=", $endDate)
             ->orderBy('created_at', 'desc')
             ->get();
 
@@ -282,9 +282,9 @@ class Home extends BaseController
      */
     private function getRevenueChartData($startDate, $endDate): array
     {
-        $revenues = OrderModel::query()->whereBetween('created_at', [$startDate, $endDate])
-            ->where('status', OrderModel::STATUS_PAID)
-            ->selectRaw('DATE(created_at) as date, SUM(paid_amount) as total_revenue')
+        $revenues = TransactionModel::query()->whereBetween('transaction_initiation_date', [$startDate, $endDate])
+            ->where('transaction_status', "S")
+            ->selectRaw('DATE(transaction_initiation_date) as date, SUM(transaction_amount_value) as total_revenue')
             ->groupBy('date')
             ->orderBy('date', 'asc')
             ->get();
