@@ -43,9 +43,9 @@ class Home extends BaseController
                 ->where('transaction_status', "S")
                 ->get()
         );
-        $totalRevenues = OrderModel::query()->whereBetween('created_at', [$startDate, $endDate])
-            ->where('status', OrderModel::STATUS_PAID)
-            ->sum('paid_amount');
+        $totalRevenues = TransactionModel::query()->whereBetween('transaction_initiation_date', [$startDate, $endDate])
+            ->where('transaction_status', "S")
+            ->sum('transaction_amount_value');
 
         return view(
             'home.index',
