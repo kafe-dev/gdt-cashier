@@ -45,12 +45,6 @@ class TestCommand extends Command
             'evidences' => [
                 [
                     'evidence_type' => 'OTHER',
-//                    'evidence_info' => [
-//                        'tracking_info' => [
-//                            'carrier_name' => "FEDEX",
-//                            'tracking_number' => '122533485'
-//                        ]
-//                    ],
                     'notes' => 'Test',
                 ],
             ]
