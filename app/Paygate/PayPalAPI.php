@@ -33,7 +33,7 @@ class PayPalAPI {
      * @return string
      * @throws Exception
      */
-    private function getAccessToken() {
+    public function getAccessToken() {
         $response = $this->makeRequest("POST", "/v1/oauth2/token", "grant_type=client_credentials", true);
         return $response['access_token'] ?? throw new Exception("Không thể lấy Access Token.");
     }
@@ -702,6 +702,48 @@ class PayPalAPI {
         curl_close($ch);
         var_dump($response);die;
 
+    }
 
+    public function apievidence(
+        $dispute_id,
+        $file_name,
+        $file_urlm,
+
+
+    )
+    {
+        $params = [
+            "evidence_type" => "PROOF_OF_FULFILLMENT",
+            "documents" => [
+                [
+                    "name" => "string",
+                    "url" => "http://example.com"
+                ]
+            ],
+            "notes" => "string",
+            "source" => "REQUESTED_FROM_BUYER",
+            "item_id" => "string",
+            "evidence_info" => [
+                "tracking_info" => [
+                    [
+                        "carrier_name" => "UPS",
+                        "carrier_name_other" => "string",
+                        "tracking_url" => "http://example.com",
+                        "tracking_number" => "string"
+                    ]
+                ],
+                "refund_ids" => [
+                    "string"
+                ]
+            ],
+            "date" => "stringstringstringst",
+            "item_type" => "PRODUCT",
+            "action_info" => [
+                "action" => "ACKNOWLEDGE_RETURN_ITEM",
+                "response_option" => "string",
+                "mandatory" => true
+            ],
+            "dispute_life_cycle_stage" => "INQUIRY"
+        ];
     }
 }
