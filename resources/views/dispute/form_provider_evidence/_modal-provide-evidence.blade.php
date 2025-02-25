@@ -11,7 +11,7 @@
      aria-hidden="true" style="display: none;">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <form action="{{ route('app.dispute.provideEvidence',$dispute->id) }}" method="POST">
+            <form action="{{ route('app.dispute.provideEvidence', $dispute->id) }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="modal-header">
                     <h6 class="modal-title m-0" id="provide-evidence-modal-label">Provide Evidence</h6>
@@ -74,6 +74,13 @@
                         </div>
                     </div>
 
+                    <div id="file_upload_fields">
+                        <div class="mb-3">
+                            <label for="evidence_file" class="form-label">Upload File(<span class="text-danger">*</span>)</label>
+                            <input type="file" class="form-control" id="evidence_file" name="evidence_file">
+                        </div>
+                    </div>
+
                     <div id="notes_fields">
                         <div class="mb-3">
                             <label for="note" class="form-label">Notes(<span class="text-danger">*</span>)</label>
@@ -95,34 +102,37 @@
 </div>
 
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        let evidenceType = document.getElementById("evidence_type");
+    document.addEventListener("DOMContentLoaded", function() {
+        let evidenceType      = document.getElementById("evidence_type");
         let fulfillmentFields = document.getElementById("fulfillment_fields");
-        let refundFields = document.getElementById("refund_fields");
-        let fileNameFields = document.getElementById("file_name_fields");
-        let filePathFields = document.getElementById("file_path_fields");
-        let notesFields = document.getElementById("notes_fields");
+        let refundFields      = document.getElementById("refund_fields");
+        let fileNameFields    = document.getElementById("file_name_fields");
+        let filePathFields    = document.getElementById("file_path_fields");
+        let notesFields       = document.getElementById("notes_fields");
+        let fileUploads       = document.getElementById("file_upload_fields");
 
         function toggleFields() {
             let selectedValue = evidenceType.value;
 
             // Ẩn tất cả các trường trước khi kiểm tra điều kiện
             fulfillmentFields.style.display = "none";
-            refundFields.style.display = "none";
-            fileNameFields.style.display = "none";
-            filePathFields.style.display = "none";
-            notesFields.style.display = "none";
+            refundFields.style.display      = "none";
+            fileNameFields.style.display    = "none";
+            filePathFields.style.display    = "none";
+            notesFields.style.display       = "none";
+            fileUploads.style.display       = "none";
 
-            if (selectedValue === "PROOF_OF_FULFILLMENT") {
+            if(selectedValue === "PROOF_OF_FULFILLMENT") {
                 fulfillmentFields.style.display = "block"; // Hiển thị Carrier Name & Tracking Number
-                notesFields.style.display = "block"; // Hiển thị Notes
-            } else if (selectedValue === "PROOF_OF_REFUND") {
+                notesFields.style.display       = "block"; // Hiển thị Notes
+            } else if(selectedValue === "PROOF_OF_REFUND") {
                 refundFields.style.display = "block"; // Hiển thị Refund ID
-                notesFields.style.display = "block"; // Hiển thị Notes
-            } else if (selectedValue === "OTHER") {
-                notesFields.style.display = "block"; // Hiển thị Notes
+                notesFields.style.display  = "block"; // Hiển thị Notes
+            } else if(selectedValue === "OTHER") {
+                notesFields.style.display    = "block"; // Hiển thị Notes
                 fileNameFields.style.display = "block"; // Hiển thị File Name
                 filePathFields.style.display = "block"; // Hiển thị File Path
+                fileUploads.style.display    = "block"; // Hiển thị File Path
             }
 
         }

@@ -3,10 +3,11 @@
 namespace App\Paygate;
 
 use App\Models\Paygate;
-use CURLFile;
 use Exception;
+use finfo;
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\RequestException;
 use Illuminate\Http\RedirectResponse;
-use InvalidArgumentException;
 
 class PayPalAPI
 {
@@ -234,7 +235,8 @@ class PayPalAPI
         ]);
 
         // Xác định loại MIME dựa vào phần mở rộng của file
-        $mimeType = mime_content_type($filePath) ?: 'application/octet-stream';
+        $finfo = new finfo(FILEINFO_MIME_TYPE);
+        $mimeType = $finfo->file($filePath) ?: 'application/octet-stream';
 
         // Headers
         $headers = [
@@ -259,6 +261,10 @@ class PayPalAPI
             ],
         ];
 
+        echo '<pre>';
+        print_r($multipart);
+        die;
+
         try {
             $response = $client->request($method, $endpoint, [
                 'headers'   => $headers,
@@ -267,7 +273,7 @@ class PayPalAPI
 
             return [
                 'statusCode' => $response->getStatusCode(),
-                'response'   => json_decode($response->getBody()->getContents(), true),
+                'response'   => json_decode($response->getBody()->getContents(), true, 512, JSON_THROW_ON_ERROR),
             ];
         } catch (RequestException $e) {
             return [
@@ -322,8 +328,7 @@ class PayPalAPI
      *
      * @return array The API response containing the list of orders
      */
-    public function listOrder($page = 1, $page_size = 20, $total_required = true, $fields = "all")
-    {
+    public function listOrder($page = 1, $page_size = 20, $total_required = true, $fields = "all"): array {
         $query = http_build_query(array_filter([
             "page" => $page,
             "page_size" => $page_size,
@@ -399,8 +404,7 @@ class PayPalAPI
      * @return array The response from PayPal API
      * @throws Exception If the dispute_id is empty
      */
-    public function provideEvidenceWithFile($dispute_id, $payload, $return_shipping_address = null): array
-    {
+    public function provideEvidenceWithFile($dispute_id, $payload, $fileInfo, $return_shipping_address = null): array {
         // Kiểm tra dispute_id hợp lệ
         if (empty($dispute_id)) {
             throw new Exception("Dispute ID is required.");
@@ -409,8 +413,9 @@ class PayPalAPI
         if (!empty($return_shipping_address)) {
             $payload['return_shipping_address'] = $return_shipping_address;
         }
+        $endPoint = "/v1/customer/disputes/{$dispute_id}/provide-evidence";
         // Gửi yêu cầu POST tới PayPal API
-        return $this->makeHttpRequest("POST", "/v1/customer/disputes/{$dispute_id}/provide-evidence", $payload);
+        return $this->makeHttpRequestWithFile("POST", $endPoint, $payload,$fileInfo['name'], $fileInfo['path']);
     }
 
 
@@ -425,8 +430,7 @@ class PayPalAPI
      * @return array The response from PayPal API
      * @throws Exception If the dispute_id or message is empty
      */
-    public function sendDisputeMessage($dispute_id, $message)
-    {
+    public function sendDisputeMessage($dispute_id, $message): array {
         if (empty($dispute_id) || empty($message)) {
             throw new Exception("Dispute ID và nội dung tin nhắn là bắt buộc.");
         }

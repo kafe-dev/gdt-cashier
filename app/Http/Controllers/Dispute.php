@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Helpers\Logs;
 use App\Helpers\TimeHelper;
 use App\Http\Middlewares\Auth;
 use App\Paygate\PayPalAPI;
@@ -234,20 +235,17 @@ class Dispute extends BaseController {
             'dispute_code',
             'note',
         ]);
-
         // Validate input
         if (empty($input['paygate_id']) || empty($input['dispute_id'])) {
             flash()->error('Missing required information to proceed.');
             return redirect()->back();
         }
-
         // Find Paygate
         $paygate = \App\Models\Paygate::find($input['paygate_id']);
         if (!$paygate) {
             flash()->error('Payment gateway not found.');
             return redirect()->back();
         }
-
         // Call PayPal API
         try {
             $paypalApi = new PayPalAPI($paygate);
@@ -260,11 +258,9 @@ class Dispute extends BaseController {
             flash()->error('Error while calling API: ' . $e->getMessage());
             return redirect()->back();
         }
-
         flash()->success('Dispute escalated successfully.');
         return redirect()->route('app.dispute.show', ['id' => $input['dispute_id']]);
     }
-
 
     /**
      * Accepts a claim for a given dispute and processes the corresponding refund action.
@@ -359,11 +355,16 @@ class Dispute extends BaseController {
             'carrier_name'    => 'nullable|string|max:2000',
             'refund_ids'      => 'nullable|string|max:2000',
             'note'            => 'nullable|string|max:2000',
+            'file_name'       => 'nullable|string|max:2000',
+            'file_path'       => 'nullable|string|max:2000',
+            'evidence_file'   => 'nullable|file|mimes:jpg,png,pdf,docx|max:2048',
+            // Chỉ nhận JPG, PNG, PDF, DOCX, tối đa 2MB
         ]);
         $dispute      = \App\Models\Dispute::findOrFail($id);
         $paypalApi    = $this->getPaypalApiByDisputeId($id);
         $evidenceType = $validated['evidence_type'];
         $evidenceInfo = [];
+        $fileInfo     = [];
         if ($evidenceType === \App\Models\Dispute::EVIDENCE_TYPE_PROOF_OF_FULFILLMENT) {
             $evidenceInfo['tracking_info'] = [
                 [
@@ -374,17 +375,34 @@ class Dispute extends BaseController {
         } elseif ($evidenceType === \App\Models\Dispute::EVIDENCE_TYPE_PROOF_OF_REFUND) {
             $evidenceInfo['refund_ids'] = array_filter([$validated['refund_ids'] ?? '']);
         }
+        // Xử lý upload file
+        if ($request->hasFile('evidence_file')) {
+            $file             = $request->file('evidence_file');
+            $path             = $file->store('evidence_files', 'public'); // Lưu vào storage/app/public/evidence_files
+            $fileInfo['name'] = $file->getClientOriginalName();
+            $fileInfo['path'] = asset('storage/' . $path); // Lưu đường dẫn public
+            Logs::create('[provideEvidence] File uploaded: ' . $fileInfo['path']);
+        }
         $params = [
             'evidences' => [
                 array_filter([
                     'evidence_type' => $evidenceType,
                     'evidence_info' => !empty($evidenceInfo) ? $evidenceInfo : null,
                     'notes'         => $validated['note'] ?? '',
-                ])
+                ]),
             ],
         ];
         if (!empty($params)) {
-            $result = $paypalApi->provideEvidence($dispute->dispute_id, $params);
+            if (!empty($fileInfo)) {
+                Logs::create('[provideEvidence][FileInfo]: ' . json_encode($fileInfo, JSON_THROW_ON_ERROR));
+                Logs::create('[provideEvidence][Params]: ' . json_encode($params, JSON_THROW_ON_ERROR));
+                $result = $paypalApi->provideEvidenceWithFile($dispute->dispute_id, $params, $fileInfo);
+                Logs::create('[provideEvidence][result]: ' . json_encode($result, JSON_THROW_ON_ERROR));
+            } else {
+                Logs::create('[provideEvidence][Params1]: ' . json_encode($params, JSON_THROW_ON_ERROR));
+                $result = $paypalApi->provideEvidence($dispute->dispute_id, $params);
+                Logs::create('[provideEvidence][result1]: ' . json_encode($result, JSON_THROW_ON_ERROR));
+            }
             if (!empty($result['statusCode']) && $result['statusCode'] === 200) {
                 flash()->success('Evidence provided successfully!');
             } else {
