@@ -38,7 +38,7 @@ class TestCommand extends Command
         $paygate = Paygate::find(3);
         $paypalApi = new PayPalAPI($paygate);
         $accessToken = $paypalApi->getAccessToken();
-        $disputeId = 'PP-R-YOW-10108337';
+        $disputeId = 'PP-R-LJX-10108247';
         $pdf = __DIR__ . '/1202_1.jpg';
 
         $input = [
@@ -68,6 +68,22 @@ class TestCommand extends Command
                 'headers'  => ['Content-Type' => 'image/jpeg'] // Đổi MIME type nếu là ảnh
             ],
         ]);
+
+        echo '<pre>';
+        print_r([
+            [
+                'name'     => 'input',
+                'contents' => json_encode($input),
+                'headers'  => ['Content-Type' => 'application/json']
+            ],
+            [
+                'name'     => 'file1',
+                'contents' => fopen($pdf, 'r'),
+                'filename' => 'sample.jpg', // Chú ý: Đặt đúng tên file nếu là ảnh
+                'headers'  => ['Content-Type' => 'image/jpeg'] // Đổi MIME type nếu là ảnh
+            ],
+        ]);
+        die;
 
         $url = "/v1/customer/disputes/{$disputeId}/provide-evidence";
 
