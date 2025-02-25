@@ -72,7 +72,7 @@ class DisputeCommand extends Command {
         $paygates = Paygate::all();
         foreach ($paygates as $paygate) {
             $paypalApi = new PayPalAPI($paygate);
-            $response  = $paypalApi->listDispute(TimeHelper::getStartOfDayISO());
+            $response  = $paypalApi->listDispute('2025-01-01T00:00:00.000Z');
             if (!empty($response['items'])) {
                 foreach ($response['items'] as $item) {
                     try {

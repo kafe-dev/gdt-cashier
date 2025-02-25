@@ -144,7 +144,7 @@
                     </ul>
                 </div>
                 <div class="card-footer">
-                    {{ ActionWidget::renderGoBackBtn('Go Back', 'btn btn-danger') }}
+                    {{ ActionWidget::renderGoBackBtn('<i class="las la-angle-left ms-1"></i> Go Back', 'btn btn-danger') }}
                     <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown"
                             aria-expanded="false">Action
                         <i class="las la-angle-right ms-1"></i></button>
@@ -180,13 +180,15 @@
     @include('dispute._modal-accept-claim')
     {{--    End Accept Claim Modal--}}
 
+    @include('dispute.form_provider_evidence._modal-provide-evidence',compact('dispute','dispute_arr'))
+
     {{--    Begin Provide Evidence Modal--}}
-    @if($dispute_arr['reason'] == \App\Models\Dispute::REASON_MERCHANDISE_OR_SERVICE_NOT_RECEIVED)
-        @include('dispute.form_provider_evidence._modal-not-received',compact('dispute','dispute_arr'))
-    @elseif($dispute_arr['reason'] == \App\Models\Dispute::REASON_MERCHANDISE_OR_SERVICE_NOT_AS_DESCRIBED)
-        @include('dispute.form_provider_evidence._modal-not-described',compact('dispute','dispute_arr'))
-    @elseif($dispute_arr['reason'] == \App\Models\Dispute::REASON_UNAUTHORISED)
-        @include('dispute.form_provider_evidence._modal-not-unauthorised',compact('dispute','dispute_arr'))
-    @endif
+{{--    @if($dispute_arr['reason'] == \App\Models\Dispute::REASON_MERCHANDISE_OR_SERVICE_NOT_RECEIVED)--}}
+{{--        @include('dispute.form_provider_evidence._modal-not-received',compact('dispute','dispute_arr'))--}}
+{{--    @elseif($dispute_arr['reason'] == \App\Models\Dispute::REASON_MERCHANDISE_OR_SERVICE_NOT_AS_DESCRIBED)--}}
+{{--        @include('dispute.form_provider_evidence._modal-not-described',compact('dispute','dispute_arr'))--}}
+{{--    @elseif($dispute_arr['reason'] == \App\Models\Dispute::REASON_UNAUTHORISED)--}}
+{{--        @include('dispute.form_provider_evidence._modal-not-unauthorised',compact('dispute','dispute_arr'))--}}
+{{--    @endif--}}
     {{--    End Provide Evidence Modal--}}
 @endsection
