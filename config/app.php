@@ -2,6 +2,7 @@
 
 use App\Console\Commands\DisputeCommand;
 use App\Console\Commands\OrderCommand;
+use App\Console\Commands\TestBrainTreeCommand;
 use App\Console\Commands\TestCommand;
 use App\Console\Commands\TransactionCommand;
 
@@ -135,6 +136,7 @@ return [
         TransactionCommand::class,
         DisputeCommand::class,
         TestCommand::class,
+        TestBrainTreeCommand::class,
     ],
 
 ];
