@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Helpers\Logs;
 use App\Helpers\TimeHelper;
+use App\Http\Controllers\Dispute;
 use App\Models\Paygate;
 use App\Paygate\PayPalAPI;
 use DateTime;
@@ -31,18 +32,18 @@ class DisputeCommand extends Command {
      * @throws \Throwable
      */
     public function handle(): void {
-        $this->fetchv1();
+        $this->fetch();
     }
 
     /**
-     * Tạo mới bản ghi Dispute.
+     * Create new dispute.
      *
-     * @param $item
+     * @param array $item
+     * @param int   $paygate_id
      *
-     * @return void
-     * @throws \JsonException
+     * @return \App\Models\Dispute|false
      */
-    public function newDispute($item, $paygate_id): void {
+    public function newDispute($item, $paygate_id) {
         $dispute                           = new \App\Models\Dispute();
         $dispute->paygate_id               = $paygate_id;
         $dispute->dispute_id               = $item['dispute_id'];
@@ -56,36 +57,38 @@ class DisputeCommand extends Command {
         $dispute->dispute_amount_value     = $item['dispute_amount']['value'];
         $dispute->dispute_life_cycle_stage = $item['dispute_life_cycle_stage'];
         $dispute->dispute_channel          = $item['dispute_channel'];
-        $dispute->seller_response_due_date = $item['seller_response_due_date'];
+        $dispute->seller_response_due_date = !empty($item['seller_response_due_date']) ? $item['seller_response_due_date'] : now(); // Gán thời gian hiện tại
         $dispute->link                     = $item['links'][0]['href'];
-        if (!$dispute->save()) {
-            echo json_encode($dispute->errors(), JSON_THROW_ON_ERROR) . PHP_EOL;
+        if ($dispute->save()) {
+            return $dispute;
         }
-        echo $dispute->dispute_id . PHP_EOL;
+        echo var_dump($dispute->errors()) . PHP_EOL;
+        return false;
     }
 
     /**
-     * $  * @throws \JsonException
+     * Fetch dispute from PayPal.
+     *
+     * @return void
      * @throws \Exception
      */
-    public function fetchv1() {
-        $paygates = Paygate::all();
-        foreach ($paygates as $paygate) {
+    public function fetch(): void {
+        foreach (Paygate::all() as $paygate) {
             $paypalApi = new PayPalAPI($paygate);
             $response  = $paypalApi->listDispute('2025-01-01T00:00:00.000Z');
-            if (!empty($response['items'])) {
-                foreach ($response['items'] as $item) {
-                    try {
-                        $this->newDispute($item, $paygate->id);
-                        echo $item['dispute_id'] . '=>CREATED' . PHP_EOL;
-                    } catch (\Exception $exception) {
-                        //Dispute đã tồn tại trên HT. Sẽ cập nhập trạng thái Dispute.
-                        $this->updateStatus($item['dispute_id'], $item['status']);
-                        echo $item['dispute_id'] . '=>' . $item['status'] . PHP_EOL;
-                    }
-                }
-            } else {
+            if (empty($response['items'])) {
                 echo 'Today is not dispute' . PHP_EOL;
+                continue;
+            }
+            foreach ($response['items'] as $item) {
+                $exits = \App\Models\Dispute::isUniqueDispute($item['dispute_id']);
+                if ($exits) {
+                    $status = $this->newDispute($item, $paygate->id) ? 'CREATED' : 'ERROR';
+                } else {
+                    $this->updateStatus($item['dispute_id'], $item['status']);
+                    $status = $item['status'];
+                }
+                echo "{$item['dispute_id']} => {$status}" . PHP_EOL;
             }
         }
     }
@@ -100,13 +103,6 @@ class DisputeCommand extends Command {
      * @throws \Exception
      */
     public function updateStatus(string $dispute_id, string $status): void {
-        $dispute = \App\Models\Dispute::where('dispute_id', $dispute_id)->first();
-        if (!$dispute) {
-            return;
-        }
-        $dispute->status = $status;
-        if (!$dispute->save()) {
-            return;
-        }
+        \App\Models\Dispute::where('dispute_id', $dispute_id)->update(['status' => $status]);
     }
 }

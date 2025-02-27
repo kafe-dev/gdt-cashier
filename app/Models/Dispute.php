@@ -106,4 +106,16 @@ class Dispute extends Model {
         'update_time'              => 'datetime',
         'seller_response_due_date' => 'datetime',
     ];
+
+    /**
+     * Validate if dispute_id already exists in the database.
+     *
+     * @param string $disputeId
+     *
+     * @return bool
+     */
+    public static function isUniqueDispute(string $disputeId): bool
+    {
+        return !self::where('dispute_id', $disputeId)->exists();
+    }
 }
