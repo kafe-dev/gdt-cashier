@@ -59,9 +59,10 @@ class DisputeCommand extends Command {
         $dispute->dispute_channel          = $item['dispute_channel'];
         $dispute->seller_response_due_date = !empty($item['seller_response_due_date']) ? $item['seller_response_due_date'] : now(); // Gán thời gian hiện tại
         $dispute->link                     = $item['links'][0]['href'];
-        if (!$dispute->save()) {
+        if ($dispute->save()) {
             return $dispute;
         }
+        echo var_dump($dispute->errors()) . PHP_EOL;
         return false;
     }
 
@@ -80,7 +81,8 @@ class DisputeCommand extends Command {
                 continue;
             }
             foreach ($response['items'] as $item) {
-                if (\App\Models\Dispute::isUniqueDispute($item['dispute_id'])) {
+                $exits = \App\Models\Dispute::isUniqueDispute($item['dispute_id']);
+                if ($exits) {
                     $status = $this->newDispute($item, $paygate->id) ? 'CREATED' : 'ERROR';
                 } else {
                     $this->updateStatus($item['dispute_id'], $item['status']);
