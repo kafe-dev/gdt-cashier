@@ -89,7 +89,6 @@ class PaypalTransaction extends BaseController
         }
 
         PaypalTransactionModel::whereIn('id', $records->pluck('id'))->update([
-            'closed_at' => Carbon::now(),
             'exported_at' => Carbon::now(),
         ]);
 
