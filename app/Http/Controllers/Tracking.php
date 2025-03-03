@@ -123,7 +123,6 @@ class Tracking extends BaseController
         }
 
         OrderTrackingModel::whereIn('id', $records->pluck('id'))->update([
-            'type' => OrderTrackingModel::TYPE_CLOSED,
             'exported_at' => Carbon::now(),
             'closed_at' => Carbon::now(),
         ]);
