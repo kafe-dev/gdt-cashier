@@ -242,19 +242,19 @@ class PayPalAPI {
             [
                 'name'     => 'input',
                 'contents' => json_encode($data, JSON_THROW_ON_ERROR),
-                'headers'  => ['Content-Type' => 'application/json']
+                'headers'  => ['Content-Type' => 'application/json'],
             ],
             [
                 'name'     => 'file1',
                 'contents' => fopen($filePath, 'r'),
                 'filename' => $fileName,
-                'headers'  => ['Content-Type' => $mimeType]
+                'headers'  => ['Content-Type' => $mimeType],
             ],
         ]);
 
         $request = new Request($method, $endpoint, [
             'Authorization' => "Bearer {$this->accessToken}",
-            'Content-Type'  => "multipart/related; boundary={$multipart->getBoundary()}"
+            'Content-Type'  => "multipart/related; boundary={$multipart->getBoundary()}",
         ], $multipart);
 
         try {
@@ -746,5 +746,21 @@ class PayPalAPI {
             ],
         ];
         return $this->makeRequestReturnCode('POST', $url, $data);
+    }
+
+    /**
+     * @throws \JsonException
+     */
+    public function issueRefund($capture_id): array {
+        $url    = "/v2/payments/captures/{$capture_id}/refund";
+        $params = [
+            "amount"        => [
+                "currency_code" => "USD",
+                "value"         => "1.00",
+            ],
+            "invoice_id"    => "INV-12345",
+            "note_to_payer" => "Refund for order #12345",
+        ];
+        return $this->makeHttpRequest('POST', $url,$params);
     }
 }
