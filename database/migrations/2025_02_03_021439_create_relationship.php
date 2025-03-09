@@ -23,6 +23,9 @@ return new class extends Migration
         Schema::table('disputes', function(Blueprint $table) {
             $table->foreign('paygate_id')->references('id')->on('paygates')->onDelete('CASCADE')->onUpdate('CASCADE');
         });
+        Schema::table('paypal_transactions', function (Blueprint $table) {
+            $table->foreign('paygate_id')->references('id')->on('paygates')->onDelete('CASCADE')->onUpdate('CASCADE');
+        });
     }
 
     /**
