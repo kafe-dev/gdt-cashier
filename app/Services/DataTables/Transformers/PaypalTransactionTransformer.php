@@ -9,7 +9,6 @@
 
 namespace App\Services\DataTables\Transformers;
 
-use App\Models\Paygate;
 use App\Models\PaypalTransaction;
 use App\Utils\ActionWidget;
 use League\Fractal\TransformerAbstract;
@@ -31,10 +30,9 @@ class PaypalTransactionTransformer extends TransformerAbstract
 
         return [
             'id' => '<span class="fw-bold float-start">' . $paypalTransaction->id . '</span>',
-            'date' => $paypalTransaction->date,
-            'time' => $paypalTransaction->time,
-            'timezone' => $paypalTransaction->timezone,
-            'paygate_id' => Paygate::findOrFail($paypalTransaction->paygate_id)->name ?? "",
+            'datetime' => ! empty($paypalTransaction->datetime) ? '<span class="x-has-time-converter">' . $paypalTransaction->datetime->format(config('app.date_format')) . '</span>' : '-',
+            'paygate_id' => $paypalTransaction->paygate_id,
+            'paygate_name' => $paypalTransaction->paygate_name ?? '-',
             'name' => $paypalTransaction->name,
             'type' => $paypalTransaction->type,
             'event_code' => $paypalTransaction->event_code,
@@ -58,7 +56,6 @@ class PaypalTransactionTransformer extends TransformerAbstract
             'option_2_name' => $paypalTransaction->option_2_name,
             'option_2_value' => $paypalTransaction->option_2_value,
             'reference_txn_id' => $paypalTransaction->reference_txn_id,
-//            'invoice_id' => $paypalTransaction->invoice_id,
             'invoice_number' => $paypalTransaction->invoice_number,
             'custom_number' => $paypalTransaction->custom_number,
             'quantity' => $paypalTransaction->quantity,

@@ -22,52 +22,34 @@ class PaypalTransactionFilter
     public static function perform(EloquentDataTable $dataTable): EloquentDataTable
     {
         return $dataTable
-            ->searchPane('date', fn () => self::filterDate())
-            ->searchPane('time', fn () => self::filterTime())
-            ->searchPane('timezone', fn () => self::filterTimezone())
-            ->searchPane('paygate_id', fn () => self::filterPaygateId())
+//            ->searchPane('datetime', fn () => self::filterDatetime())
+            ->searchPane('paygate_name', fn () => self::filterPaygateName())
             ->searchPane('name', fn () => self::filterName())
             ->searchPane('status', fn () => self::filterStatus())
             ->searchPane('currency', fn () => self::filterCurrency())
             ->searchPane('transaction_id', fn () => self::filterTransactionId())
             ->searchPane('invoice_number', fn () => self::filterInvoiceNumber())
-            ->searchPane('balance', fn () => self::filterBalance())
-            ->searchPane('closed_at', fn () => self::filterByClosedAt())
-            ->searchPane('last_checked_at', fn () => self::filterByLastCheckedAt())
-            ->searchPane('exported_at', fn () => self::filterByExportedAt())
-            ->searchPane('created_at', fn () => self::filterByCreatedAt())
-            ->searchPane('updated_at', fn () => self::filterByUpdatedAt());
+            ->searchPane('balance', fn () => self::filterBalance());
+//            ->searchPane('closed_at', fn () => self::filterByClosedAt())
+//            ->searchPane('last_checked_at', fn () => self::filterByLastCheckedAt())
+//            ->searchPane('exported_at', fn () => self::filterByExportedAt())
+//            ->searchPane('created_at', fn () => self::filterByCreatedAt())
+//            ->searchPane('updated_at', fn () => self::filterByUpdatedAt());
     }
 
-    private static function filterDate(): Collection
+    private static function filterDatetime(): Collection
     {
         return PaypalTransaction::query()
-            ->select(DB::raw('`date` as value, `date` as label, COUNT(*) as total'))
-            ->groupBy('date')
+            ->select(DB::raw('`datetime` as value, `datetime` as label, COUNT(*) as total'))
+            ->groupBy('datetime')
             ->get();
     }
 
-    private static function filterTime(): Collection
+    private static function filterPaygateName(): Collection
     {
         return PaypalTransaction::query()
-            ->select(DB::raw('`time` as value, `time` as label, COUNT(*) as total'))
-            ->groupBy('time')
-            ->get();
-    }
-
-    private static function filterTimezone(): Collection
-    {
-        return PaypalTransaction::query()
-            ->select(DB::raw('`timezone` as value, `timezone` as label, COUNT(*) as total'))
-            ->groupBy('timezone')
-            ->get();
-    }
-
-    private static function filterPaygateId(): Collection
-    {
-        return PaypalTransaction::query()
-            ->select(DB::raw('`paygate_id` as value, `paygate_id` as label, COUNT(*) as total'))
-            ->groupBy('paygate_id')
+            ->select(DB::raw('`paygate_name` as value, `paygate_name` as label, COUNT(*) as total'))
+            ->groupBy('paygate_name')
             ->get();
     }
 

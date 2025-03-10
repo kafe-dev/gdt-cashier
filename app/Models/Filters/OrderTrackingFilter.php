@@ -15,19 +15,13 @@ class OrderTrackingFilter
     public static function perform(EloquentDataTable $dataTable): EloquentDataTable
     {
         return $dataTable
-            ->searchPane('paygate_id', fn () => self::filterByColumn('paygate_id'))
+            ->searchPane('paygate_name', fn () => self::filterByColumn('paygate_name'))
             ->searchPane('invoice_number', fn () => self::filterByColumn('invoice_number'))
             ->searchPane('transaction_id', fn () => self::filterByColumn('transaction_id'))
             ->searchPane('tracking_number', fn () => self::filterByColumn('tracking_number'))
             ->searchPane('courier_code', fn () => self::filterByColumn('courier_code'))
             ->searchPane('tracking_status', fn () => self::filterTrackingStatus())
-            ->searchPane('type', fn () => self::filterByColumn('type'))
-            ->searchPane('ordered_at', fn () => self::filterByDate('ordered_at'))
-            ->searchPane('closed_at', fn () => self::filterByDate('closed_at'))
-            ->searchPane('last_checked_at', fn () => self::filterByDate('last_checked_at'))
-            ->searchPane('exported_at', fn () => self::filterByDate('exported_at'))
-            ->searchPane('created_at', fn () => self::filterByDate('created_at'))
-            ->searchPane('updated_at', fn () => self::filterByDate('updated_at'));
+            ->searchPane('type', fn () => self::filterByColumn('type'));
     }
 
     /**

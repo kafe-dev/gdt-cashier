@@ -79,24 +79,29 @@ class PaypalTransaction extends BaseController
      *
      * @return BinaryFileResponse|RedirectResponse
      */
-    public function export()
+    public function export(Request $request)
     {
-        $records = PaypalTransactionModel::where('closed_at', null)->get();
+        $query = PaypalTransactionModel::where('closed_at', null)->get();
+        if ($request->has(['start_date', 'end_date'])) {
+            $query = PaypalTransactionModel::whereBetween('datetime', [$request->start_date, $request->end_date])
+                ->where('closed_at', null)
+                ->get();
+        }
 
-        if ($records->isEmpty()) {
+        if ($query->isEmpty()) {
             flash()->warning('There are no paypal transactions.');
             return redirect()->route('app.paypal-transaction.index');
         }
 
-        PaypalTransactionModel::whereIn('id', $records->pluck('id'))->update([
+        PaypalTransactionModel::whereIn('id', $query->pluck('id'))->update([
             'exported_at' => Carbon::now(),
         ]);
 
         $fileName = 'paypal_transactions_export_' . now()->format('Y-m-d_H-i-s') . '.xlsx';
 
-        session(['export_records' => $records]);
+        session(['export_records' => $query]);
 
-        return Excel::download(new PaypalTransactionDataTableExport($records), $fileName);
+        return Excel::download(new PaypalTransactionDataTableExport($query), $fileName);
     }
 
     private function getPaypalTransaction(int $id): PaypalTransactionModel

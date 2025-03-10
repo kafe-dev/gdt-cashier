@@ -12,7 +12,8 @@ return new class extends Migration {
     {
         Schema::create('order_tracking', function (Blueprint $table) {
             $table->id();
-            $table->string('paygate_id')->nullable();
+            $table->bigInteger('paygate_id')->unsigned();
+            $table->string('paygate_name')->nullable();
             $table->string('invoice_number')->nullable();
             $table->string('transaction_id')->nullable();
             $table->string('tracking_number')->nullable();

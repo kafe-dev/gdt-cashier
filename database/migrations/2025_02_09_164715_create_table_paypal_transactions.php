@@ -10,12 +10,11 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('paypal_transactions', function (Blueprint $table) {
+        Schema::create('paypal_transactions', static function (Blueprint $table) {
             $table->id();
-            $table->string('date')->nullable();
-            $table->string('time')->nullable();
-            $table->string('timezone')->nullable();
-            $table->string('paygate_id')->nullable();
+            $table->timestamp('datetime')->nullable();
+            $table->bigInteger('paygate_id')->unsigned();
+            $table->string('paygate_name')->nullable();
             $table->string('name')->nullable();
             $table->string('type')->nullable();
             $table->string('event_code')->nullable();
@@ -39,7 +38,6 @@ return new class extends Migration {
             $table->string('option_2_name')->nullable();
             $table->string('option_2_value')->nullable();
             $table->string('reference_txn_id')->nullable();
-//            $table->string('invoice_id')->nullable();
             $table->string('invoice_number')->nullable();
             $table->string('custom_number')->nullable();
             $table->string('quantity')->nullable();

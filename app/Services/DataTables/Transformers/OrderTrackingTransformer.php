@@ -35,7 +35,8 @@ class OrderTrackingTransformer extends TransformerAbstract
 
         return [
             'id' => '<span class="fw-bold float-start">' . $orderTracking->id . '</span>',
-            'paygate_id' => Paygate::findOrFail($orderTracking->paygate_id)->name ?? "",
+            'paygate_id' => $orderTracking->paygate_id,
+            'paygate_name' => $orderTracking->paygate_name,
             'invoice_number' => $orderTracking->invoice_number ?? '',
             'transaction_id' => $orderTracking->transaction_id ?? '',
             'tracking_number' => $orderTracking->tracking_number ?? '',
@@ -43,7 +44,7 @@ class OrderTrackingTransformer extends TransformerAbstract
             'tracking_status' => $status,
             'tracking_data' => '' . ActionWidget::renderShowBtn(route('app.tracking.show', ['id' => $orderTracking->id])) ?? '',
             'type' => $type,
-            'ordered_at' => $orderTracking->ordered_at ?? '-',
+            'ordered_at' => !empty($orderTracking->ordered_at) ? '<span class="x-has-time-converter">' . $orderTracking->ordered_at->format(config('app.date_format')) . '</span>' : '-',
             'closed_at' => !empty($orderTracking->closed_at) ? '<span class="x-has-time-converter">' . $orderTracking->closed_at->format(config('app.date_format')) . '</span>' : '-',
             'last_checked_at' => !empty($orderTracking->last_checked_at) ? '<span class="x-has-time-converter">' . $orderTracking->last_checked_at->format(config('app.date_format')) . '</span>' : '-',
             'exported_at' => !empty($orderTracking->exported_at) ? '<span class="x-has-time-converter">' . $orderTracking->exported_at->format(config('app.date_format')) . '</span>' : '-',
@@ -58,7 +59,7 @@ class OrderTrackingTransformer extends TransformerAbstract
      */
     public function renderActions(OrderTracking $orderTracking): string
     {
-        $addTrackingInfoButton = '<a class="btn btn-sm btn-warning text-white" href="' . route('app.tracking.addTrackingView', ['id' => $orderTracking->id]) . '" title="Add Tracking Info"><i class="fa fa-pen"></i></a>';
+        $addTrackingInfoButton = '<a class="btn btn-sm btn-warning text-white" href="' . route('app.tracking.addTrackingView', ['id' => $orderTracking->id]) . '" title="Add Tracking Info"><i class="fa fa-plus"></i></a>';
 
         return '
             ' . $addTrackingInfoButton . '

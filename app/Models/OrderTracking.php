@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @property int $id
  * @property string|null $paygate_id
+ * @property string|null $paygate_name
  * @property string|null $invoice_number
  * @property string|null $transaction_id
  * @property string|null $tracking_number
@@ -30,11 +31,11 @@ class OrderTracking extends Model
 {
     use HasFactory;
 
-    public final const int TYPE_OPEN = 0;
+    final public const int TYPE_OPEN = 0;
 
-    public final const int TYPE_CLOSED = 1;
+    final public const int TYPE_CLOSED = 1;
 
-    public final const array TYPES = [
+    final public const array TYPES = [
         self::TYPE_OPEN => 'Open',
         self::TYPE_CLOSED => 'Closed',
     ];
@@ -49,6 +50,7 @@ class OrderTracking extends Model
      */
     protected $fillable = [
         'paygate_id',
+        'paygate_name',
         'invoice_number',
         'transaction_id',
         'tracking_number',
@@ -68,6 +70,7 @@ class OrderTracking extends Model
     protected function casts(): array
     {
         return [
+            'ordered_at' => 'datetime',
             'closed_at' => 'datetime',
             'last_checked_at' => 'datetime',
             'exported_at' => 'datetime',
