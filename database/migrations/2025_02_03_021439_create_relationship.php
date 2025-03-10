@@ -19,6 +19,7 @@ return new class extends Migration
         });
         Schema::table('order_tracking', function(Blueprint $table) {
             $table->foreign('order_id')->references('id')->on('orders')->onDelete('CASCADE')->onUpdate('CASCADE');
+            $table->foreign('paygate_id')->references('id')->on('paygates')->onDelete('CASCADE')->onUpdate('CASCADE');
         });
         Schema::table('disputes', function(Blueprint $table) {
             $table->foreign('paygate_id')->references('id')->on('paygates')->onDelete('CASCADE')->onUpdate('CASCADE');

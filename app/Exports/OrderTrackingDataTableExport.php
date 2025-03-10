@@ -20,7 +20,7 @@ class OrderTrackingDataTableExport implements FromCollection, WithHeadings
      *
      * @param Collection $records The collection of order tracking records.
      */
-    public function __construct(Collection $records)
+    public function __construct(mixed $records)
     {
         $this->records = $records;
     }
@@ -36,12 +36,13 @@ class OrderTrackingDataTableExport implements FromCollection, WithHeadings
             return [
                 'ID' => $record->id,
                 'Paygate ID' => $record->paygate_id,
+                'Paygate Name' => $record->paygate_name,
                 'Invoice Number' => $record->invoice_number,
                 'Transaction ID' => $record->transaction_id,
                 'Tracking Number' => $record->tracking_number,
                 'Courier Code' => $record->courier_code,
                 'Tracking Status' => $record->tracking_status,
-                'Type' => $record->type == 0 ? 'Open' : 'Closed',
+                'Type' => $record->type === 0 ? 'Open' : 'Closed',
                 'Ordered At' => $record->ordered_at,
                 'Closed At' => $record->closed_at,
                 'Last Checked At' => $record->last_checked_at,
@@ -62,6 +63,7 @@ class OrderTrackingDataTableExport implements FromCollection, WithHeadings
         return [
             'ID',
             'Paygate ID',
+            'Paygate Name',
             'Invoice Number',
             'Transaction ID',
             'Tracking Number',

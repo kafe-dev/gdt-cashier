@@ -22,19 +22,19 @@ class PaypalTransactionFilter
     public static function perform(EloquentDataTable $dataTable): EloquentDataTable
     {
         return $dataTable
-            ->searchPane('datetime', fn () => self::filterDatetime())
+//            ->searchPane('datetime', fn () => self::filterDatetime())
             ->searchPane('paygate_name', fn () => self::filterPaygateName())
             ->searchPane('name', fn () => self::filterName())
             ->searchPane('status', fn () => self::filterStatus())
             ->searchPane('currency', fn () => self::filterCurrency())
             ->searchPane('transaction_id', fn () => self::filterTransactionId())
             ->searchPane('invoice_number', fn () => self::filterInvoiceNumber())
-            ->searchPane('balance', fn () => self::filterBalance())
-            ->searchPane('closed_at', fn () => self::filterByClosedAt())
-            ->searchPane('last_checked_at', fn () => self::filterByLastCheckedAt())
-            ->searchPane('exported_at', fn () => self::filterByExportedAt())
-            ->searchPane('created_at', fn () => self::filterByCreatedAt())
-            ->searchPane('updated_at', fn () => self::filterByUpdatedAt());
+            ->searchPane('balance', fn () => self::filterBalance());
+//            ->searchPane('closed_at', fn () => self::filterByClosedAt())
+//            ->searchPane('last_checked_at', fn () => self::filterByLastCheckedAt())
+//            ->searchPane('exported_at', fn () => self::filterByExportedAt())
+//            ->searchPane('created_at', fn () => self::filterByCreatedAt())
+//            ->searchPane('updated_at', fn () => self::filterByUpdatedAt());
     }
 
     private static function filterDatetime(): Collection

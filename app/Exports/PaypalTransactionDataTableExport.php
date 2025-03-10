@@ -38,10 +38,9 @@ class PaypalTransactionDataTableExport implements FromCollection, WithHeadings
         return $this->records->map(function ($record) {
             return [
                 'ID' => $record->id,
-                'Date' => $record->date,
-                'Time' => $record->time,
-                'Timezone' => $record->timezone,
-                'Paygate' => Paygate::findOrFail($record->paygate_id)->name ?? "",
+                'Datetime' => $record->datetime,
+                'Paygate ID' => $record->paygate_id,
+                'Paygate Name' => $record->paygate_name,
                 'Name' => $record->name,
                 'Type' => $record->type,
                 'Event Code' => $record->event_code,
@@ -65,7 +64,6 @@ class PaypalTransactionDataTableExport implements FromCollection, WithHeadings
                 'Option 2 Name' => $record->option_2_name,
                 'Option 2 Value' => $record->option_2_value,
                 'Reference Transaction ID' => $record->reference_txn_id,
-//                'Invoice ID' => $record->invoice_id,
                 'Invoice Number' => $record->invoice_number,
                 'Custom Number' => $record->custom_number,
                 'Quantity' => $record->quantity,
@@ -95,10 +93,9 @@ class PaypalTransactionDataTableExport implements FromCollection, WithHeadings
     {
         return [
             'ID',
-            'Date',
-            'Time',
-            'Timezone',
-            'Paygate',
+            'Datetime',
+            'Paygate ID',
+            'Paygate Name',
             'Name',
             'Type',
             'Event Code',

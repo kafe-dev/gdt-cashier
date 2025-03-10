@@ -69,7 +69,7 @@ class PaypalTransactionDatatable extends BaseDataTable
     {
         return [
             Column::make(['data' => 'id', 'title' => 'ID'])->addClass('x-id'),
-            Column::make('datetime')->searchPanes()->addClass('x-searchable'),
+            Column::make('datetime')->searchPanes(false)->addClass('x-has-date-filter')->orderable(false),
 //            Column::make('paygate_id')->searchPanes()->addClass('x-searchable'),
             Column::make('paygate_name')->searchPanes()->addClass('x-searchable'),
             Column::make('name')->searchPanes()->addClass('x-searchable'),
@@ -111,11 +111,11 @@ class PaypalTransactionDatatable extends BaseDataTable
 //            Column::make('note')->searchPanes()->addClass('x-searchable'),
 //            Column::make('country_code')->searchPanes()->addClass('x-searchable'),
 //            Column::make('balance_impact')->searchPanes()->addClass('x-searchable'),
-            Column::make('closed_at')->searchPanes()->addClass('x-has-date-filter')->orderable(false),
-            Column::make('last_checked_at')->searchPanes()->addClass('x-has-date-filter')->orderable(false),
-            Column::make('exported_at')->searchPanes()->addClass('x-has-date-filter')->orderable(false),
-            Column::make('created_at')->searchPanes()->addClass('x-has-date-filter')->orderable(false),
-            Column::make('updated_at')->searchPanes()->addClass('x-has-date-filter')->orderable(false),
+            Column::make('closed_at')->searchPanes(false)->addClass('x-has-date-filter')->orderable(false),
+            Column::make('last_checked_at')->searchPanes(false)->addClass('x-has-date-filter')->orderable(false),
+            Column::make('exported_at')->searchPanes(false)->addClass('x-has-date-filter')->orderable(false),
+            Column::make('created_at')->searchPanes(false)->addClass('x-has-date-filter')->orderable(false),
+            Column::make('updated_at')->searchPanes(false)->addClass('x-has-date-filter')->orderable(false),
         ];
     }
 
@@ -152,37 +152,7 @@ class PaypalTransactionDatatable extends BaseDataTable
             'className' => 'btn btn-success',
             'init' => "function (dt, node, config) {
                 $(node).click(() => {
-                    var form = document.createElement('form');
-                    form.method = 'POST';
-                    form.action = '" . route('app.paypal-transaction.export') . "';
-
-                    var csrfToken = document.createElement('input');
-                    csrfToken.type = 'hidden';
-                    csrfToken.name = '_token';
-                    csrfToken.value = '" . csrf_token() . "';
-
-                    form.appendChild(csrfToken);
-
-                    var input = document.createElement('input');
-                    input.type = 'hidden';
-                    input.name = 'key';
-                    input.value = 'value';
-                    form.appendChild(input);
-
-                    document.body.appendChild(form);
-                    form.submit();
-
-                    $.ajax({
-                        type: 'POST',
-                        url: form.action,
-                        data: $(form).serialize(),
-                        success: function(response) {
-                            alert('Exported successfully');
-                            $('#reset-btn').click();
-                        },
-                        error: function() {
-                        }
-                    });
+                    $('#daterange_input').trigger('click');
                 });
             }",
         ];
