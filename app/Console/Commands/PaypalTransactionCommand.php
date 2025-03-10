@@ -138,10 +138,9 @@ class PaypalTransactionCommand extends Command
                                 }
 
                                 PaypalTransaction::create([
-                                    'date' => optional($dateTime)->toDateString(),
-                                    'time' => optional($dateTime)->toTimeString(),
-                                    'timezone' => optional($dateTime->getTimezone())->getName(),
+                                    'datetime' => $dateTime,
                                     'paygate_id' => $paygate->id,
+                                    'paygate_name' => $paygate->name,
                                     'name' => data_get($transaction, 'payer_info.payer_name.alternate_full_name'),
                                     'type' => $typeString ?? "Unknown",
                                     'event_code' => data_get($transaction, 'transaction_info.transaction_event_code'),
@@ -218,6 +217,7 @@ class PaypalTransactionCommand extends Command
                                         if (!empty($tracking)) {
                                             OrderTracking::create([
                                                 'paygate_id' => $paygate->id ?? null,
+                                                'paygate_name' => $paygate->name ?? null,
                                                 'invoice_number' => data_get(
                                                     $transaction,
                                                     'transaction_info.invoice_id'
@@ -234,6 +234,7 @@ class PaypalTransactionCommand extends Command
                                         } else {
                                             OrderTracking::create([
                                                 'paygate_id' => $paygate->id ?? null,
+                                                'paygate_name' => $paygate->name ?? null,
                                                 'invoice_number' => data_get(
                                                     $transaction,
                                                     'transaction_info.invoice_id'
@@ -251,6 +252,7 @@ class PaypalTransactionCommand extends Command
                                 } else {
                                     OrderTracking::create([
                                         'paygate_id' => $paygate->id ?? null,
+                                        'paygate_name' => $paygate->name ?? null,
                                         'invoice_number' => data_get($transaction, 'transaction_info.invoice_id'),
                                         'transaction_id' => $transaction_id,
                                         'ordered_at' => Carbon::parse(

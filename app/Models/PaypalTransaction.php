@@ -16,10 +16,9 @@ use Illuminate\Database\Eloquent\Model;
  * Class PayPalTransaction
  *
  * @property int $id
- * @property string|null $date
- * @property string|null $time
- * @property string|null $timezone
- * @property string|null $paygate_id
+ * @property mixed|null $datetime
+ * @property int $paygate_id
+ * @property string|null $paygate_name
  * @property string|null $name
  * @property string|null $type
  * @property string|null $event_code
@@ -43,7 +42,6 @@ use Illuminate\Database\Eloquent\Model;
  * @property string|null $option_2_name
  * @property string|null $option_2_value
  * @property string|null $reference_txn_id
-// * @property string|null $invoice_id
  * @property string|null $invoice_number
  * @property string|null $custom_number
  * @property string|null $quantity
@@ -72,13 +70,10 @@ class PaypalTransaction extends Model
 
     protected $table = 'paypal_transactions';
 
-    public $timestamps = true;
-
     protected $fillable = [
-        'date',
-        'time',
-        'timezone',
+        'datetime',
         'paygate_id',
+        'paygate_name',
         'name',
         'type',
         'event_code',
@@ -102,7 +97,6 @@ class PaypalTransaction extends Model
         'option_2_name',
         'option_2_value',
         'reference_txn_id',
-//        'invoice_id',
         'invoice_number',
         'custom_number',
         'quantity',
@@ -130,6 +124,7 @@ class PaypalTransaction extends Model
     protected function casts(): array
     {
         return [
+            'datetime' => 'datetime',
             'closed_at' => 'datetime',
             'last_checked_at' => 'datetime',
             'exported_at' => 'datetime',
