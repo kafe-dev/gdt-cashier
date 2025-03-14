@@ -225,7 +225,7 @@ class PayPalAPI {
 
         Logs::create('[makeHttpRequestWithFile][data]: ' . json_encode($data, JSON_THROW_ON_ERROR));
         $client   = new Client([
-            'base_uri' => 'https://api.sandbox.paypal.com',
+            'base_uri' => $this->apiUrl,
             'timeout'  => 5.0,
         ]);
 

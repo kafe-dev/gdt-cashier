@@ -22,7 +22,7 @@
                 <div class="card-body">
                     <ul class="list-group">
                         @foreach($paypalTransaction->toArray() as $key => $value)
-                            @if(\Illuminate\Support\Str::endsWith($key, '_at'))
+                            @if(\Illuminate\Support\Str::endsWith($key, '_at') || $key === 'datetime')
                                 <li class="list-group-item d-flex justify-content-between align-items-center">
                                     <div>
                                         <span class="text-muted">{{ \Illuminate\Support\Str::of($key)->replace('_', ' ')->title() }}:</span>

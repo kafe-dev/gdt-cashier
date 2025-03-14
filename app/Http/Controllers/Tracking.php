@@ -113,26 +113,32 @@ class Tracking extends BaseController
      *
      * @return BinaryFileResponse|RedirectResponse
      */
-    public function export(): BinaryFileResponse|RedirectResponse
+    public function export(Request $request): BinaryFileResponse|RedirectResponse
     {
-        $records = OrderTrackingModel::where('type', OrderTrackingModel::TYPE_OPEN)->get();
+        $query = OrderTrackingModel::where('type', OrderTrackingModel::TYPE_OPEN)->get();
+        if ($request->has(['start_date', 'end_date'])) {
+            $query = OrderTrackingModel::whereBetween('ordered_at', [$request->start_date, $request->end_date])
+            ->where('type', OrderTrackingModel::TYPE_OPEN)
+            ->get();
+        }
 
-        if ($records->isEmpty()) {
+//        $records = OrderTrackingModel::where('type', OrderTrackingModel::TYPE_OPEN)->get();
+
+        if ($query->isEmpty()) {
             flash()->warning('There are no tracking records.');
             return redirect()->route('app.tracking.index');
         }
 
-        OrderTrackingModel::whereIn('id', $records->pluck('id'))->update([
-            'type' => OrderTrackingModel::TYPE_CLOSED,
+        OrderTrackingModel::whereIn('id', $query->pluck('id'))->update([
             'exported_at' => Carbon::now(),
             'closed_at' => Carbon::now(),
         ]);
 
         $fileName = 'order_tracking_export_' . now()->format('Y-m-d_H-i-s') . '.xlsx';
 
-        session(['export_records' => $records]);
+        session(['export_records' => $query]);
 
-        return Excel::download(new OrderTrackingDataTableExport($records), $fileName);
+        return Excel::download(new OrderTrackingDataTableExport($query), $fileName);
     }
 
     /**
