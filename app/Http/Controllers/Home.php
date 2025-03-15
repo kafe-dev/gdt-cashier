@@ -19,6 +19,7 @@ use Carbon\Carbon;
  */
 class Home extends BaseController
 {
+
     /**
      * Action `index`.
      *
@@ -30,37 +31,61 @@ class Home extends BaseController
         $endDate = $request->query('end_date', now()->format('Y-m-d'));
 
         $openPaygate = count(
-            PaygateModel::query()->whereBetween('created_at', [$startDate, $endDate])
+            PaygateModel::query()->whereBetween(
+                'created_at',
+                [
+                    $startDate,
+                    $endDate,
+                ]
+            )
                 ->where('status', PaygateModel::STATUS_ACTIVE)
                 ->get()
         );
         $totalDisputes = count(
-            DisputeModel::query()->whereBetween('created_at', [$startDate, $endDate])
+            DisputeModel::query()->whereBetween(
+                'created_at',
+                [
+                    $startDate,
+                    $endDate,
+                ]
+            )
                 ->get()
         );
         $successOrders = count(
-            TransactionModel::query()->whereBetween('transaction_initiation_date', [$startDate, $endDate])
+            TransactionModel::query()->whereBetween(
+                'transaction_initiation_date',
+                [
+                    $startDate,
+                    $endDate,
+                ]
+            )
                 ->where('transaction_status', "S")
                 ->get()
         );
-        $totalRevenues = TransactionModel::query()->whereBetween('transaction_initiation_date', [$startDate, $endDate])
+        $totalRevenues = TransactionModel::query()->whereBetween(
+            'transaction_initiation_date',
+            [
+                $startDate,
+                $endDate,
+            ]
+        )
             ->where('transaction_status', "S")
             ->sum('transaction_amount_value');
 
         return view(
             'home.index',
             [
-                'open_paygates' => $openPaygate,
-                'total_disputes' => $totalDisputes,
-                'success_orders' => $successOrders,
+                'open_paygates'     => $openPaygate,
+                'total_disputes'    => $totalDisputes,
+                'success_orders'    => $successOrders,
                 'main_dispute_rate' => $this->getDisputeRate($startDate, $endDate),
-                'start_date' => $startDate,
-                'end_date' => $endDate,
-                'chartData' => $this->getRevenueChartData($startDate, $endDate),
-                'total_revenue' => (float)$totalRevenues,
-                'chartDataDispute' => $this->getChartDataDispute($startDate, $endDate),
-                'dispute_reports' => $this->getDisputeReports($startDate, $endDate),
-                'paygate_reports' => $this->getPaygateReports($startDate, $endDate),
+                'start_date'        => $startDate,
+                'end_date'          => $endDate,
+                'chartData'         => $this->getRevenueChartData($startDate, $endDate),
+                'total_revenue'     => (float) $totalRevenues,
+                'chartDataDispute'  => $this->getChartDataDispute($startDate, $endDate),
+                'dispute_reports'   => $this->getDisputeReports($startDate, $endDate),
+                'paygate_reports'   => $this->getPaygateReports($startDate, $endDate),
             ]
         );
     }
@@ -70,12 +95,29 @@ class Home extends BaseController
      *
      * @param $startDate
      * @param $endDate
+     *
      * @return float
      */
     private function getDisputeRate($startDate, $endDate): float
     {
-        $transactionCount = count(TransactionModel::query()->whereBetween('created_at', [$startDate, $endDate])->get());
-        $disputeCounts = count(DisputeModel::query()->whereBetween('created_at', [$startDate, $endDate])->get());
+        $transactionCount = count(
+            TransactionModel::query()->whereBetween(
+                'created_at',
+                [
+                    $startDate,
+                    $endDate,
+                ]
+            )->get()
+        );
+        $disputeCounts = count(
+            DisputeModel::query()->whereBetween(
+                'created_at',
+                [
+                    $startDate,
+                    $endDate,
+                ]
+            )->get()
+        );
 
         if ($transactionCount === 0) {
             return 0.0;
@@ -89,6 +131,7 @@ class Home extends BaseController
      *
      * @param $startDate
      * @param $endDate
+     *
      * @return array
      */
     private function getPaygateReports($startDate, $endDate): array
@@ -101,24 +144,41 @@ class Home extends BaseController
             ->get();
 
         $disputeCounts = DisputeModel::query()
-            ->whereBetween('created_at', [$startDate, $endDate])
+            ->whereBetween(
+                'created_at',
+                [
+                    $startDate,
+                    $endDate,
+                ]
+            )
             ->groupBy('paygate_id')
             ->selectRaw('paygate_id, COUNT(*) as dispute_count')
             ->pluck('dispute_count', 'paygate_id')
             ->toArray();
 
         $transactionCount = TransactionModel::query()
-            ->whereBetween('created_at', [$startDate, $endDate])
+            ->whereBetween(
+                'created_at',
+                [
+                    $startDate,
+                    $endDate,
+                ]
+            )
             ->groupBy('paygate_id')
             ->selectRaw('paygate_id, COUNT(*) as transaction_count')
             ->pluck('transaction_count', 'paygate_id')
             ->toArray();
 
-        $revenue = OrderModel::query()
-            ->whereBetween('created_at', [$startDate, $endDate])
-            ->where('status', OrderModel::STATUS_PAID)
+        $revenue = TransactionModel::query()->whereBetween(
+            'transaction_initiation_date',
+            [
+                $startDate,
+                $endDate,
+            ]
+        )
+            ->where('transaction_status', "S")
             ->groupBy('paygate_id')
-            ->selectRaw('paygate_id, SUM(paid_amount) as revenue')
+            ->selectRaw('paygate_id, SUM(transaction_amount_value) as revenue')
             ->pluck('revenue', 'paygate_id')
             ->toArray();
 
@@ -130,15 +190,18 @@ class Home extends BaseController
             $paygateRevenue = array_key_exists($paygateId, $revenue) ? $revenue[$paygateId] : 0;
 
             $paygateReports = [
-                'id' => $paygateId,
-                'revenue' => $paygateRevenue,
-                'dispute_rate' => $totalTransactions > 0 ? round(($totalDisputes / $totalTransactions) * 100, 2) : 0,
-                'total_disputes' => $totalDisputes,
+                'id'                 => $paygateId,
+                'revenue'            => $paygateRevenue,
+                'dispute_rate'       => $totalTransactions > 0 ? round(
+                    ($totalDisputes / $totalTransactions) * 100,
+                    2
+                ) : 0,
+                'total_disputes'     => $totalDisputes,
                 'total_transactions' => $totalTransactions,
-                'limit' => $paygate->limitation,
-                'type' => PaygateModel::TYPE[$paygate->type] ?? 'Unknown',
-                'status' => PaygateModel::STATUS[$paygate->status] ?? 'Unknown',
-                'created_at' => $paygate->created_at,
+                'limit'              => $paygate->limitation,
+                'type'               => PaygateModel::TYPE[$paygate->type] ?? 'Unknown',
+                'status'             => PaygateModel::STATUS[$paygate->status] ?? 'Unknown',
+                'created_at'         => $paygate->created_at,
             ];
 
             $allPaygatesReports[] = $paygateReports;
@@ -152,12 +215,19 @@ class Home extends BaseController
      *
      * @param $startDate
      * @param $endDate
+     *
      * @return array
      */
     private function getDisputeReports($startDate, $endDate): array
     {
         $disputeStats = DisputeModel::query()
-            ->whereBetween('created_at', [$startDate, $endDate])
+            ->whereBetween(
+                'created_at',
+                [
+                    $startDate,
+                    $endDate,
+                ]
+            )
             ->selectRaw('DATE(created_at) as date, status, COUNT(*) as count')
             ->groupBy('date', 'status')
             ->orderBy('date', 'desc')
@@ -169,26 +239,26 @@ class Home extends BaseController
         foreach ($period as $date) {
             $formattedDate = $date->format('Y-m-d');
             $allDates[$formattedDate] = [
-                'under_review' => 0,
-                'waiting_for_buyer' => 0,
+                'under_review'       => 0,
+                'waiting_for_buyer'  => 0,
                 'waiting_for_seller' => 0,
-                'open' => 0,
-                'resolved' => 0,
-                'denied' => 0,
-                'closed' => 0,
-                'expired' => 0,
+                'open'               => 0,
+                'resolved'           => 0,
+                'denied'             => 0,
+                'closed'             => 0,
+                'expired'            => 0,
             ];
         }
 
         $allStatuses = [
-            'under_review' => DisputeModel::STATUS_UNDER_REVIEW,
-            'waiting_for_buyer' => DisputeModel::STATUS_WAITING_FOR_BUYER_RESPONSE,
+            'under_review'       => DisputeModel::STATUS_UNDER_REVIEW,
+            'waiting_for_buyer'  => DisputeModel::STATUS_WAITING_FOR_BUYER_RESPONSE,
             'waiting_for_seller' => DisputeModel::STATUS_WAITING_FOR_SELLER_RESPONSE,
-            'open' => DisputeModel::STATUS_OPEN,
-            'resolved' => DisputeModel::STATUS_RESOLVED,
-            'denied' => DisputeModel::STATUS_DENIED,
-            'closed' => DisputeModel::STATUS_CLOSED,
-            'expired' => DisputeModel::STATUS_EXPIRED,
+            'open'               => DisputeModel::STATUS_OPEN,
+            'resolved'           => DisputeModel::STATUS_RESOLVED,
+            'denied'             => DisputeModel::STATUS_DENIED,
+            'closed'             => DisputeModel::STATUS_CLOSED,
+            'expired'            => DisputeModel::STATUS_EXPIRED,
         ];
 
         foreach ($disputeStats as $stat) {
@@ -211,19 +281,25 @@ class Home extends BaseController
      *
      * @param $startDate
      * @param $endDate
+     *
      * @return array
      */
     private function getChartDataDispute($startDate, $endDate): array
     {
         $disputeCounts = DisputeModel::query()
             ->selectRaw('status, COUNT(*) as count')
-            ->whereBetween('created_at', [$startDate, $endDate])
+            ->whereBetween(
+                'created_at',
+                [
+                    $startDate,
+                    $endDate,
+                ]
+            )
             ->groupBy('status')
             ->pluck('count', 'status')
             ->toArray();
 
         $totalDisputes = array_sum($disputeCounts);
-
 
         return [
             'labels' => [
@@ -234,9 +310,9 @@ class Home extends BaseController
                 'Open',
                 'Waiting for seller response',
                 'Waiting for buyer response',
-                'Under review'
+                'Under review',
             ],
-            'data' => [
+            'data'   => [
                 !empty($disputeCounts[DisputeModel::STATUS_RESOLVED]) ? round(
                     ($disputeCounts[DisputeModel::STATUS_RESOLVED] / $totalDisputes) * 100,
                     2
@@ -278,11 +354,18 @@ class Home extends BaseController
      *
      * @param $startDate
      * @param $endDate
+     *
      * @return array
      */
     private function getRevenueChartData($startDate, $endDate): array
     {
-        $revenues = TransactionModel::query()->whereBetween('transaction_initiation_date', [$startDate, $endDate])
+        $revenues = TransactionModel::query()->whereBetween(
+            'transaction_initiation_date',
+            [
+                $startDate,
+                $endDate,
+            ]
+        )
             ->where('transaction_status', "S")
             ->selectRaw('DATE(transaction_initiation_date) as date, SUM(transaction_amount_value) as total_revenue')
             ->groupBy('date')
@@ -290,7 +373,8 @@ class Home extends BaseController
             ->get();
         return [
             'categories' => $revenues->pluck('date')->toArray(),
-            'data' => $revenues->pluck('total_revenue')->toArray(),
+            'data'       => $revenues->pluck('total_revenue')->toArray(),
         ];
     }
+
 }

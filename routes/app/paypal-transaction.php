@@ -16,10 +16,11 @@ Route::controller(PaypalTransaction::class)
     ->name('app.paypal-transaction.')
     ->middleware([Auth::class])
     ->middleware([Role::class])
-    ->group(function () {
+    ->group(function() {
         Route::get('/manage', 'index')->name('index');
         Route::get('/show/{id}', 'show')->name('show');
 
         Route::post('/markclosed/{id}', 'markAsClosed')->name('markclosed');
         Route::post('/export', 'export')->name('export');
+        Route::post('/refundPayment/{id}', 'refundPayment')->name('refundPayment');
     });
