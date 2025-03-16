@@ -398,6 +398,9 @@ class PayPalAPI {
             $payload['return_shipping_address'] = $return_shipping_address;
         }
         $endPoint = "/v1/customer/disputes/{$dispute_id}/provide-evidence";
+        echo '<pre>';
+        print_r($fileInfo);
+        die;
         // Gửi yêu cầu POST tới PayPal API
         return $this->makeHttpRequestWithFile("POST", $endPoint, $payload, $fileInfo['name'], $fileInfo['path']);
     }

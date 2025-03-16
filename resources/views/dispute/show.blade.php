@@ -23,25 +23,57 @@
     $actions = array_map(fn($link) => $link['rel'], $links);
     $evidences = $dispute_arr['evidences'];
     $action_dispute = [
-    'accept_claim' => '<a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#accept-claim-modal"><i class="fas fa-angle-right fa-xs me-2"></i> Accept claim</a>',
-    'provide_evidence' => '<a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#provide-evidence-modal"><i class="fas fa-angle-right fa-xs me-2"></i> Provide evidence</a>',
-    'make_offer' => '<a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#make-offer-dispute-modal"><i class="fas fa-angle-right fa-xs me-2"></i> Make offer to resolve dispute</a>',
-    'escalate' => '<a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#escalate-dispute-modal"><i class="fas fa-angle-right fa-xs me-2"></i> Escalate dispute to claim</a>',
-    'send_message' => '<a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#send-message-dispute-modal"><i class="fas fa-angle-right fa-xs me-2"></i> Send message about dispute to other party</a>',
-    'acknowledge_return_item' => '<a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#acknowledge-returned-dispute-modal"><i class="fas fa-angle-right fa-xs me-2"></i> Acknowledge returned item</a>',
-];
+        'accept_claim' => '<a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#accept-claim-modal"><i class="fas fa-angle-right fa-xs me-2"></i> Accept claim</a>',
+        'provide_evidence' => '<a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#provide-evidence-modal"><i class="fas fa-angle-right fa-xs me-2"></i> Provide evidence</a>',
+        'make_offer' => '<a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#make-offer-dispute-modal"><i class="fas fa-angle-right fa-xs me-2"></i> Make offer to resolve dispute</a>',
+        'escalate' => '<a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#escalate-dispute-modal"><i class="fas fa-angle-right fa-xs me-2"></i> Escalate dispute to claim</a>',
+        'send_message' => '<a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#send-message-dispute-modal"><i class="fas fa-angle-right fa-xs me-2"></i> Send message about dispute to other party</a>',
+        'acknowledge_return_item' => '<a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#acknowledge-returned-dispute-modal"><i class="fas fa-angle-right fa-xs me-2"></i> Acknowledge returned item</a>',
+    ];
+    $action_dispute_btn = [];
+    foreach ($actions as $action){
+        if(isset($action_dispute[$action])){
+            $action_dispute_btn[$action] = $action_dispute[$action];
+        }
+    }
 
 @endphp
-
 @section('content')
     <div class="row">
         <div class="col-md-6 col-12">
+            @if ($errors->any())
+                <div class="alert alert-danger">
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
             <div class="card">
                 <div class="card-header">
                     <h4 class="card-title">Dispute ID: {{ $dispute->id }}</h4>
                     <p class="text-muted mb-0">Details of dispute ID: {{ $dispute->id }}</p>
                 </div>
                 <div class="card-body">
+                    @if(!empty($action_dispute_btn))
+                        <div class="border p-3">
+                            <p>To help us resolve your case as quickly as possible we’ll need you to respond by <b>{{$dispute_arr['seller_response_due_date']??''}}</b>.</p>
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-primary dropdown-toggle rounded-pill px-5" data-bs-toggle="dropdown"
+                                        aria-expanded="false">
+                                    Action
+                                    <i class="las la-angle-right ms-1"></i>
+                                </button>
+                                <div class="dropdown-menu">
+                                    @foreach($action_dispute_btn as $_btn)
+                                        {!! $_btn !!}
+                                    @endforeach
+                                </div>
+                            </div>
+                        </div>
+                    @endif
+
                     <ul class="list-group">
                         @foreach ([
                             'Case ID' => $dispute_arr['dispute_id'] ?? 'N/A',
@@ -145,14 +177,6 @@
                 </div>
                 <div class="card-footer">
                     {{ ActionWidget::renderGoBackBtn('<i class="las la-angle-left ms-1"></i> Go Back', 'btn btn-danger') }}
-                    <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown"
-                            aria-expanded="false">Action
-                        <i class="las la-angle-right ms-1"></i></button>
-                    <div class="dropdown-menu" style="">
-                        @foreach($actions as $action)
-                            {!! $action_dispute[$action] ?? '' !!}
-                        @endforeach
-                    </div>
                 </div>
             </div>
         </div>
@@ -182,13 +206,4 @@
 
     @include('dispute.form_provider_evidence._modal-provide-evidence',compact('dispute','dispute_arr'))
 
-    {{--    Begin Provide Evidence Modal--}}
-{{--    @if($dispute_arr['reason'] == \App\Models\Dispute::REASON_MERCHANDISE_OR_SERVICE_NOT_RECEIVED)--}}
-{{--        @include('dispute.form_provider_evidence._modal-not-received',compact('dispute','dispute_arr'))--}}
-{{--    @elseif($dispute_arr['reason'] == \App\Models\Dispute::REASON_MERCHANDISE_OR_SERVICE_NOT_AS_DESCRIBED)--}}
-{{--        @include('dispute.form_provider_evidence._modal-not-described',compact('dispute','dispute_arr'))--}}
-{{--    @elseif($dispute_arr['reason'] == \App\Models\Dispute::REASON_UNAUTHORISED)--}}
-{{--        @include('dispute.form_provider_evidence._modal-not-unauthorised',compact('dispute','dispute_arr'))--}}
-{{--    @endif--}}
-    {{--    End Provide Evidence Modal--}}
 @endsection
