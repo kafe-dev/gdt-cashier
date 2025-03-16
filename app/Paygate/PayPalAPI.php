@@ -208,66 +208,46 @@ class PayPalAPI {
      * Sends an HTTP request with an attached file.
      * This request is used for APIs that require file uploads.
      *
-     * @param string $method   HTTP method (GET, POST, PUT, DELETE, etc.)
      * @param string $endpoint API endpoint
      * @param array  $data     Data to be sent
      * @param string $fileName Name of the file
      * @param string $filePath Path to the file
-     * @param bool   $isAuth   Whether to include the Authorization header
      *
-     * @return array Returns the response as an array
+     * @return void Returns the response as an array
      *              - 'statusCode': HTTP status code
      *              - 'response': Decoded response
      *              - 'error': Error message (if any)
      * @throws \JsonException
      */
-    private function makeHttpRequestWithFile($method, $endpoint, $data, $fileName, $filePath, $isAuth = false): array {
-
-        Logs::create('[makeHttpRequestWithFile][data]: ' . json_encode($data, JSON_THROW_ON_ERROR));
+    private function makeHttpRequestWithFile($endpoint, $data, $fileName, $filePath, $basePath): void {
+        Logs::create(__FILE__, __FUNCTION__, __LINE__, '[makeHttpRequestWithFile][data]: ' . json_encode($data, JSON_THROW_ON_ERROR));
+        Logs::create(__FILE__, __FUNCTION__, __LINE__, '[makeHttpRequestWithFile][filePath]: ' . $filePath);
         $client   = new Client([
             'base_uri' => $this->apiUrl,
             'timeout'  => 5.0,
         ]);
-
-        Logs::create('[makeHttpRequestWithFile][filePath]: ' . $filePath);
-        // Xác định loại MIME dựa vào phần mở rộng của file
-        $headersFile = get_headers($filePath, 1);
-        $mimeType    = $headersFile["Content-Type"] ?? 'application/octet-stream';
-        Logs::create('[makeHttpRequestWithFile][$mimeType]: ' . $mimeType);
-        // Headers
-
-
-        // Chuẩn bị dữ liệu multipart
-        $multipart = new MultipartStream([
-            [
-                'name'     => 'input',
-                'contents' => json_encode($data, JSON_THROW_ON_ERROR),
-                'headers'  => ['Content-Type' => 'application/json'],
-            ],
-            [
-                'name'     => 'file1',
-                'contents' => fopen($filePath, 'r'),
-                'filename' => $fileName,
-                'headers'  => ['Content-Type' => $mimeType],
-            ],
-        ]);
-
-        $request = new Request($method, $endpoint, [
-            'Authorization' => "Bearer {$this->accessToken}",
-            'Content-Type'  => "multipart/related; boundary={$multipart->getBoundary()}",
-        ], $multipart);
-
+        $mimeType = mime_content_type($basePath) ? : 'application/octet-stream';
+        Logs::create(__FILE__, __FUNCTION__, __LINE__, '[makeHttpRequestWithFile][$mimeType]: ' . $mimeType);
         try {
-            $response = $client->send($request);
-            return [
-                'statusCode' => $response->getStatusCode(),
-                'response'   => json_decode($response->getBody()->getContents(), true, 512, JSON_THROW_ON_ERROR),
-            ];
+            $response = $client->request("POST", $endpoint, [
+                'headers'   => ['Authorization' => "Bearer {$this->accessToken}"],
+                'multipart' => [
+                    [
+                        'name'     => 'input',
+                        'contents' => json_encode($data, JSON_THROW_ON_ERROR),
+                        'headers'  => ['Content-Type' => 'application/json'],
+                    ],
+                    [
+                        'name'     => 'file1',
+                        'contents' => fopen($basePath, 'r'),
+                        'filename' => $fileName,
+                        'headers'  => ['Content-Type' => $mimeType],
+                    ],
+                ],
+            ]);
+            Logs::create(__FILE__, __FUNCTION__, __LINE__, '[makeHttpRequestWithFile][Response]: ' . $response->getBody()->getContents());
         } catch (RequestException $e) {
-            return [
-                'statusCode' => $e->getResponse() ? $e->getResponse()->getStatusCode() : 500,
-                'error'      => $e->getMessage(),
-            ];
+            Logs::create(__FILE__, __FUNCTION__, __LINE__, '[makeHttpRequestWithFile][Error]: ' . $e->getMessage());
         }
     }
 
@@ -388,7 +368,7 @@ class PayPalAPI {
      * @return array The response from PayPal API
      * @throws Exception If the dispute_id is empty
      */
-    public function provideEvidenceWithFile($dispute_id, $payload, $fileInfo, $return_shipping_address = null): array {
+    public function provideEvidenceWithFile($dispute_id, $payload, $fileInfo, $return_shipping_address = null): void {
         // Kiểm tra dispute_id hợp lệ
         if (empty($dispute_id)) {
             throw new Exception("Dispute ID is required.");
@@ -398,11 +378,12 @@ class PayPalAPI {
             $payload['return_shipping_address'] = $return_shipping_address;
         }
         $endPoint = "/v1/customer/disputes/{$dispute_id}/provide-evidence";
-        echo '<pre>';
-        print_r($fileInfo);
-        die;
-        // Gửi yêu cầu POST tới PayPal API
-        return $this->makeHttpRequestWithFile("POST", $endPoint, $payload, $fileInfo['name'], $fileInfo['path']);
+        if (!empty($fileInfo)) {
+            foreach ($fileInfo as $_file) {
+                // Gửi yêu cầu POST tới PayPal API
+                $this->makeHttpRequestWithFile($endPoint, $payload, $_file['name'], $_file['path'], $_file['base_path']);
+            }
+        }
     }
 
     /**
@@ -764,6 +745,6 @@ class PayPalAPI {
             "invoice_id"    => "INV-12345",
             "note_to_payer" => "Refund for order #12345",
         ];
-        return $this->makeHttpRequest('POST', $url,$params);
+        return $this->makeHttpRequest('POST', $url, $params);
     }
 }

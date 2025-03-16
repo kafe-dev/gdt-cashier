@@ -51,10 +51,18 @@
                 </div>
             @endif
             <div class="card">
-                <div class="card-header">
-                    <h4 class="card-title">Dispute ID: {{ $dispute->id }}</h4>
-                    <p class="text-muted mb-0">Details of dispute ID: {{ $dispute->id }}</p>
+{{--                <div class="card-header">--}}
+{{--                    <h4 class="card-title">Dispute ID: {{ $dispute->id }}</h4>--}}
+{{--                    <p class="text-muted mb-0">Details of dispute ID: {{ $dispute->id }}</p>--}}
+{{--                </div>--}}
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <div>
+                        <h4 class="card-title">Dispute ID: {{ $dispute->dispute_id }}</h4>
+                        <p class="text-muted mb-0">Details of dispute ID: {{ $dispute->dispute_id }}</p>
+                    </div>
+                    {{ ActionWidget::renderGoBackBtn('<i class="las la-angle-left ms-1"></i> Go Back', 'btn btn-danger') }}
                 </div>
+
                 <div class="card-body">
                     @if(!empty($action_dispute_btn))
                         <div class="border p-3">
@@ -174,9 +182,6 @@
                             @endif
                         @endforeach
                     </ul>
-                </div>
-                <div class="card-footer">
-                    {{ ActionWidget::renderGoBackBtn('<i class="las la-angle-left ms-1"></i> Go Back', 'btn btn-danger') }}
                 </div>
             </div>
         </div>

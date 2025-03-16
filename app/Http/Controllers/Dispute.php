@@ -361,8 +361,10 @@ class Dispute extends BaseController {
             'carrier_name.*'    => 'nullable|string|max:2000',
             'refund_ids'        => 'nullable|string|max:2000',
             'note'              => 'nullable|string|max:2000',
-            'evidence_file'     => 'nullable|array', // Kiểm tra mảng file
-            'evidence_file.*'   => 'file|mimes:jpg,png,pdf,docx|max:2048',// Chỉ nhận JPG, PNG, PDF, DOCX, tối đa 2MB
+            'evidence_file'     => 'nullable|array',
+            // Kiểm tra mảng file
+            'evidence_file.*'   => 'file|mimes:jpg,png,pdf,docx|max:2048',
+            // Chỉ nhận JPG, PNG, PDF, DOCX, tối đa 2MB
         ]);
         $dispute       = \App\Models\Dispute::findOrFail($id);
         $paypalApi     = $this->getPaypalApiByDisputeId($id);
@@ -386,21 +388,17 @@ class Dispute extends BaseController {
             $evidenceInfo['refund_ids'] = array_filter([$validated['refund_ids'] ?? '']);
         }
         // Xử lý upload file
-
         if ($request->hasFile('evidence_file')) {
             foreach ($request->file('evidence_file') as $file) { // Lặp đúng tên input
-                $fileName        = $file->getClientOriginalName();
-                $path            = $file->store('evidence_files', 'public');
-                $filePath        = asset('storage/' . $path);
-                Logs::create(
-                    __FILE__,
-                    __FUNCTION__,
-                    __LINE__,
-                    '[provideEvidence] file name: ' . $fileName
-                );
+                $fileName = $file->getClientOriginalName();
+                $path     = $file->store('evidence_files', 'public');
+                $basePath = 'storage/' . $path;
+                $filePath = asset('storage/' . $path);
+                Logs::create(__FILE__, __FUNCTION__, __LINE__, '[provideEvidence] file name: ' . $fileName);
                 $uploadedFiles[] = [
-                    'name' => $fileName,
-                    'path' => $filePath,
+                    'name'      => $fileName,
+                    'path'      => $filePath,
+                    'base_path' => $basePath,
                 ];
             }
             Logs::create(__FILE__, __FUNCTION__, __LINE__, '[provideEvidence] Files uploaded: ' . json_encode($uploadedFiles, JSON_THROW_ON_ERROR));
