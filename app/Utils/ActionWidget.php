@@ -13,6 +13,7 @@ use Illuminate\View\View;
  */
 class ActionWidget
 {
+
     /**
      * Render the show button view.
      *
@@ -26,8 +27,8 @@ class ActionWidget
         string $classes = 'btn btn-sm btn-info'
     ): View {
         return view('_widgets.actions.showBtn', [
-            'route' => $route,
-            'html' => $html,
+            'route'   => $route,
+            'html'    => $html,
             'classes' => $classes,
         ]);
     }
@@ -45,8 +46,8 @@ class ActionWidget
         string $classes = 'btn btn-sm btn-warning text-white'
     ): View {
         return view('_widgets.actions.updateBtn', [
-            'route' => $route,
-            'html' => $html,
+            'route'   => $route,
+            'html'    => $html,
             'classes' => $classes,
         ]);
     }
@@ -66,9 +67,9 @@ class ActionWidget
         string $classes = 'btn btn-sm btn-danger'
     ): View {
         return view('_widgets.actions.deleteBtn', [
-            'id' => $id,
-            'route' => $route,
-            'html' => $html,
+            'id'      => $id,
+            'route'   => $route,
+            'html'    => $html,
             'classes' => $classes,
         ]);
     }
@@ -88,9 +89,9 @@ class ActionWidget
         string $classes = 'btn btn-sm btn-success'
     ): View {
         return view('_widgets.actions.markclosedBtn', [
-            'id' => $id,
-            'route' => $route,
-            'html' => $html,
+            'id'      => $id,
+            'route'   => $route,
+            'html'    => $html,
             'classes' => $classes,
         ]);
     }
@@ -106,7 +107,7 @@ class ActionWidget
         string $classes = 'btn btn-sm btn-primary'
     ): View {
         return view('_widgets.actions.goBackBtn', [
-            'html' => $html,
+            'html'    => $html,
             'classes' => $classes,
         ]);
     }
@@ -124,9 +125,35 @@ class ActionWidget
         string $classes = 'btn btn-sm btn-dark'
     ): View {
         return view('_widgets.actions.testConnectionBtn', [
-            'route' => $route,
-            'html' => $html,
+            'route'   => $route,
+            'html'    => $html,
             'classes' => $classes,
         ]);
     }
+
+    /**
+     * Render the refund button.
+     *
+     * @param  int|string  $id  The ID of the transaction or related entity.
+     * @param  int|string  $gross  The gross amount of the transaction.
+     * @param  int|string  $currency  The currency of the transaction
+     * @param  string  $html  The HTML content inside the button. Defaults to a refund icon.
+     * @param  string  $classes  CSS classes for styling the button. Defaults to 'btn btn-sm btn-danger'.
+     */
+    public static function renderRefundBtn(
+        int|string $id,
+        int|string $gross,
+        int|string $currency,
+        string $html = '<i class="mdi mdi-credit-card-refund-outline"></i>',
+        string $classes = 'btn btn-sm btn-danger'
+    ): View {
+        return view('_widgets.actions.refundBtn', [
+            'id'       => $id,
+            'gross'    => $gross,
+            'currency' => $currency,
+            'html'     => $html,
+            'classes'  => $classes,
+        ]);
+    }
+
 }
