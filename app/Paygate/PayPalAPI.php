@@ -50,7 +50,7 @@ class PayPalAPI
     public function getAccessToken()
     {
         $response = $this->makeRequest("POST", "/v1/oauth2/token", "grant_type=client_credentials", TRUE);
-        return $response['access_token'] ?? throw new Exception("Không thể lấy Access Token.");
+        return $response['access_token'] ?? '';
     }
 
     /**
