@@ -86,9 +86,8 @@ class OrderTrackingFilter
                 DB::raw(
                     "`$column` as value,
         CASE `$column`
-            WHEN 0 THEN 'Not tracked'
-            WHEN 1 THEN 'Tracked'
-            ELSE ''
+            WHEN '1' THEN 'Tracked'
+            ELSE 'Not tracked'
         END as label, COUNT(*) as total"
                 )
             )

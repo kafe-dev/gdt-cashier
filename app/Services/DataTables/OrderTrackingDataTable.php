@@ -120,13 +120,15 @@ class OrderTrackingDataTable extends BaseDataTable
     public function getExportExcelBtn(): array
     {
         return [
-            'text'      => '<i class="fa fa-file-excel"></i> Export',
-            'className' => 'btn btn-success',
-            'init'      => "function (dt, node, config) {
-                $(node).click(() => {
-                    $('#daterange_input').trigger('click');
-                });
-            }",
+            'text'          => '<i class="fa fa-file-excel"></i> Export',
+            'extend'        => 'excel',
+            'exportOptions' => [
+                'modifier' => [
+                    'filter' => 'applied',
+                ],
+            ],
+            'className'     => 'btn btn-success',
+
         ];
     }
 
