@@ -11,6 +11,7 @@ use Yajra\DataTables\Html\Column;
 
 class OrderTrackingDataTable extends BaseDataTable
 {
+
     /**
      * {@inheritdoc}
      */
@@ -30,7 +31,7 @@ class OrderTrackingDataTable extends BaseDataTable
      * {@inheritdoc}
      */
     protected array $customButtons = [
-        'sync' => 'getSyncBtn',
+        'sync'        => 'getSyncBtn',
         'exportExcel' => 'getExportExcelBtn',
     ];
 
@@ -70,11 +71,13 @@ class OrderTrackingDataTable extends BaseDataTable
     {
         return [
             Column::make(['data' => 'id', 'title' => 'ID'])->addClass('x-id'),
-//            Column::make('paygate_id')->searchPanes()->addClass('x-searchable'),
+            //            Column::make('paygate_id')->searchPanes()->addClass('x-searchable'),
             Column::make('paygate_name')->searchPanes()->addClass('x-searchable'),
             Column::make('invoice_number')->searchPanes()->addClass('x-searchable'),
             Column::make('transaction_id')->searchPanes()->addClass('x-searchable'),
-            Column::make('tracking_number')->searchPanes()->addClass('x-searchable'),
+            Column::make(['data' => 'has_tracking_number', 'title' => 'Tracking Number'])->searchPanes()->addClass(
+                'x-searchable'
+            ),
             Column::make('courier_code')->searchPanes()->addClass('x-searchable'),
             Column::make('tracking_status')->searchPanes(),
             //            Column::make('tracking_data')->searchPanes(),
@@ -96,9 +99,9 @@ class OrderTrackingDataTable extends BaseDataTable
     public function getSyncBtn(): array
     {
         return [
-            'text' => '<i class="fa fa-sync"></i> Sync ',
+            'text'      => '<i class="fa fa-sync"></i> Sync ',
             'className' => 'btn btn-primary',
-            'init' => "function (dt, node, config) {
+            'init'      => "function (dt, node, config) {
                 $(node).css('background-color', 'rgba(23, 97, 253, 0.75)');
                 $(node).css('border-color', 'rgba(23, 97, 253, 0.75)');
 
@@ -117,13 +120,14 @@ class OrderTrackingDataTable extends BaseDataTable
     public function getExportExcelBtn(): array
     {
         return [
-            'text' => '<i class="fa fa-file-excel"></i> Export',
+            'text'      => '<i class="fa fa-file-excel"></i> Export',
             'className' => 'btn btn-success',
-            'init' => "function (dt, node, config) {
+            'init'      => "function (dt, node, config) {
                 $(node).click(() => {
                     $('#daterange_input').trigger('click');
                 });
             }",
         ];
     }
+
 }
