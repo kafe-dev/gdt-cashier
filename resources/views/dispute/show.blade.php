@@ -30,24 +30,21 @@
         'send_message' => '<a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#send-message-dispute-modal"><i class="fas fa-angle-right fa-xs me-2"></i> Send message about dispute to other party</a>',
         'acknowledge_return_item' => '<a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#acknowledge-returned-dispute-modal"><i class="fas fa-angle-right fa-xs me-2"></i> Acknowledge returned item</a>',
     ];
-    $action_dispute_btn = [];
-    foreach ($actions as $action){
-        if(isset($action_dispute[$action])){
-            $action_dispute_btn[$action] = $action_dispute[$action];
-        }
-    }
+
+    $action_dispute_btn = array_intersect_key($action_dispute, array_flip($actions));
 
 @endphp
 @section('content')
     <div class="row">
         <div class="col-md-6 col-12">
             @if ($errors->any())
-                <div class="alert alert-danger">
-                    <ul>
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <ul class="mb-0">
                         @foreach ($errors->all() as $error)
                             <li>{{ $error }}</li>
                         @endforeach
                     </ul>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             @endif
             <div class="card">
@@ -68,7 +65,7 @@
                         <div class="border p-3">
                             <p>To help us resolve your case as quickly as possible we’ll need you to respond by <b>{{$dispute_arr['seller_response_due_date']??''}}</b>.</p>
                             <div class="btn-group">
-                                <button type="button" class="btn btn-primary dropdown-toggle rounded-pill px-5" data-bs-toggle="dropdown"
+                                <button type="button" class="btn btn-primary" data-bs-toggle="dropdown"
                                         aria-expanded="false">
                                     Action
                                     <i class="las la-angle-right ms-1"></i>
@@ -98,7 +95,7 @@
                         ] as $label => $value)
                             <li class="list-group-item d-flex justify-content-between align-items-center">
                                 <span class="text-muted">{{ $label }}:</span>
-                                <span class="text-right">{!! $value !!}</span>
+                                <span class="text-end">{!! $value !!}</span>
                             </li>
                         @endforeach
 
@@ -106,7 +103,7 @@
                             @foreach($evidences as $label => $value)
                                 <li class="list-group-item d-flex justify-content-between align-items-center">
                                     <span class="text-muted">Evidences: {!! $value['evidence_type'] !!}</span>
-                                    <span class="text-right">
+                                    <span class="text-end">
                                         @isset($value['notes'])
                                             Note: {{ $value['notes'] }}<br>
                                         @endisset

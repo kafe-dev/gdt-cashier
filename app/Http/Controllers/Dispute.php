@@ -416,7 +416,20 @@ class Dispute extends BaseController {
             if (!empty($uploadedFiles)) {
                 Logs::create(__FILE__, __FUNCTION__, __LINE__, '[provideEvidence][FileInfo]: ' . json_encode($uploadedFiles, JSON_THROW_ON_ERROR));
                 Logs::create(__FILE__, __FUNCTION__, __LINE__, '[provideEvidence][Params]: ' . json_encode($params, JSON_THROW_ON_ERROR));
-                $result = $paypalApi->provideEvidenceWithFile($dispute->dispute_id, $params, $uploadedFiles);
+
+                foreach ($uploadedFiles as $uploadedFile){
+                    $result = $paypalApi->provideEvidenceWithFile($dispute->dispute_id, $params, $uploadedFile);
+                    if(!in_array($result['statusCode'],[200,201])){
+                        return redirect()->route('app.dispute.show', ['id' => $id])->withErrors(['evidence_file' => $result['error'] ?? 'Error']);
+                    }
+                    Logs::create(
+                        __FILE__,
+                        __FUNCTION__,
+                        __LINE__,
+                        '[provideEvidenceWithFile][data]: '.json_encode($result, JSON_THROW_ON_ERROR)
+                    );
+                }
+
                 Logs::create(__FILE__, __FUNCTION__, __LINE__, '[provideEvidence][result]: ' . json_encode($result, JSON_THROW_ON_ERROR));
             } else {
                 Logs::create(__FILE__, __FUNCTION__, __LINE__, '[provideEvidence][Params1]: ' . json_encode($params, JSON_THROW_ON_ERROR));
