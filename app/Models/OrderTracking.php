@@ -20,6 +20,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string|null $tracking_status
  * @property string|null $tracking_data
  * @property int $type
+ * @property bool $has_tracking_number
  * @property mixed|null $ordered_at
  * @property mixed|null $closed_at
  * @property mixed|null $last_checked_at
@@ -29,6 +30,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class OrderTracking extends Model
 {
+
     use HasFactory;
 
     final public const int TYPE_OPEN = 0;
@@ -36,7 +38,7 @@ class OrderTracking extends Model
     final public const int TYPE_CLOSED = 1;
 
     final public const array TYPES = [
-        self::TYPE_OPEN => 'Open',
+        self::TYPE_OPEN   => 'Open',
         self::TYPE_CLOSED => 'Closed',
     ];
 
@@ -58,6 +60,7 @@ class OrderTracking extends Model
         'tracking_status',
         'tracking_data',
         'type',
+        'has_tracking_number',
         'ordered_at',
         'closed_at',
         'last_checked_at',
@@ -70,12 +73,13 @@ class OrderTracking extends Model
     protected function casts(): array
     {
         return [
-            'ordered_at' => 'datetime',
-            'closed_at' => 'datetime',
+            'ordered_at'      => 'datetime',
+            'closed_at'       => 'datetime',
             'last_checked_at' => 'datetime',
-            'exported_at' => 'datetime',
-            'created_at' => 'datetime',
-            'updated_at' => 'datetime',
+            'exported_at'     => 'datetime',
+            'created_at'      => 'datetime',
+            'updated_at'      => 'datetime',
         ];
     }
+
 }

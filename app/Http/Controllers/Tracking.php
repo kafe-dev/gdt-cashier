@@ -26,6 +26,7 @@ use Trackingmore\TrackingMoreException;
  */
 class Tracking extends BaseController
 {
+
     private OrderTrackingModel $orderTrackingModel;
 
     public function __construct(OrderTrackingModel $orderTrackingModel)
@@ -56,12 +57,12 @@ class Tracking extends BaseController
     /**
      * Action `show`.
      *
-     * @param int|string $id The tracking ID
+     * @param  int|string  $id  The tracking ID
      */
     public function show(int|string $id): View
     {
         return view('tracking.show', [
-            'orderTracking' => $this->getOrderTracking((int)$id),
+            'orderTracking'      => $this->getOrderTracking((int)$id),
             'json_tracking_data' => $this->getOrderTracking((int)$id)->tracking_data !== null ? json_decode(
                 $this->getOrderTracking((int)$id)->tracking_data
             ) : json_decode(''),
@@ -71,8 +72,8 @@ class Tracking extends BaseController
     /**
      * Action `delete`.
      *
-     * @param int|string $id The tracking ID
-     * @param Request $request Illuminate request object
+     * @param  int|string  $id  The tracking ID
+     * @param  Request  $request  Illuminate request object
      */
     public function delete(int|string $id, Request $request): RedirectResponse
     {
@@ -108,40 +109,6 @@ class Tracking extends BaseController
     }
 
     /**
-     * Exports all open OrderTracking records to an Excel file.
-     * After exporting, updates the type to closed and sets the exported_at timestamp.
-     *
-     * @return BinaryFileResponse|RedirectResponse
-     */
-    public function export(Request $request): BinaryFileResponse|RedirectResponse
-    {
-        $query = OrderTrackingModel::where('type', OrderTrackingModel::TYPE_OPEN)->get();
-        if ($request->has(['start_date', 'end_date'])) {
-            $query = OrderTrackingModel::whereBetween('ordered_at', [$request->start_date, $request->end_date])
-            ->where('type', OrderTrackingModel::TYPE_OPEN)
-            ->get();
-        }
-
-//        $records = OrderTrackingModel::where('type', OrderTrackingModel::TYPE_OPEN)->get();
-
-        if ($query->isEmpty()) {
-            flash()->warning('There are no tracking records.');
-            return redirect()->route('app.tracking.index');
-        }
-
-        OrderTrackingModel::whereIn('id', $query->pluck('id'))->update([
-            'exported_at' => Carbon::now(),
-            'closed_at' => Carbon::now(),
-        ]);
-
-        $fileName = 'order_tracking_export_' . now()->format('Y-m-d_H-i-s') . '.xlsx';
-
-        session(['export_records' => $query]);
-
-        return Excel::download(new OrderTrackingDataTableExport($query), $fileName);
-    }
-
-    /**
      * Action 'addTrackingInfoView'.
      */
     public function addTrackingInfoView(int|string $id)
@@ -158,10 +125,10 @@ class Tracking extends BaseController
     {
         if ($request->isMethod('POST')) {
             $data = [
-                'transaction_id' => $this->getOrderTracking((int)$id)->transaction_id,
-                'status' => $request->post('status'),
+                'transaction_id'  => $this->getOrderTracking((int)$id)->transaction_id,
+                'status'          => $request->post('status'),
                 'tracking_number' => $request->post('tracking_number'),
-                'carrier' => $request->post('courier_code'),
+                'carrier'         => $request->post('courier_code'),
             ];
 
             $paygates = Paygate::all();
@@ -215,4 +182,5 @@ class Tracking extends BaseController
 
         OrderTrackingModel::find($id)->update(['courier_code' => $code]);
     }
+
 }

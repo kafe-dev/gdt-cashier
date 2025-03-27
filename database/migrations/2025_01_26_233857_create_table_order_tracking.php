@@ -5,6 +5,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration {
+
     /**
      * Run the migrations.
      */
@@ -21,6 +22,7 @@ return new class extends Migration {
             $table->string('tracking_status')->nullable();
             $table->json('tracking_data')->nullable();
             $table->smallInteger('type')->default(0);
+            $table->boolean('has_tracking_number')->default(0);
             $table->timestamp('ordered_at')->nullable();
             $table->timestamp('closed_at')->nullable();
             $table->timestamp('last_checked_at')->nullable();
@@ -36,4 +38,5 @@ return new class extends Migration {
     {
         Schema::dropIfExists('order_tracking');
     }
+
 };
