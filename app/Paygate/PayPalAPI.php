@@ -340,7 +340,7 @@ class PayPalAPI {
      * @throws Exception If both $start_time and $disputed_transaction_id are provided
      *
      */
-    public function listDispute($start_time = null, $disputed_transaction_id = null, $page_size = 20): array {
+    public function listDispute($start_time = null, $disputed_transaction_id = null, $page_size = 20) {
         // Kiểm tra điều kiện: Chỉ được chọn start_time hoặc disputed_transaction_id, không được chọn cả hai
         if ($start_time && $disputed_transaction_id) {
             throw new Exception("Chỉ có thể chọn start_time hoặc disputed_transaction_id, không thể chọn cả hai.");

@@ -26,32 +26,32 @@ class Paygate extends Model
 {
     use HasFactory;
 
-    public final const int TYPE_PAYPAL = 0;
+    public final const TYPE_PAYPAL = 0;
 
-    public final const int TYPE_STRIPE = 1;
+    public final const TYPE_STRIPE = 1;
 
-    public final const array TYPE = [
+    public final const TYPE = [
         self::TYPE_PAYPAL => 'Paypal',
         self::TYPE_STRIPE => 'Stripe',
     ];
 
-    public final const int STATUS_INACTIVE = 0;
+    public final const STATUS_INACTIVE = 0;
 
-    public final const int STATUS_ACTIVE = 1;
+    public final const STATUS_ACTIVE = 1;
 
-    public final const int STATUS_DRAFT = 2;
+    public final const STATUS_DRAFT = 2;
 
-    public final const array STATUS = [
+    public final const STATUS = [
         self::STATUS_INACTIVE => 'Inactive',
         self::STATUS_ACTIVE => 'Active',
         self::STATUS_DRAFT => 'Draft',
     ];
 
-    public final const int MODE_SANDBOX = 0;
+    public final const MODE_SANDBOX = 0;
 
-    public final const int MODE_LIVE = 1;
+    public final const MODE_LIVE = 1;
 
-    public final const array MODES = [
+    public final const MODES = [
         self::MODE_SANDBOX => 'Sandbox',
         self::MODE_LIVE => 'Live',
     ];
