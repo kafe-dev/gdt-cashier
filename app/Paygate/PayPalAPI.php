@@ -221,46 +221,45 @@ class PayPalAPI {
      *              - 'error': Error message (if any)
      * @throws \JsonException
      */
-    private function makeHttpRequestWithFile($method, $endpoint, $data, $fileName, $filePath, $basePath, $isAuth = false): array {
+    private function makeHttpRequestWithFile($method, $endpoint, $data,$fileInfos, $isAuth = false): array {
         Logs::create(__FILE__, __FUNCTION__, __LINE__, '[makeHttpRequestWithFile][data]: ' . json_encode($data, JSON_THROW_ON_ERROR));
+        Logs::create(__FILE__, __FUNCTION__, __LINE__, '[makeHttpRequestWithFile][fileInfos]: ' . json_encode($fileInfos, JSON_THROW_ON_ERROR));
+
         $client = new Client([
             'base_uri' => $this->apiUrl,
             'timeout'  => 5.0,
         ]);
-        if (!file_exists($filePath)) {
-            return [
-                'statusCode' => 400,
-                'error'      => 'File NotFound.',
-            ];
-        }
-        Logs::create(__FILE__, __FUNCTION__, __LINE__, '[makeHttpRequestWithFile][filePath]: ' . $filePath);
-        Logs::create(__FILE__, __FUNCTION__, __LINE__, '[makeHttpRequestWithFile][basePath]: ' . $basePath);
+
         // Xác định loại MIME dựa vào phần mở rộng của file
-        //$headersFile = get_headers($filePath, 1);
-        //$mimeType = $headersFile["Content-Type"] ?? 'application/octet-stream';
-        $mimeType = self::getMimeType(FileHelper::getFileExtensionBy($fileName));
-        Logs::create(__FILE__, __FUNCTION__, __LINE__, '[makeHttpRequestWithFile][$mimeType]: ' . $mimeType);
-        // Headers
+
         // Chuẩn bị dữ liệu multipart
-        $multipart = new MultipartStream([
-            [
-                'name'     => 'input',
-                'contents' => json_encode($data, JSON_THROW_ON_ERROR),
-                'headers'  => ['Content-Type' => 'application/json'],
-            ],
-            [
-                'name'     => 'file1',
-                'contents' => fopen($basePath, 'r'),
-                'filename' => $fileName,
-                'headers'  => ['Content-Type' => $mimeType],
-            ],
-        ]);
+
+        $options[] = [
+            'name'     => 'input',
+            'contents' => json_encode($data, JSON_THROW_ON_ERROR),
+            'headers'  => ['Content-Type' => 'application/json'],
+        ];
+
+        foreach ($fileInfos as $fileInfo){
+            if (file_exists($fileInfo['base_path'])) {
+                $mimeType = self::getMimeType(FileHelper::getFileExtensionBy($fileInfo['name']));
+                Logs::create(__FILE__, __FUNCTION__, __LINE__, '[makeHttpRequestWithFile][$mimeType]: ' . $mimeType);
+                $options[] = [
+                    'name'     => $fileInfo['name'],
+                    'contents' => fopen($fileInfo['base_path'], 'r'),
+                    'filename' => $fileInfo['name'],
+                    'headers'  => ['Content-Type' => $mimeType],
+                ];
+            }
+        }
+
+        $multipart = new MultipartStream($options);
         $request = new Request($method, $endpoint, [
             'Authorization' => "Bearer {$this->accessToken}",
             'Content-Type'  => "multipart/related; boundary={$multipart->getBoundary()}",
         ], $multipart);
         try {
-            $response = $client->send($request);
+            $response = $client->send($request, ['timeout' => 30]);
             return [
                 'statusCode' => $response->getStatusCode(),
                 'response'   => json_decode($response->getBody()->getContents(), true, 512, JSON_THROW_ON_ERROR),
@@ -392,7 +391,7 @@ class PayPalAPI {
      * @return array The response from PayPal API
      * @throws Exception If the dispute_id is empty
      */
-    public function provideEvidenceWithFile($dispute_id, $payload, $fileInfo, $return_shipping_address = null): array {
+    public function provideEvidenceWithFile($dispute_id, $payload, $fileInfos, $return_shipping_address = null): array {
         // Kiểm tra dispute_id hợp lệ
         if (empty($dispute_id)) {
             throw new Exception("Dispute ID is required.");
@@ -403,7 +402,7 @@ class PayPalAPI {
         }
         $endPoint = "/v1/customer/disputes/{$dispute_id}/provide-evidence";
         // Gửi yêu cầu POST tới PayPal API
-        return $this->makeHttpRequestWithFile("POST", $endPoint, $payload, $fileInfo['name'], $fileInfo['path'], $fileInfo['base_path']);
+        return $this->makeHttpRequestWithFile("POST", $endPoint, $payload, $fileInfos);
     }
 
     /**
