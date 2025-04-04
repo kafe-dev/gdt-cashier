@@ -2,10 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Helpers\Logs;
-use App\Models\Paygate;
-use App\Paygate\PayPalAPI;
-use DateTime;
+use App\Models\Carrier;
 use Illuminate\Console\Command;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\MultipartStream;
@@ -35,13 +32,19 @@ class TestCommand extends Command
      */
     public function handle()
     {
-        $paygate = Paygate::find(3);
-        $paypalApi = new PayPalAPI($paygate);
-        $capture_id = '6X822981VX905503D'; //transaction_id cần hoàn
-        $result =  $paypalApi->issueRefund($capture_id);
-        echo '<pre>';
-        print_r($result);
-        die;
+        $json = file_get_contents(__DIR__ . '/carrie.json');
+        $data = json_decode($json, true, 512, JSON_THROW_ON_ERROR);
+        foreach ($data as $code => $name) {
+            $carrier = new Carrier();
+            $carrier->code = $code;
+            $carrier->name= $name;
+            if($carrier->save()){
+                echo $carrier->name . ' saved' . PHP_EOL;
+            }else{
+                var_dump($carrier->errors());
+            }
+
+        }
     }
 
 
