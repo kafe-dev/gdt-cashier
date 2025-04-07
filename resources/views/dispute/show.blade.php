@@ -107,10 +107,13 @@
                                         @isset($value['notes'])
                                             Note: {{ $value['notes'] }}<br>
                                         @endisset
-                                        @if(!empty($value['evidence_info']['tracking_info']))
-                                            @php $tracking_info = $value['evidence_info']['tracking_info'][0]; @endphp
-                                            Carrier Name: {{ $tracking_info['carrier_name'] }}<br>
-                                            Tracking Number: {{ $tracking_info['tracking_number'] }}<br>
+                                        @if(!empty($value['evidence_info']))
+
+                                            @foreach($value['evidence_info']['tracking_info'] as $tracking_info)
+                                                Carrier Name: {{ $tracking_info['carrier_name'] }}<br>
+                                                Tracking Number: {{ $tracking_info['tracking_number'] }}<br>
+                                                <hr>
+                                            @endforeach
                                         @endif
                                         @isset($value['source'])
                                             Source: {{ $value['source'] }}<br>

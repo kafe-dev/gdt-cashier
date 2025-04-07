@@ -383,7 +383,7 @@ class Dispute extends BaseController {
                     }
                 }
             }
-            $evidenceInfo['tracking_info'] = [$_row];
+            $evidenceInfo['tracking_info'] = $_row;
         } elseif ($evidenceType === \App\Models\Dispute::EVIDENCE_TYPE_PROOF_OF_REFUND) {
             $evidenceInfo['refund_ids'] = array_filter([$validated['refund_ids'] ?? '']);
         }
@@ -412,13 +412,16 @@ class Dispute extends BaseController {
         ];
         if (!empty($params)) {
             if (!empty($uploadedFiles)) {
-
                 $result = $paypalApi->provideEvidenceWithFile($dispute->dispute_id, $params, $uploadedFiles);
                 if(!in_array($result['statusCode'],[200,201])){
                     return redirect()->route('app.dispute.show', ['id' => $id])->withErrors(['evidence_file' => $result['error'] ?? 'Error']);
                 }
             } else {
                 $result = $paypalApi->provideEvidence($dispute->dispute_id, $params);
+                if(!in_array($result['statusCode'],[200,201])){
+                    $error_message =  $result['response']['message'];
+                    return redirect()->route('app.dispute.show', ['id' => $id])->withErrors(['evidence_type' => $error_message]);
+                }
             }
             if (!empty($result['statusCode']) && $result['statusCode'] === 200) {
                 flash()->success('Evidence provided successfully!');
