@@ -97,12 +97,12 @@
 
                         <div class="mb-3">
                             <label for="carrier_name" class="form-label">Carrier Name (<span class="text-danger">*</span>)</label>
-                            <select class="form-control select2" id="carrier_name" name="carrier_name[]">
-                                <option value="">Select Carrier</option>
+                            <input list="carrier_list" class="form-control" id="carrier_name" name="carrier_name[]" placeholder="Type to search carrier...">
+                            <datalist id="carrier_list">
                                 @foreach($carrier_options as $code => $name)
-                                    <option value="{{$code}}">{{$name}}</option>
+                                    <option value="{{$code}}-{{$name}}">
                                 @endforeach
-                            </select>
+                            </datalist>
                         </div>
 
                         <div class="mb-3">
