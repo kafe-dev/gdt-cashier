@@ -11,6 +11,7 @@
     "require": {
         "php": ">=8.3",
         "ext-curl": "*",
+        "ext-fileinfo": "*",
         "automattic/woocommerce": "^3.1",
         "barryvdh/laravel-snappy": "*",
         "braintree/braintree_php": "^6.23",
@@ -24,12 +25,12 @@
         "mailjet/laravel-mailjet": "^3.1",
         "moneyphp/money": "^4.6",
         "php-flasher/flasher-laravel": "^2.1",
+        "reliese/laravel": "^1.3",
         "srmklive/paypal": "~3.0",
         "trackingmore/trackingmore-sdk-php": "^0.1.1",
         "yajra/laravel-datatables": "^11.0",
         "yajra/laravel-datatables-buttons": "^11.0",
-        "yajra/laravel-datatables-fractal": "^11.0",
-        "ext-fileinfo" : "*"
+        "yajra/laravel-datatables-fractal": "^11.0"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.14",

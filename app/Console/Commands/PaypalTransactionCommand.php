@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Log;
 
 class PaypalTransactionCommand extends Command
 {
+
     /**
      * The name and signature of the console command.
      *
@@ -89,7 +90,7 @@ class PaypalTransactionCommand extends Command
                 Log::info('Querying PayPal API for transactions', [
                     'start_date' => $startDate === '2025-01-01T00:00:00.000Z' ? $currentStart->toISOString(
                     ) : $currentStart,
-                    'end_date' => $currentEnd->toISOString(),
+                    'end_date'   => $currentEnd->toISOString(),
                 ]);
 
                 $response = $paypalApi->listTransaction(
@@ -118,8 +119,8 @@ class PaypalTransactionCommand extends Command
                                 $itemQuantity = 0;
                                 if (isset($transaction['cart_info']['item_details'])) {
                                     foreach ($transaction['cart_info']['item_details'] as $item) {
-                                        $itemListName .= data_get($item, 'item_name', '') . ', ';
-                                        $itemListCode .= data_get($item, 'item_code', '') . ', ';
+                                        $itemListName .= data_get($item, 'item_name', '').', ';
+                                        $itemListCode .= data_get($item, 'item_code', '').', ';
                                         $itemQuantity += data_get($item, 'item_quantity', 0);
                                     }
 
@@ -138,75 +139,131 @@ class PaypalTransactionCommand extends Command
                                 }
 
                                 PaypalTransaction::create([
-                                    'datetime' => $dateTime,
-                                    'paygate_id' => $paygate->id,
-                                    'paygate_name' => $paygate->name,
-                                    'name' => data_get($transaction, 'payer_info.payer_name.alternate_full_name'),
-                                    'type' => $typeString ?? "Unknown",
-                                    'event_code' => data_get($transaction, 'transaction_info.transaction_event_code'),
-                                    'status' => data_get($transaction, 'transaction_info.transaction_status'),
-                                    'currency' => data_get(
+                                    'datetime'                     => $dateTime,
+                                    'paygate_id'                   => $paygate->id,
+                                    'paygate_name'                 => $paygate->name,
+                                    'name'                         => data_get(
+                                        $transaction,
+                                        'payer_info.payer_name.alternate_full_name'
+                                    ),
+                                    'type'                         => $typeString ?? "Unknown",
+                                    'event_code'                   => data_get(
+                                        $transaction,
+                                        'transaction_info.transaction_event_code'
+                                    ),
+                                    'status'                       => data_get(
+                                        $transaction,
+                                        'transaction_info.transaction_status'
+                                    ),
+                                    'currency'                     => data_get(
                                         $transaction,
                                         'transaction_info.transaction_amount.currency_code'
                                     ),
-                                    'gross' => data_get($transaction, 'transaction_info.transaction_amount.value'),
-                                    'fee' => data_get($transaction, 'transaction_info.fee_amount.value'),
-                                    'net' => ((int)data_get(
+                                    'gross'                        => data_get(
+                                        $transaction,
+                                        'transaction_info.transaction_amount.value'
+                                    ),
+                                    'fee'                          => data_get(
+                                        $transaction,
+                                        'transaction_info.fee_amount.value'
+                                    ),
+                                    'net'                          => ((int)data_get(
                                             $transaction,
                                             'transaction_info.transaction_amount.value',
                                             0
                                         ))
                                         + ((int)data_get($transaction, 'transaction_info.fee_amount.value', 0)),
-                                    'from_email_address' => data_get($transaction, 'payer_info.email_address'),
-                                    'to_email_address' => null,
-                                    'transaction_id' => $transaction_id,
-                                    'shipping_address' => collect(data_get($transaction, 'shipping_info.address', []))
+                                    'from_email_address'           => data_get(
+                                        $transaction,
+                                        'payer_info.email_address'
+                                    ),
+                                    'to_email_address'             => null,
+                                    'transaction_id'               => $transaction_id,
+                                    'shipping_address'             => collect(
+                                        data_get($transaction, 'shipping_info.address', [])
+                                    )
                                         ->only(['line1', 'city', 'state', 'postal_code', 'country_code'])
                                         ->filter()
                                         ->implode(', '),
-                                    'address_status' => data_get(
+                                    'address_status'               => data_get(
                                         $transaction,
                                         'shipping_info.address.line1'
                                     ) ? 'Confirmed' : 'Not-Confirmed',
-                                    'item_title' => $itemListName,
-                                    'item_id' => $itemListCode,
+                                    'item_title'                   => $itemListName,
+                                    'item_id'                      => $itemListCode,
                                     'shipping_and_handling_amount' => data_get(
                                         $transaction,
                                         'transaction_info.shipping_amount.value'
                                     ),
-                                    'insurance_amount' => data_get(
+                                    'insurance_amount'             => data_get(
                                         $transaction,
                                         'transaction_info.insurance_amount.value'
                                     ),
-                                    'sales_tax' => data_get($transaction, 'transaction_info.sales_tax_amount.value'),
-                                    'reference_txn_id' => data_get(
+                                    'sales_tax'                    => data_get(
+                                        $transaction,
+                                        'transaction_info.sales_tax_amount.value'
+                                    ),
+                                    'reference_txn_id'             => data_get(
                                         $transaction,
                                         'transaction_info.transaction_status'
                                     ) === 'S'
                                         ? null
                                         : data_get($transaction, 'transaction_info.paypal_reference_id'),
-                                    'invoice_number' => data_get($transaction, 'transaction_info.invoice_id'),
-                                    'custom_number' => data_get($transaction, 'transaction_info.custom_field'),
-                                    'quantity' => $itemQuantity,
-                                    'receipt_id' => null,
-                                    'balance' => data_get($transaction, 'transaction_info.ending_balance.value'),
-                                    'address_line_1' => data_get($transaction, 'shipping_info.address.line1'),
-                                    'address_line_2' => data_get($transaction, 'shipping_info.address.line2'),
-                                    'town_city' => data_get($transaction, 'shipping_info.address.city'),
-                                    'state_province' => data_get($transaction, 'shipping_info.address.state'),
-                                    'zip_postal_code' => data_get($transaction, 'shipping_info.address.postal_code'),
-                                    'country' => data_get($transaction, 'shipping_info.address.country_code'),
-                                    'contact_phone_number' => data_get(
+                                    'invoice_number'               => data_get(
+                                        $transaction,
+                                        'transaction_info.invoice_id'
+                                    ),
+                                    'custom_number'                => data_get(
+                                        $transaction,
+                                        'transaction_info.custom_field'
+                                    ),
+                                    'quantity'                     => $itemQuantity,
+                                    'receipt_id'                   => null,
+                                    'balance'                      => data_get(
+                                        $transaction,
+                                        'transaction_info.ending_balance.value'
+                                    ),
+                                    'address_line_1'               => data_get(
+                                        $transaction,
+                                        'shipping_info.address.line1'
+                                    ),
+                                    'address_line_2'               => data_get(
+                                        $transaction,
+                                        'shipping_info.address.line2'
+                                    ),
+                                    'town_city'                    => data_get(
+                                        $transaction,
+                                        'shipping_info.address.city'
+                                    ),
+                                    'state_province'               => data_get(
+                                        $transaction,
+                                        'shipping_info.address.state'
+                                    ),
+                                    'zip_postal_code'              => data_get(
+                                        $transaction,
+                                        'shipping_info.address.postal_code'
+                                    ),
+                                    'country'                      => data_get(
+                                        $transaction,
+                                        'shipping_info.address.country_code'
+                                    ),
+                                    'contact_phone_number'         => data_get(
                                         $transaction,
                                         'payer_info.phone_number.national_number'
                                     ),
-                                    'subject' => $itemListName,
-                                    'note' => data_get($transaction, 'transaction_info.transaction_note'),
-                                    'country_code' => data_get($transaction, 'shipping_info.address.country_code'),
-                                    'balance_impact' => null,
-                                    'closed_at' => null,
-                                    'last_checked_at' => Carbon::now(),
-                                    'exported_at' => null,
+                                    'subject'                      => $itemListName,
+                                    'note'                         => data_get(
+                                        $transaction,
+                                        'transaction_info.transaction_note'
+                                    ),
+                                    'country_code'                 => data_get(
+                                        $transaction,
+                                        'shipping_info.address.country_code'
+                                    ),
+                                    'balance_impact'               => null,
+                                    'closed_at'                    => null,
+                                    'last_checked_at'              => Carbon::now(),
+                                    'exported_at'                  => null,
                                 ]);
 
                                 $response = $paypalApi->getTrackingInfo($transaction_id);
@@ -216,16 +273,17 @@ class PaypalTransactionCommand extends Command
                                     foreach ($trackingInfo as $tracking) {
                                         if (!empty($tracking)) {
                                             OrderTracking::create([
-                                                'paygate_id' => $paygate->id ?? null,
-                                                'paygate_name' => $paygate->name ?? null,
-                                                'invoice_number' => data_get(
+                                                'paygate_id'          => $paygate->id ?? null,
+                                                'paygate_name'        => $paygate->name ?? null,
+                                                'invoice_number'      => data_get(
                                                     $transaction,
                                                     'transaction_info.invoice_id'
                                                 ),
-                                                'transaction_id' => $transaction_id,
-                                                'tracking_number' => data_get($tracking, 'tracking_number'),
-                                                'courier_code' => data_get($tracking, 'carrier_name_other'),
-                                                'ordered_at' =>
+                                                'transaction_id'      => $transaction_id,
+                                                'tracking_number'     => data_get($tracking, 'tracking_number'),
+                                                'has_tracking_number' => true,
+                                                'courier_code'        => data_get($tracking, 'carrier_name_other'),
+                                                'ordered_at'          =>
                                                     data_get(
                                                         $transaction,
                                                         'transaction_info.transaction_initiation_date'
@@ -233,14 +291,14 @@ class PaypalTransactionCommand extends Command
                                             ]);
                                         } else {
                                             OrderTracking::create([
-                                                'paygate_id' => $paygate->id ?? null,
-                                                'paygate_name' => $paygate->name ?? null,
+                                                'paygate_id'     => $paygate->id ?? null,
+                                                'paygate_name'   => $paygate->name ?? null,
                                                 'invoice_number' => data_get(
                                                     $transaction,
                                                     'transaction_info.invoice_id'
                                                 ),
                                                 'transaction_id' => $transaction_id,
-                                                'ordered_at' => Carbon::parse(
+                                                'ordered_at'     => Carbon::parse(
                                                     data_get(
                                                         $transaction,
                                                         'transaction_info.transaction_initiation_date'
@@ -251,11 +309,11 @@ class PaypalTransactionCommand extends Command
                                     }
                                 } else {
                                     OrderTracking::create([
-                                        'paygate_id' => $paygate->id ?? null,
-                                        'paygate_name' => $paygate->name ?? null,
+                                        'paygate_id'     => $paygate->id ?? null,
+                                        'paygate_name'   => $paygate->name ?? null,
                                         'invoice_number' => data_get($transaction, 'transaction_info.invoice_id'),
                                         'transaction_id' => $transaction_id,
-                                        'ordered_at' => Carbon::parse(
+                                        'ordered_at'     => Carbon::parse(
                                             data_get(
                                                 $transaction,
                                                 'transaction_info.transaction_initiation_date'
@@ -278,4 +336,5 @@ class PaypalTransactionCommand extends Command
 
         file_put_contents($lastSyncFile, json_encode(['last_sync' => $endDate], JSON_THROW_ON_ERROR));
     }
+
 }

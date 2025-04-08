@@ -64,8 +64,11 @@
                     </div><!--end row-->
                 </div><!--end modal-body-->
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary btn-sm">Apply</button>
+                    <button type="submit" class="btn btn-primary btn-sm px-5"><i class="fas fa-paper-plane"></i> Submit
+                    </button>
+                    <button type="button" class="btn btn-secondary btn-sm px-3" data-bs-dismiss="modal">
+                        <i class="fas fa-times"></i> Close
+                    </button>
                 </div><!--end modal-footer-->
             </form>
         </div><!--end modal-content-->

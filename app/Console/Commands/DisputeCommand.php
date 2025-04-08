@@ -75,7 +75,7 @@ class DisputeCommand extends Command {
     public function fetch(): void {
         foreach (Paygate::all() as $paygate) {
             $paypalApi = new PayPalAPI($paygate);
-            $response  = $paypalApi->listDispute('2025-01-01T00:00:00.000Z');
+            $response  = $paypalApi->listDispute('2024-01-01T00:00:00.000Z');
             if (empty($response['items'])) {
                 echo 'Today is not dispute' . PHP_EOL;
                 continue;
