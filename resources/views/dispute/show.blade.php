@@ -1,5 +1,5 @@
 @php
-    use App\Helpers\TimeHelper;use App\Models\Paygate;use App\Utils\ActionWidget;
+    use App\Helpers\TimeHelper;use App\Models\Paygate;use App\Models\Transaction;use App\Utils\ActionWidget;
 @endphp
 
 @extends('_layouts.main')
@@ -31,12 +31,33 @@
         'acknowledge_return_item' => '<a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#acknowledge-returned-dispute-modal"><i class="fas fa-angle-right fa-xs me-2"></i> Acknowledge returned item</a>',
     ];
 
+    $transaction_id = $transaction['seller_transaction_id']??'';
+    $transaction_info = Transaction::where('transaction_id', $transaction_id)->first();
+    if($transaction_info){
+        $transaction_info = $transaction_info->toArray();
+    }
+
     $action_dispute_btn = array_intersect_key($action_dispute, array_flip($actions));
+    $dispute_infos = [
+        'Case ID' => $dispute_arr['dispute_id'] ?? 'N/A',
+        'Status' => $dispute_arr['status'] ?? 'N/A',
+        'reason' => $dispute_arr['reason'] ?? 'N/A',
+        'dispute_life_cycle_stage'=>$dispute_arr['dispute_life_cycle_stage']??'N/A',
+        'Disputed amount' => "$" . ($dispute_arr['dispute_amount']['value'] ?? 0) . " " . ($dispute_arr['dispute_amount']['currency_code'] ?? 'USD'),
+        'Buyer info' => $buyer_name . '<br>' . ($transaction_arr['transaction_details'][0]['payer_info']['email_address'] ?? ''),
+        'Shipping address' => ($shipping_address['line1'] ?? '') . ', ' . ($shipping_address['line2'] ?? '') . '<br>' . ($shipping_address['city'] ?? '') . '<br>' . ($shipping_address['postal_code'] ?? ''),
+        'Date reported' => $dispute_arr['create_time'] ?? 'N/A',
+        'Invoice ID' => $transaction['invoice_number'] ?? 'N/A',
+        'Transaction ID' => !empty($transaction_info)
+        ? '<a href="' . route('app.paypal-transaction.show', $transaction_info['transaction_id']) . '" class="" target="_blank">'.$transaction_info['transaction_id'].'</a>'
+    : ($transaction['seller_transaction_id'] ?? 'N/A'),
+        'Transaction amount' => "$" . ($transaction['gross_amount']['value'] ?? 0) . " " . ($transaction['gross_amount']['currency_code'] ?? 'USD'),
+    ];
 
 @endphp
 @section('content')
     <div class="row">
-        <div class="col-md-6 col-12">
+        <div class="col-md-6 col-xs-12">
             @if ($errors->any())
                 <div class="alert alert-danger alert-dismissible fade show" role="alert">
                     <ul class="mb-0">
@@ -48,10 +69,6 @@
                 </div>
             @endif
             <div class="card">
-{{--                <div class="card-header">--}}
-{{--                    <h4 class="card-title">Dispute ID: {{ $dispute->id }}</h4>--}}
-{{--                    <p class="text-muted mb-0">Details of dispute ID: {{ $dispute->id }}</p>--}}
-{{--                </div>--}}
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <div>
                         <h4 class="card-title">Dispute ID: {{ $dispute->dispute_id }}</h4>
@@ -63,7 +80,8 @@
                 <div class="card-body">
                     @if(!empty($action_dispute_btn))
                         <div class="border p-3">
-                            <p>To help us resolve your case as quickly as possible we’ll need you to respond by <b>{{$dispute_arr['seller_response_due_date']??''}}</b>.</p>
+                            <p>To help us resolve your case as quickly as possible we'll need you to respond by
+                                <b>{{$dispute_arr['seller_response_due_date']??''}}</b>.</p>
                             <div class="btn-group">
                                 <button type="button" class="btn btn-primary" data-bs-toggle="dropdown"
                                         aria-expanded="false">
@@ -80,19 +98,7 @@
                     @endif
 
                     <ul class="list-group">
-                        @foreach ([
-                            'Case ID' => $dispute_arr['dispute_id'] ?? 'N/A',
-                            'Status' => $dispute_arr['status'] ?? 'N/A',
-                            'reason' => $dispute_arr['reason'] ?? 'N/A',
-                            'dispute_life_cycle_stage'=>$dispute_arr['dispute_life_cycle_stage']??'N/A',
-                            'Disputed amount' => "$" . ($dispute_arr['dispute_amount']['value'] ?? 0) . " " . ($dispute_arr['dispute_amount']['currency_code'] ?? 'USD'),
-                            'Buyer info' => $buyer_name . '<br>' . ($transaction_arr['transaction_details'][0]['payer_info']['email_address'] ?? ''),
-                            'Shipping address' => ($shipping_address['line1'] ?? '') . ', ' . ($shipping_address['line2'] ?? '') . '<br>' . ($shipping_address['city'] ?? '') . '<br>' . ($shipping_address['postal_code'] ?? ''),
-                            'Date reported' => $dispute_arr['create_time'] ?? 'N/A',
-                            'Invoice ID' => $transaction['invoice_number'] ?? 'N/A',
-                            'Transaction ID' => $transaction['seller_transaction_id'] ?? 'N/A',
-                            'Transaction amount' => "$" . ($transaction['gross_amount']['value'] ?? 0) . " " . ($transaction['gross_amount']['currency_code'] ?? 'USD'),
-                        ] as $label => $value)
+                        @foreach ($dispute_infos as $label => $value)
                             <li class="list-group-item d-flex justify-content-between align-items-center">
                                 <span class="text-muted">{{ $label }}:</span>
                                 <span class="text-end">{!! $value !!}</span>
