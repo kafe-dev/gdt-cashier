@@ -18,14 +18,14 @@ return new class extends Migration
             $table->foreign('user_id')->references('id')->on('users')->onDelete('CASCADE')->onUpdate('CASCADE');
         });
         Schema::table('order_tracking', function(Blueprint $table) {
-            $table->foreign('order_id')->references('id')->on('orders')->onDelete('CASCADE')->onUpdate('CASCADE');
-            $table->foreign('paygate_id')->references('id')->on('paygates')->onDelete('CASCADE')->onUpdate('CASCADE');
+            $table->foreign('order_id')->references('id')->on('orders')->onDelete('RESTRICT')->onUpdate('CASCADE');
+            $table->foreign('paygate_id')->references('id')->on('paygates')->onDelete('RESTRICT')->onUpdate('CASCADE');
         });
         Schema::table('disputes', function(Blueprint $table) {
-            $table->foreign('paygate_id')->references('id')->on('paygates')->onDelete('CASCADE')->onUpdate('CASCADE');
+            $table->foreign('paygate_id')->references('id')->on('paygates')->onDelete('RESTRICT')->onUpdate('CASCADE');
         });
         Schema::table('paypal_transactions', function (Blueprint $table) {
-            $table->foreign('paygate_id')->references('id')->on('paygates')->onDelete('CASCADE')->onUpdate('CASCADE');
+            $table->foreign('paygate_id')->references('id')->on('paygates')->onDelete('RESTRICT')->onUpdate('CASCADE');
         });
     }
 

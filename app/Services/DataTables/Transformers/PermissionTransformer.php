@@ -17,7 +17,7 @@ class PermissionTransformer extends TransformerAbstract
         $routeString = "";
         if ($permission->routes) {
             foreach ($permission->routes as $route) {
-                $routeString .= '<span class="badge badge-soft-info">'.$route.'</span> ';
+                $routeString .= '<span class="badge badge-soft-info">'.parse_url(route($route, ['id' => 'ID'], false), PHP_URL_PATH).'</span> ';
             }
         }
 
@@ -44,6 +44,7 @@ class PermissionTransformer extends TransformerAbstract
     {
         return '
             '.ActionWidget::renderUpdateBtn(route('app.user.permission.edit', ['id' => $permission->id])).'
+            '.ActionWidget::renderDeleteBtn($permission->id, route('app.user.permission.delete', ['id' => $permission->id])).'
         ';
     }
 }

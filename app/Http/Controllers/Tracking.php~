@@ -159,7 +159,7 @@ class Tracking extends BaseController
             if ($response === '201') {
                 $orderTracking = $this->getOrderTracking((int)$id);
                 $orderTracking->tracking_number = $data['tracking_number'];
-                $orderTracking->courier_code = str_contains($data['carrier'], 'OTHER') ? $data['other_carrier'] : $data['carrier'];
+                $orderTracking->courier_code = $data['carrier'];
                 $orderTracking->tracking_status = $data['status'];
                 $orderTracking->save();
                 flash()->success('Tracking info added.');
