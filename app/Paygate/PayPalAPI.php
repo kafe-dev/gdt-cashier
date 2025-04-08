@@ -731,23 +731,40 @@ class PayPalAPI {
      *         - API response as an array if applicable.
      *         - RedirectResponse if tracking number or carrier is missing, with an error message.
      */
-    public function addTrackingInfo(string $transaction_id, string $status, string $trackingNumber, string $carrier): int|array|RedirectResponse {
+    public function addTrackingInfo(string $transaction_id, string $status, string $trackingNumber, string $carrier, ?string $other_carrier = ''): int|array|RedirectResponse {
         $url = "/v1/shipping/trackers";
         if (empty($trackingNumber) || empty($carrier)) {
             flash()->error("Tracking number or tracking carrier is required.");
             return redirect()->route("app.tracking.index");
         }
-        $data = [
-            "trackers" => [
-                [
-                    "transaction_id"     => $transaction_id,
-                    "tracking_number"    => $trackingNumber,
-                    "status"             => $status,
-                    "carrier"            => "OTHER",
-                    "carrier_name_other" => $carrier,
+        if (!str_contains($carrier, 'OTHER')) {
+            if (empty($other_carrier)) {
+                flash()->error("Other carrier is required.");
+                return redirect()->route("app.tracking.index");
+            }
+            $data = [
+                "trackers" => [
+                    [
+                        "transaction_id"     => $transaction_id,
+                        "tracking_number"    => $trackingNumber,
+                        "status"             => $status,
+                        "carrier"            => $carrier,
+                    ]
+                ]
+            ];
+        } else {
+            $data = [
+                "trackers" => [
+                    [
+                        "transaction_id"     => $transaction_id,
+                        "tracking_number"    => $trackingNumber,
+                        "status"             => $status,
+                        "carrier"            => $carrier,
+                        "carrier_name_other" => $other_carrier,
+                    ],
                 ],
-            ],
-        ];
+            ];
+        }
         return $this->makeRequestReturnCode('POST', $url, $data);
     }
 
