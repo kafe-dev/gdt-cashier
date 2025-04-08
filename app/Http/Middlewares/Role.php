@@ -2,7 +2,6 @@
 
 namespace App\Http\Middlewares;
 
-use App\Enums\RoleHierarchy;
 use App\Models\Permission;
 use App\Models\User;
 use Closure;
@@ -27,13 +26,13 @@ class Role
             return redirect()->route('login');
         }
 
-        if ($user->role == User::ROLE_ADMIN) {
+        if ($user->role === User::ROLE_ADMIN) {
             return $next($request);
         }
 
         $allowedRoutes = Permission::getAllowedRoutes($user->role);
 
-        if (!in_array($request->route()->getName(), $allowedRoutes)) {
+        if (!in_array($request->route()?->getName(), $allowedRoutes, true)) {
             flash()->error("You don't have permission to access this page");
             return redirect()->route("app.home.index");
         }

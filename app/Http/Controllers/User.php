@@ -5,16 +5,20 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Models\Permission;
+use App\Models\RoleHierarchy;
 use App\Models\User as UserModel;
 use App\Services\DataTables\PermissionDatatable;
+use App\Services\DataTables\RoleHierarchyDatatable;
 use App\Services\DataTables\UserDataTable;
 use App\Services\DataTables\UserRoleDataTable;
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
@@ -70,10 +74,8 @@ class User extends BaseController
 
     /**
      * Action `create`.
-     *
-     * @param Request $request Illuminate request object
      */
-    public function create(Request $request): View|RedirectResponse
+    public function create(): View|RedirectResponse
     {
         return view('user.create');
     }
@@ -140,7 +142,7 @@ class User extends BaseController
             $this->showAllValidateErrors($e);
 
             return redirect()->route('app.user.edit', $id);
-        } catch (\Exception $e) {
+        } catch (Exception) {
             flash()->error('The email/password is already in use.');
 
             return redirect()->route('app.user.edit', $id);
@@ -161,7 +163,7 @@ class User extends BaseController
 
             $role = $request->input('role');
 
-            if ($role == '') {
+            if ($role === '') {
                 $role = UserModel::ROLE_USER;
             }
             $this->userModel->create([
@@ -177,7 +179,7 @@ class User extends BaseController
             $this->showAllValidateErrors($e);
 
             return redirect()->route('app.user.create');
-        } catch (\Exception $e) {
+        } catch (Exception) {
             flash()->error('The email/password is already in use.');
 
             return redirect()->route('app.user.create');
@@ -233,7 +235,7 @@ class User extends BaseController
 
             return redirect()->route('app.user.roleManage.index');
         }
-        catch (\Exception $e) {
+        catch (Exception $e) {
             flash()->error($e->getMessage());
 
             return redirect()->route('app.user.roleManage.edit', $id);
@@ -245,7 +247,46 @@ class User extends BaseController
      */
     public function permissionIndex(PermissionDatatable $datatable)
     {
-        return $datatable->render('user.permission.index');
+        $roles = [];
+        foreach (UserModel::ROLES as $key => $value) {
+            $roles[$key] = RoleHierarchy::getAllowedRoles($key);
+        }
+
+        return $datatable->render('user.permission.index', [
+            'roleHierarchies' => $roles,
+        ]);
+    }
+
+    public function permissionCreate(): View
+    {
+        return view('user.permission.create');
+    }
+
+    public function permissionStore(Request $request): RedirectResponse
+    {
+        try {
+            $request->validate([
+                'role' => 'required|integer|unique:permissions,role',
+            ], [
+                'role.required' => 'The role field is required.',
+                'role.integer' => 'The role must be an integer.',
+                'role.unique' => 'This role already exists.',
+            ]);
+
+            Permission::create([
+                'role' => $request->input('role'),
+            ]);
+
+            flash()->success('Permission created successfully.');
+
+            return redirect()->route('app.user.permission.index');
+        } catch (ValidationException $e) {
+            $this->showAllValidateErrors($e);
+            return redirect()->route('app.user.permission.create');
+        } catch (Exception $e) {
+            flash()->error('Error creating permission: ' . $e->getMessage());
+            return redirect()->route('app.user.permission.create');
+        }
     }
 
     /**
@@ -291,7 +332,7 @@ class User extends BaseController
             unset($list['_token']);
 
             $json = [];
-            foreach ($list as $key => $value) {
+            foreach ($list as $value) {
                 $json[] = $value;
             }
 
@@ -301,11 +342,157 @@ class User extends BaseController
 
             flash()->success('Permission updated successfully.');
             return redirect()->route('app.user.permission.index');
-        } catch (\Exception $e) {
-            flash()->error($e->getMessage());
+        } catch (ValidationException $e) {
+            $this->showAllValidateErrors($e);
+            return redirect()->route('app.user.permission.edit', $id);
+        } catch (Exception $e) {
+            flash()->error('Error updating permission: ' . $e->getMessage());
 
             return redirect()->route('app.user.permission.edit', $id);
         }
+    }
+
+    public function permissionDelete(int|string $id, Request $request): ?RedirectResponse
+    {
+        try {
+            $permission = $this->getPermission($id);
+            $permission->delete();
+            flash()->success('Permission deleted successfully.');
+            return redirect()->route('app.user.permission.index');
+        } catch (Exception $e) {
+            flash()->error('Error deleting permission: ' . $e->getMessage());
+            return redirect()->route('app.user.permission.index');
+        }
+    }
+
+    public function hierarchyIndex(RoleHierarchyDatatable $datatable)
+    {
+        return $datatable->render('user.hierarchy.index');
+    }
+
+    /**
+     * Action `create` cho Role Hierarchy
+     */
+    public function hierarchyCreate(): View
+    {
+        $roles = UserModel::ROLES;
+        return view('user.hierarchy.create', compact('roles'));
+    }
+
+    /**
+     * Action `store` cho Role Hierarchy
+     */
+    public function hierarchyStore(Request $request): RedirectResponse
+    {
+        try {
+            $request->validate([
+                'parent_role' => 'required|integer',
+                'child_role' => [
+                    'required',
+                    'integer',
+                    'different:parent_role',
+                    Rule::unique('role_hierarchies')->where(function ($query) use ($request) {
+                        return $query->where('parent_role', $request->parent_role)
+                            ->where('child_role', $request->child_role);
+                    }),
+                ],
+            ], [
+                'parent_role.required' => 'The parent role field is required.',
+                'parent_role.integer' => 'The parent role must be an integer.',
+
+                'child_role.required' => 'The child role field is required.',
+                'child_role.integer' => 'The child role must be an integer.',
+                'child_role.different' => 'The child role must be different from the parent role.',
+                'child_role.unique' => 'This parent-child role combination already exists.',
+            ]);
+
+            $parentRole = $request->input('parent_role');
+            $childRole = $request->input('child_role');
+
+            RoleHierarchy::updateOrCreate(
+                ['parent_role' => $parentRole, 'child_role' => $childRole],
+                ['parent_role' => $parentRole, 'child_role' => $childRole]
+            );
+            flash()->success('Hierarchy created successfully.');
+        } catch (ValidationException $e) {
+            $this->showAllValidateErrors($e);
+            return redirect()->route('app.user.role.hierarchy.create');
+        } catch (\Exception $e) {
+            flash()->error('Error creating hierarchy: ' . $e->getMessage());
+            return redirect()->route('app.user.role.hierarchy.create');
+        }
+
+        return redirect()->route('app.user.role.hierarchy.index');
+    }
+
+    /**
+     * Action `edit` cho Role Hierarchy
+     */
+    public function hierarchyEdit(int $id): View
+    {
+        $hierarchy = RoleHierarchy::findOrFail($id);
+        return view('user.hierarchy.edit', compact('hierarchy'));
+    }
+
+    /**
+     * Action `update` cho Role Hierarchy
+     */
+    public function hierarchyUpdate(Request $request, int $id): RedirectResponse
+    {
+        try {
+            $request->validate([
+                'parent_role' => 'required|integer',
+                'child_role' => [
+                    'required',
+                    'integer',
+                    'different:parent_role',
+                    Rule::unique('role_hierarchies')->where(function ($query) use ($request) {
+                        return $query->where('parent_role', $request->parent_role)
+                            ->where('child_role', $request->child_role);
+                    }),
+                ],
+            ], [
+                'parent_role.required' => 'The parent role field is required.',
+                'parent_role.integer' => 'The parent role must be an integer.',
+
+                'child_role.required' => 'The child role field is required.',
+                'child_role.integer' => 'The child role must be an integer.',
+                'child_role.different' => 'The child role must be different from the parent role.',
+                'child_role.unique' => 'This parent-child role combination already exists.',
+            ]);
+
+
+            $hierarchy = RoleHierarchy::findOrFail($id);
+            $hierarchy->update([
+                'parent_role' => $request->input('parent_role'),
+                'child_role' => $request->input('child_role'),
+            ]);
+            flash()->success('Hierarchy updated successfully.');
+        } catch (ValidationException $e) {
+            $this->showAllValidateErrors($e);
+            return redirect()->route('app.user.role.hierarchy.edit', $id);
+        } catch (\Exception $e) {
+            flash()->error('Error updating hierarchy: ' . $e->getMessage());
+            return redirect()->route('app.user.role.hierarchy.edit', $id);
+        }
+
+        return redirect()->route('app.user.role.hierarchy.index');
+    }
+
+    /**
+     * Action `delete` cho Role Hierarchy
+     */
+    public function hierarchyDelete(int $id): RedirectResponse
+    {
+        try {
+            $hierarchy = RoleHierarchy::findOrFail($id);
+            $hierarchy->delete();
+            flash()->success('Hierarchy deleted successfully.');
+        } catch (Exception $e) {
+            flash()->error('Error deleting hierarchy: ' . $e->getMessage());
+        }
+
+        return redirect()->route('app.user.role.hierarchy.index');
     }
 
     /**
@@ -336,7 +523,7 @@ class User extends BaseController
         try {
             $user = $this->getUser($id);
 
-            if ($user->status == UserModel::STATUS_ACTIVE) {
+            if ($user->status === UserModel::STATUS_ACTIVE) {
                 $user->update([
                     'blocked_at' => now(),
                     'status' => UserModel::STATUS_INACTIVE,
@@ -348,7 +535,7 @@ class User extends BaseController
                 ]);
             }
             flash()->success('Change successfully.');
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             flash()->error('Had an error while updating the status of the user.');
 
             return redirect()->route('app.user.index');
@@ -404,7 +591,7 @@ class User extends BaseController
             } catch (ValidationException $e) {
                 $this->showAllValidateErrors($e);
                 return redirect()->route('app.user.changePassword');
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 flash()->error('An error occurred while changing the password.');
                 return redirect()->route('app.user.changePassword');
             }
@@ -444,7 +631,7 @@ class User extends BaseController
                     Password::min(8)->max(255)
                         ->mixedCase() // 1 A-Z, 1 a-z
                         ->numbers()   // 1 number
-                        ->symbols()   // 1 in { @$!%*?& }
+                        ->symbols(),   // 1 in { @$!%*?& }
                 ],
                 'confirm_password' => 'required|same:new_password',
             ]);
@@ -458,7 +645,7 @@ class User extends BaseController
                     Password::min(8)->max(255)
                         ->mixedCase() // 1 A-Z, 1 a-z
                         ->numbers()   // 1 number
-                        ->symbols()   // 1 in { @$!%*?& }
+                        ->symbols(),   // 1 in { @$!%*?& }
                 ],
             ]);
         }

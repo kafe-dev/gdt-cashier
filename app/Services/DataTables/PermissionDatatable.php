@@ -19,7 +19,7 @@ class PermissionDatatable extends BaseDataTable
     /**
      * {@inheritdoc}
      */
-    protected string $createUrl = 'app.user.roleManage.index';
+    protected string $createUrl = 'app.user.permission.create';
 
     /**
      * {@inheritdoc}

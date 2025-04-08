@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Enums\RoleHierarchy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -45,14 +44,10 @@ class Permission extends Model
         $allowedRoles = RoleHierarchy::getAllowedRoles($role);
 
         $routes = [];
-
         foreach ($allowedRoles as $allowedRole) {
             $permission = self::where('role', $allowedRole)->first();
-            if ($permission) {
-                $tempRoutes = $permission->routes;
-                if ($tempRoutes) {
-                    $routes = array_merge($routes, $tempRoutes);
-                }
+            if ($permission && $permission->routes) {
+                $routes = array_merge($routes, $permission->routes);
             }
         }
 
@@ -67,16 +62,6 @@ class Permission extends Model
 
     public static function getAllowedRoutesWithHierarchy(int $role): array
     {
-        $roles = RoleHierarchy::$hierarchy[$role] ?? [];
-        $allRoutes = [];
-
-        foreach ($roles as $role) {
-            $temp = self::getRoleAllowedRoutes($role);
-            if ($temp) {
-                $allRoutes = array_merge($allRoutes, $temp);
-            }
-        }
-
-        return array_unique($allRoutes);
+        return RoleHierarchy::getAllowedRoutesWithHierarchy($role);
     }
 }

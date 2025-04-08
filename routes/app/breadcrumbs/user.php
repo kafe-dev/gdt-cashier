@@ -53,8 +53,31 @@ Breadcrumbs::for('manage-permission', function (BreadcrumbTrail $trail) {
     $trail->push('Manage Roles Permission', route('app.user.permission.index'));
 });
 
+// Dashboard > Manage Users > Manage Roles' Permission > Create Role's Permission
+Breadcrumbs::for('create-permission', function (BreadcrumbTrail $trail) {
+    $trail->parent('manage-permission');
+    $trail->push('Create Role Permission', route('app.user.permission.create'));
+});
+
 //Dashboard > Manage Users > Manage Roles' Permission > Update Role's Permission
 Breadcrumbs::for('update-permission', function (BreadcrumbTrail $trail, Permission $permission) {
     $trail->parent('manage-permission');
     $trail->push('Update Role Permission', route('app.user.permission.edit', ['id' => $permission->id]));
+});
+
+Breadcrumbs::for('manage-role-hierarchy', function (BreadcrumbTrail $trail) {
+    $trail->parent('manage-permission');
+    $trail->push('Manage Role Hierarchy', route('app.user.role.hierarchy.index'));
+});
+
+// Dashboard > Manage Users > Role Hierarchy > Create Hierarchy
+Breadcrumbs::for('create-role-hierarchy', function (BreadcrumbTrail $trail) {
+    $trail->parent('manage-role-hierarchy');
+    $trail->push('Create Role Hierarchy', route('app.user.role.hierarchy.create'));
+});
+
+// Dashboard > Manage Users > Role Hierarchy > Update Hierarchy
+Breadcrumbs::for('update-role-hierarchy', function (BreadcrumbTrail $trail, $id) {
+    $trail->parent('manage-role-hierarchy');
+    $trail->push('Update Role Hierarchy', route('app.user.role.hierarchy.edit', ['id' => $id]));
 });
