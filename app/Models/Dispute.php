@@ -118,4 +118,13 @@ class Dispute extends Model {
     {
         return !self::where('dispute_id', $disputeId)->exists();
     }
+
+    public static function getLabelStatus($status): string {
+        $statusLabels = [
+            'WAITING_FOR_SELLER_RESPONSE' => 'warning',
+        ];
+        $labelClass   = $statusLabels[$status] ?? 'secondary';
+        return '<span class="badge bg-' . $labelClass . ' text-dark">' . ucfirst(strtolower(str_replace('_', ' ', $status))) . '</span>';
+    }
+
 }

@@ -29,7 +29,7 @@ class DisputeTransformer extends TransformerAbstract {
             'buyer_transaction_id'     => $dispute->buyer_transaction_id ?? '',
             'merchant_id'              => $dispute->merchant_id ?? '',
             'reason'                   => $dispute->reason ?? '',
-            'status'                   => $dispute->status ?? '',
+            'status'                   => Dispute::getLabelStatus($dispute->status ?? ''),
             'dispute_state'            => $dispute->dispute_state ?? '',
             'dispute_amount_currency'  => $dispute->dispute_amount_currency ?? '',
             'dispute_amount_value'     => $dispute->dispute_amount_value ?? '',
