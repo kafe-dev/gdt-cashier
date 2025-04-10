@@ -1,10 +1,10 @@
 <?php
 /**
  * @project gdt-cashier
- * @author hoepjhsha
+ * @author  hoepjhsha
  * @email hiepnguyen3624@gmail.com
- * @date 09/02/2025
- * @time 16:34
+ * @date    09/02/2025
+ * @time    16:34
  */
 
 namespace App\Services\DataTables;
@@ -18,6 +18,7 @@ use Yajra\DataTables\Html\Column;
 
 class PaypalTransactionDatatable extends BaseDataTable
 {
+
     /**
      * {@inheritdoc}
      */
@@ -36,10 +37,11 @@ class PaypalTransactionDatatable extends BaseDataTable
     /**
      * {@inheritdoc}
      */
-    protected array $customButtons = [
-        'sync' => 'getSyncBtn',
-        'exportExcel' => 'getExportExcelBtn',
-    ];
+    protected array $customButtons
+        = [
+            'sync'        => 'getSyncBtn',
+            'exportExcel' => 'getExportExcelBtn',
+        ];
 
     /**
      * Return the query builder instance to be processed by DataTables.
@@ -70,47 +72,47 @@ class PaypalTransactionDatatable extends BaseDataTable
         return [
             Column::make(['data' => 'id', 'title' => 'ID'])->addClass('x-id'),
             Column::make('datetime')->searchPanes(false)->addClass('x-has-date-filter')->orderable(false),
-//            Column::make('paygate_id')->searchPanes()->addClass('x-searchable'),
+            //            Column::make('paygate_id')->searchPanes()->addClass('x-searchable'),
             Column::make('paygate_name')->searchPanes()->addClass('x-searchable'),
             Column::make('name')->searchPanes()->addClass('x-searchable'),
-//            Column::make('type')->searchPanes()->addClass('x-searchable'),
-//            Column::make('event_code')->searchPanes()->addClass('x-searchable'),
+            //            Column::make('type')->searchPanes()->addClass('x-searchable'),
+            //            Column::make('event_code')->searchPanes()->addClass('x-searchable'),
             Column::make('status')->searchPanes()->addClass('x-searchable'),
             Column::make('currency')->searchPanes()->addClass('x-searchable'),
-//            Column::make('gross')->searchPanes()->addClass('x-searchable'),
-//            Column::make('fee')->searchPanes()->addClass('x-searchable'),
-//            Column::make('net')->searchPanes()->addClass('x-searchable'),
-//            Column::make('from_email_address')->searchPanes()->addClass('x-searchable'),
-//            Column::make('to_email_address')->searchPanes()->addClass('x-searchable'),
+            //            Column::make('gross')->searchPanes()->addClass('x-searchable'),
+            //            Column::make('fee')->searchPanes()->addClass('x-searchable'),
+            //            Column::make('net')->searchPanes()->addClass('x-searchable'),
+            //            Column::make('from_email_address')->searchPanes()->addClass('x-searchable'),
+            //            Column::make('to_email_address')->searchPanes()->addClass('x-searchable'),
             Column::make('transaction_id')->searchPanes()->addClass('x-searchable'),
-//            Column::make('shipping_address')->searchPanes()->addClass('x-searchable'),
-//            Column::make('address_status')->searchPanes()->addClass('x-searchable'),
-//            Column::make('item_title')->searchPanes()->addClass('x-searchable'),
-//            Column::make('item_id')->searchPanes()->addClass('x-searchable'),
-//            Column::make('shipping_and_handling_amount')->searchPanes()->addClass('x-searchable'),
-//            Column::make('insurance_amount')->searchPanes()->addClass('x-searchable'),
-//            Column::make('sales_tax')->searchPanes()->addClass('x-searchable'),
-//            Column::make('option_1_name')->searchPanes()->addClass('x-searchable'),
-//            Column::make('option_1_value')->searchPanes()->addClass('x-searchable'),
-//            Column::make('option_2_name')->searchPanes()->addClass('x-searchable'),
-//            Column::make('option_2_value')->searchPanes()->addClass('x-searchable'),
-//            Column::make('reference_txn_id')->searchPanes()->addClass('x-searchable'),
+            //            Column::make('shipping_address')->searchPanes()->addClass('x-searchable'),
+            //            Column::make('address_status')->searchPanes()->addClass('x-searchable'),
+            //            Column::make('item_title')->searchPanes()->addClass('x-searchable'),
+            //            Column::make('item_id')->searchPanes()->addClass('x-searchable'),
+            //            Column::make('shipping_and_handling_amount')->searchPanes()->addClass('x-searchable'),
+            //            Column::make('insurance_amount')->searchPanes()->addClass('x-searchable'),
+            //            Column::make('sales_tax')->searchPanes()->addClass('x-searchable'),
+            //            Column::make('option_1_name')->searchPanes()->addClass('x-searchable'),
+            //            Column::make('option_1_value')->searchPanes()->addClass('x-searchable'),
+            //            Column::make('option_2_name')->searchPanes()->addClass('x-searchable'),
+            //            Column::make('option_2_value')->searchPanes()->addClass('x-searchable'),
+            //            Column::make('reference_txn_id')->searchPanes()->addClass('x-searchable'),
             Column::make('invoice_number')->searchPanes()->addClass('x-searchable'),
-//            Column::make('custom_number')->searchPanes()->addClass('x-searchable'),
-//            Column::make('quantity')->searchPanes()->addClass('x-searchable'),
-//            Column::make('receipt_id')->searchPanes()->addClass('x-searchable'),
+            //            Column::make('custom_number')->searchPanes()->addClass('x-searchable'),
+            //            Column::make('quantity')->searchPanes()->addClass('x-searchable'),
+            //            Column::make('receipt_id')->searchPanes()->addClass('x-searchable'),
             Column::make('balance')->searchPanes()->addClass('x-searchable'),
-//            Column::make('address_line_1')->searchPanes()->addClass('x-searchable'),
-//            Column::make('address_line_2')->searchPanes()->addClass('x-searchable'),
-//            Column::make('town_city')->searchPanes()->addClass('x-searchable'),
-//            Column::make('state_province')->searchPanes()->addClass('x-searchable'),
-//            Column::make('zip_postal_code')->searchPanes()->addClass('x-searchable'),
-//            Column::make('country')->searchPanes()->addClass('x-searchable'),
-//            Column::make('contact_phone_number')->searchPanes()->addClass('x-searchable'),
-//            Column::make('subject')->searchPanes()->addClass('x-searchable'),
-//            Column::make('note')->searchPanes()->addClass('x-searchable'),
-//            Column::make('country_code')->searchPanes()->addClass('x-searchable'),
-//            Column::make('balance_impact')->searchPanes()->addClass('x-searchable'),
+            //            Column::make('address_line_1')->searchPanes()->addClass('x-searchable'),
+            //            Column::make('address_line_2')->searchPanes()->addClass('x-searchable'),
+            //            Column::make('town_city')->searchPanes()->addClass('x-searchable'),
+            //            Column::make('state_province')->searchPanes()->addClass('x-searchable'),
+            //            Column::make('zip_postal_code')->searchPanes()->addClass('x-searchable'),
+            //            Column::make('country')->searchPanes()->addClass('x-searchable'),
+            //            Column::make('contact_phone_number')->searchPanes()->addClass('x-searchable'),
+            //            Column::make('subject')->searchPanes()->addClass('x-searchable'),
+            //            Column::make('note')->searchPanes()->addClass('x-searchable'),
+            //            Column::make('country_code')->searchPanes()->addClass('x-searchable'),
+            //            Column::make('balance_impact')->searchPanes()->addClass('x-searchable'),
             Column::make('closed_at')->searchPanes(false)->addClass('x-has-date-filter')->orderable(false),
             Column::make('last_checked_at')->searchPanes(false)->addClass('x-has-date-filter')->orderable(false),
             Column::make('exported_at')->searchPanes(false)->addClass('x-has-date-filter')->orderable(false),
@@ -127,9 +129,9 @@ class PaypalTransactionDatatable extends BaseDataTable
     public function getSyncBtn(): array
     {
         return [
-            'text' => '<i class="fa fa-sync"></i> Sync ',
+            'text'      => '<i class="fa fa-sync"></i> Sync ',
             'className' => 'btn btn-primary',
-            'init' => "function (dt, node, config) {
+            'init'      => "function (dt, node, config) {
                 $(node).css('background-color', 'rgba(23, 97, 253, 0.75)');
                 $(node).css('border-color', 'rgba(23, 97, 253, 0.75)');
 
@@ -148,13 +150,16 @@ class PaypalTransactionDatatable extends BaseDataTable
     public function getExportExcelBtn(): array
     {
         return [
-            'text' => '<i class="fa fa-file-excel"></i> Export',
-            'className' => 'btn btn-success',
-            'init' => "function (dt, node, config) {
-                $(node).click(() => {
-                    $('#daterange_input').trigger('click');
-                });
-            }",
+            'text'          => '<i class="fa fa-file-excel"></i> Export',
+            'extend'        => 'excel',
+            'exportOptions' => [
+                'modifier' => [
+                    'filter' => 'applied',
+                ],
+            ],
+            'className'     => 'btn btn-success',
+
         ];
     }
+
 }
