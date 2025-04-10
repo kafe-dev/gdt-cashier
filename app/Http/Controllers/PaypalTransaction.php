@@ -1,10 +1,10 @@
 <?php
 /**
  * @project gdt-cashier
- * @author hoepjhsha
+ * @author  hoepjhsha
  * @email hiepnguyen3624@gmail.com
- * @date 09/02/2025
- * @time 13:09
+ * @date    09/02/2025
+ * @time    13:09
  */
 
 namespace App\Http\Controllers;
@@ -52,7 +52,7 @@ class PaypalTransaction extends BaseController
     public function show(int|string $id): View
     {
         return view('paypal_transaction.show', [
-            'paypalTransaction' => $this->getPaypalTransaction((int) $id),
+            'paypalTransaction' => $this->getPaypalTransaction((int)$id),
         ]);
     }
 
@@ -60,7 +60,7 @@ class PaypalTransaction extends BaseController
      * Action 'mark as closed'.
      *
      * @param  int|string  $id
-     * @param  Request  $request
+     * @param  Request     $request
      *
      * @return RedirectResponse
      */
@@ -78,48 +78,6 @@ class PaypalTransaction extends BaseController
         return redirect()->route('app.paypal-transaction.index');
     }
 
-    /**
-     * Exports all open PaypalTransaction records to an Excel file.
-     * After exporting, updates sets the exported_at and closed_at timestamp.
-     *
-     * @return BinaryFileResponse|RedirectResponse
-     */
-    public function export(Request $request)
-    {
-        $query = PaypalTransactionModel::where('closed_at', NULL)->get();
-        if ($request->has(
-            [
-                'start_date',
-                'end_date',
-            ]
-        )) {
-            $query = PaypalTransactionModel::whereBetween(
-                'datetime',
-                [
-                    $request->start_date,
-                    $request->end_date,
-                ]
-            )
-                ->where('closed_at', NULL)
-                ->get();
-        }
-
-        if ($query->isEmpty()) {
-            flash()->warning('There are no paypal transactions.');
-            return redirect()->route('app.paypal-transaction.index');
-        }
-
-        PaypalTransactionModel::whereIn('id', $query->pluck('id'))->update([
-            'exported_at' => Carbon::now(),
-        ]);
-
-        $fileName = 'paypal_transactions_export_'.now()->format('Y-m-d_H-i-s').'.xlsx';
-
-        session(['export_records' => $query]);
-
-        return Excel::download(new PaypalTransactionDataTableExport($query), $fileName);
-    }
-
     private function getPaypalTransaction(int $id): PaypalTransactionModel
     {
         return $this->paypalTransactionModel->query()->findOrFail($id);
@@ -128,8 +86,8 @@ class PaypalTransaction extends BaseController
     /**
      * Processes a PayPal payment refund.
      *
-     * @param  Request  $request  The HTTP request containing refund details.
-     * @param  int|string  $id  The transaction ID of the PayPal payment to be refunded.
+     * @param  Request     $request  The HTTP request containing refund details.
+     * @param  int|string  $id       The transaction ID of the PayPal payment to be refunded.
      *
      * @return RedirectResponse Redirects to the PayPal transaction index page with a success or error message.
      */
@@ -200,9 +158,9 @@ class PaypalTransaction extends BaseController
     /**
      * Validates and retrieves refund payment data from the request.
      *
-     * @param  Request  $request  The HTTP request containing refund details.
-     * @param  string  $refundType  The type of refund ('FULL' or 'PARTIAL').
-     * @param  int|string  $gross  The total transaction amount (used to validate partial refunds).
+     * @param  Request     $request     The HTTP request containing refund details.
+     * @param  string      $refundType  The type of refund ('FULL' or 'PARTIAL').
+     * @param  int|string  $gross       The total transaction amount (used to validate partial refunds).
      *
      * @return array An associative array containing validated refund data, including:
      *               - 'capture_id' (string): The PayPal capture ID.

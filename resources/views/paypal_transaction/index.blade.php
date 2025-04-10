@@ -27,7 +27,7 @@
             </div>
         </div>
     </div>
-    
+
     {{--    BEGIN refund modal--}}
     @include('paypal_transaction._modal-refund')
     {{--    END refund modal--}}
@@ -37,58 +37,4 @@
 @push('custom-scripts')
     {{ $dataTable->scripts(attributes: ['type' => 'module']) }}
 
-    <script>
-        $(document).ready(function () {
-            $('#daterange_input').daterangepicker({
-                autoUpdateInput: false,
-                locale: {
-                    format: 'YYYY-MM-DD',
-                    applyLabel: 'Export',
-                    cancelLabel: 'Cancel',
-                },
-            })
-
-            $('#daterange_input').on('apply.daterangepicker', function (ev, picker) {
-                var startDate = picker.startDate.format('YYYY-MM-DD')
-                var endDate = picker.endDate.format('YYYY-MM-DD')
-
-                var form = document.createElement('form')
-                form.method = 'POST'
-                form.action = '{{ route("app.paypal-transaction.export") }}'
-
-                var csrfToken = document.createElement('input')
-                csrfToken.type = 'hidden'
-                csrfToken.name = '_token'
-                csrfToken.value = '{{ csrf_token() }}'
-                form.appendChild(csrfToken)
-
-                var startDateInput = document.createElement('input')
-                startDateInput.type = 'hidden'
-                startDateInput.name = 'start_date'
-                startDateInput.value = startDate
-                form.appendChild(startDateInput)
-
-                var endDateInput = document.createElement('input')
-                endDateInput.type = 'hidden'
-                endDateInput.name = 'end_date'
-                endDateInput.value = endDate
-                form.appendChild(endDateInput)
-
-                document.body.appendChild(form)
-                form.submit()
-
-                $.ajax({
-                    type: 'POST',
-                    url: form.action,
-                    data: $(form).serialize(),
-                    success: function (response) {
-                        alert('Exported successfully')
-                        $('#reset-btn').click()
-                    },
-                    error: function () {
-                    },
-                })
-            })
-        })
-    </script>
 @endpush
