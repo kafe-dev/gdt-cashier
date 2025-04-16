@@ -429,4 +429,16 @@ class Dispute extends BaseController {
         }
         return redirect()->route('app.dispute.show', ['id' => $id]);
     }
+
+    public function test() {
+        $paygate = Paygate::first();
+        $dispute_id = 'PP-R-WMT-10108566';
+        $notes = 'test12345';
+        $api = new PayPalAPI($paygate);
+        $_r = $api->uploadSupportingInfo($dispute_id,$notes);
+        echo '<pre>';
+        print_r($_r);
+        die;
+
+    }
 }
