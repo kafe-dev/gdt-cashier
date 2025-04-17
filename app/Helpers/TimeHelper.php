@@ -99,4 +99,25 @@ class TimeHelper {
 
         return $dateTime->format('Y-m-d\TH:i:s.v\Z');
     }
+
+    /**
+     * Lấy thời gian ngày đầu tiên của tháng hiện tại
+     *
+     * Hàm này tạo một đối tượng DateTime đại diện cho ngày đầu tiên
+     * của tháng hiện tại và trả về dưới dạng chuỗi ISO 8601 với múi giờ UTC
+     * định dạng 'YYYY-MM-DDT00:00:00.000Z'
+     *
+     * @return string Chuỗi ngày tháng đầu tháng hiện tại theo định dạng ISO 8601 với múi giờ UTC
+     */
+    public static function getFirstDayOfCurrentMonth(): string {
+        // Tạo đối tượng DateTime với ngày đầu tiên của tháng hiện tại
+        $firstDay = new DateTime('first day of this month');
+
+        // Đặt thời gian về 00:00:00.000 (đầu ngày)
+        $firstDay->setTime(0, 0, 0);
+
+        // Trả về chuỗi đã định dạng theo chuẩn ISO 8601 với múi giờ UTC
+        // \T và \Z là ký tự escape để hiển thị chính xác chữ T và Z trong chuỗi kết quả
+        return $firstDay->format('Y-m-d\TH:i:s.000\Z');
+    }
 }
