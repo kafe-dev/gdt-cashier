@@ -749,8 +749,8 @@ class PayPalAPI {
                         "tracking_number"    => $trackingNumber,
                         "status"             => $status,
                         "carrier"            => $carrier,
-                    ]
-                ]
+                    ],
+                ],
             ];
         } else {
             $data = [
@@ -835,5 +835,18 @@ class PayPalAPI {
         // Chuyển extension về chữ thường để tránh phân biệt hoa thường
         $extension = strtolower($extension);
         return $mimeTypes[$extension] ?? null;
+    }
+
+    /**
+     *
+     *
+     * @throws \JsonException
+     */
+    public function uploadSupportingInfo($disputeId, $notes): array {
+        $url    = "/v1/customer/disputes/{$disputeId}/provide-supporting-info";
+        $params = [
+            "notes" => $notes,
+        ];
+        return $this->makeHttpRequest('POST', $url, $params);
     }
 }
