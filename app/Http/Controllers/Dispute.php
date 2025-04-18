@@ -430,10 +430,53 @@ class Dispute extends BaseController {
         return redirect()->route('app.dispute.show', ['id' => $id]);
     }
 
+
+    /**
+     * Provides supporting information for a dispute to PayPal API.
+     *
+     * This method validates the input notes, retrieves the dispute by ID,
+     * uploads the supporting information to PayPal API, and handles the response.
+     *
+     * @param Request $request The HTTP request containing the notes
+     * @param int $id The dispute ID in the local database
+     * @return \Illuminate\Http\RedirectResponse Redirects back to the dispute page with success or error message
+     */
+    public function provideSupportingInfo(Request $request, $id)
+    {
+        // Validate the input notes
+        $validated = $request->validate([
+            'notes' => 'required|string|max:2000',
+        ]);
+
+        // Retrieve the dispute from database
+        $dispute = \App\Models\Dispute::findOrFail($id);
+
+        // Get PayPal API instance for this dispute
+        $paypalApi = $this->getPaypalApiByDisputeId($id);
+
+        // Upload supporting information to PayPal
+        $result = $paypalApi->uploadSupportingInfo($dispute->dispute_id, $validated['notes']);
+
+        // Check for successful response (HTTP 200 or 201)
+        $isSuccess = in_array($result['statusCode'] ?? 0, [200, 201]);
+
+        // Handle error case
+        if (!$isSuccess) {
+            $errorMessage = $result['response']['message'] ?? 'Unknown error occurred';
+            return redirect()->route('app.dispute.show', ['id' => $id])
+                             ->withErrors(['notes' => $errorMessage]);
+        }
+
+        // Handle success case
+        flash()->success('Supporting info provided successfully!');
+        return redirect()->route('app.dispute.show', ['id' => $id]);
+    }
+
     public function test() {
-        $paygate = Paygate::first();
-        $dispute_id = 'PP-R-WMT-10108566';
+
+        $dispute_id = 'PP-R-WFT-10108561';
         $notes = 'test12345';
+        $paygate = \App\Models\Paygate::find(3);
         $api = new PayPalAPI($paygate);
         $_r = $api->uploadSupportingInfo($dispute_id,$notes);
         echo '<pre>';

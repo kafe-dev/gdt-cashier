@@ -21,13 +21,15 @@
     $offers = $dispute_arr['offer']['history']??[];
     $links = $dispute_arr['links']??[];
     $actions = array_map(fn($link) => $link['rel'], $links);
-    $evidences = $dispute_arr['evidences'];
+    $evidences = $dispute_arr['evidences']??[];
+    $supporting_infos = $dispute_arr['supporting_info']??[];
     $action_dispute = [
         'accept_claim' => '<a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#accept-claim-modal"><i class="fas fa-angle-right fa-xs me-2"></i> Accept claim</a>',
         'provide_evidence' => '<a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#provide-evidence-modal"><i class="fas fa-angle-right fa-xs me-2"></i> Provide evidence</a>',
         'make_offer' => '<a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#make-offer-dispute-modal"><i class="fas fa-angle-right fa-xs me-2"></i> Make offer to resolve dispute</a>',
         'escalate' => '<a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#escalate-dispute-modal"><i class="fas fa-angle-right fa-xs me-2"></i> Escalate dispute to claim</a>',
         'send_message' => '<a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#send-message-dispute-modal"><i class="fas fa-angle-right fa-xs me-2"></i> Send message about dispute to other party</a>',
+        'provide_supporting_info' => '<a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#provide-supporting-info-modal"><i class="fas fa-angle-right fa-xs me-2"></i> Provide supporting information</a>',
         'acknowledge_return_item' => '<a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#acknowledge-returned-dispute-modal"><i class="fas fa-angle-right fa-xs me-2"></i> Acknowledge returned item</a>',
     ];
 
@@ -114,7 +116,6 @@
                                             Note: {{ $value['notes'] }}<br>
                                         @endisset
                                         @if(!empty($value['evidence_info']))
-
                                             @foreach($value['evidence_info']['tracking_info'] as $tracking_info)
                                                 Carrier Name: {{ $tracking_info['carrier_name'] }}<br>
                                                 Tracking Number: {{ $tracking_info['tracking_number'] }}<br>
@@ -128,6 +129,20 @@
                                 </li>
                             @endforeach
                         @endif
+                            @if(!empty($supporting_infos))
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <span class="text-muted">Supporting Info: </span>
+                                    <span class="text-end">
+                                    @foreach($supporting_infos as $label => $value)
+                                    <p class="text-end">
+                                        Note: {{ $value['notes']??'' }}<br>
+                                        Source: {{ $value['source']??'' }}<br>
+                                        Provide time: {{ $value['provided_time']??'' }}<br>
+                                    </p><hr>
+                                    @endforeach
+                                    </span>
+                                </li>
+                            @endif
 
                     </ul>
                     <hr>
@@ -141,7 +156,6 @@
                     @endif
 
                     <ul class="list-unstyled mb-0 mt-4">
-
                         @foreach ($messages as $message)
                             @if($message['posted_by'] == 'BUYER')
                                 <li>
@@ -216,5 +230,6 @@
     {{--    End Accept Claim Modal--}}
 
     @include('dispute.form_provider_evidence._modal-provide-evidence',compact('dispute','dispute_arr'))
+    @include('dispute._modal-provide-supporting-info',compact('dispute','dispute_arr'))
 
 @endsection
